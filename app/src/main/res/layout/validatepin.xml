@@ -3,31 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.RegisterActivity">
+    tools:context=".UI.ValidatePin">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_margin="20dp"
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Contact Tracing"
-            android:textColor="#000"
-            android:textSize="25dp"
-            android:textStyle="bold" />
-
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textlayout"
+            android:id="@+id/pincode"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:hint="Please enter you mobile number">
+            android:hint="Please enter the pin code">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"

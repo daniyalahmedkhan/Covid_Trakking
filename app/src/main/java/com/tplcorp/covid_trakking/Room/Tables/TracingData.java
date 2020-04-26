@@ -18,11 +18,6 @@ public class TracingData {
     private int ID;
     private String USER_MOBILE;
     private String IS_AFFECTED;
-    private String LAT;
-    private String LNG;
-    private String DISTANCE;
-
-
     private String TIME_MILI;
     @TypeConverters({TimeStamp_Converter.class})
     private Date  TIME_STAMP;

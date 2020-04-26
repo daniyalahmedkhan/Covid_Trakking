@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "12770870435",
+    "firebase_url": "https://cotacttracingcovid19.firebaseio.com",
+    "project_id": "cotacttracingcovid19",
+    "storage_bucket": "cotacttracingcovid19.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12770870435:android:1285b9565f01c42fba2b16",
+        "android_client_info": {
+          "package_name": "com.tplcorp.covid_trakking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12770870435-mbb1v8ghh22ljtm27tprhh0p938o7fir.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tplcorp.covid_trakking",
+            "certificate_hash": "bc6a539ce547d6cc5c8f4fb745a8a82567ad9c3d"
+          }
+        },
+        {
+          "client_id": "12770870435-p6nfoit4u7ig3rjhfgck1o5shg4f7f88.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxMEG35GZCuGOMPTbwp8tZfly6ZMBG3qQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12770870435-p6nfoit4u7ig3rjhfgck1o5shg4f7f88.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
