@@ -18,22 +18,25 @@ public class TracingData {
     private int ID;
     private String USER_MOBILE;
     private String IS_AFFECTED;
-    private String TIME_MILI;
+    private String LAT;
+    private String LNG;
+    private String DISTANCE;
     @TypeConverters({TimeStamp_Converter.class})
     private Date  TIME_STAMP;
     private String DATE_;
     private String IS_UPLOADED;
 
 
-    public TracingData(String USER_MOBILE, String IS_AFFECTED, String TIME_MILI, Date TIME_STAMP, String DATE_ , String IS_UPLOADED) {
+    public TracingData(String USER_MOBILE, String IS_AFFECTED, String LAT, String LNG, String DISTANCE, Date TIME_STAMP, String DATE_, String IS_UPLOADED) {
         this.USER_MOBILE = USER_MOBILE;
         this.IS_AFFECTED = IS_AFFECTED;
-        this.TIME_MILI = TIME_MILI;
+        this.LAT = LAT;
+        this.LNG = LNG;
+        this.DISTANCE = DISTANCE;
         this.TIME_STAMP = TIME_STAMP;
         this.DATE_ = DATE_;
         this.IS_UPLOADED = IS_UPLOADED;
     }
-
 
     public int getID() {
         return ID;
@@ -59,14 +62,6 @@ public class TracingData {
         this.IS_AFFECTED = IS_AFFECTED;
     }
 
-    public String getTIME_MILI() {
-        return TIME_MILI;
-    }
-
-    public void setTIME_MILI(String TIME_MILI) {
-        this.TIME_MILI = TIME_MILI;
-    }
-
     public Date getTIME_STAMP() {
         return TIME_STAMP;
     }
@@ -89,5 +84,29 @@ public class TracingData {
 
     public void setDATE_(String DATE_) {
         this.DATE_ = DATE_;
+    }
+
+    public String getLAT() {
+        return LAT;
+    }
+
+    public void setLAT(String LAT) {
+        this.LAT = LAT;
+    }
+
+    public String getLNG() {
+        return LNG;
+    }
+
+    public void setLNG(String LNG) {
+        this.LNG = LNG;
+    }
+
+    public String getDISTANCE() {
+        return DISTANCE;
+    }
+
+    public void setDISTANCE(String DISTANCE) {
+        this.DISTANCE = DISTANCE;
     }
 }

@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
+import com.tplcorp.covid_trakking.Service.BackgroundService;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -46,6 +49,17 @@ public class GeneralHelper {
 
     public static void showToast(Context context , String msg){
         Toast.makeText(context, ""+msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showToastLooper(final String msg , final Context context){
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                Toast.makeText(context .getApplicationContext(), msg ,Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public static boolean locationPermission(final Context context){

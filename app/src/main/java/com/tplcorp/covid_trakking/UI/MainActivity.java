@@ -29,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.tplcorp.covid_trakking.Helper.BluetoothHelper;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
+import com.tplcorp.covid_trakking.Helper.LocationHelper;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
@@ -81,10 +82,10 @@ public class MainActivity extends AppCompatActivity {
 
                     startService(new Intent(this, BackgroundService.class));
 
+
+
                 }
             }
-
-
         }
     }
 
@@ -228,13 +229,5 @@ public class MainActivity extends AppCompatActivity {
         }, 2000);
     }
 
-    public void insertInDB(String userphone, String isaffected) {
 
-        MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(this);
-        if (!myDatabase.daoAccess().checkUserData(userphone, GeneralHelper.todayDate())) {
-            TracingData tracingData = new TracingData(userphone, isaffected, "", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate(), "N");
-            myDatabase.daoAccess().insertRecord(tracingData);
-        }
-
-    }
 }
