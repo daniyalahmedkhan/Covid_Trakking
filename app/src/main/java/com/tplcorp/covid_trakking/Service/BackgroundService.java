@@ -28,6 +28,10 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.common.internal.Constants;
+import com.tplcorp.covid_trakking.Helper.BluetoothHelper;
+import com.tplcorp.covid_trakking.Helper.DatabaseHelper;
+import com.tplcorp.covid_trakking.Helper.GeneralHelper;
+import com.tplcorp.covid_trakking.Helper.NotificationHelper;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.UI.MainActivity;
@@ -61,9 +65,10 @@ public class BackgroundService extends Service {
     @Override
     public void onCreate() {
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O){
-            startMyOwnForeground();
-        }else{
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+            Notification notification = NotificationHelper.startMyOwnForeground(this);
+            startForeground(2, notification);
+        } else {
             startForeground(1, new Notification());
         }
 
@@ -87,7 +92,6 @@ public class BackgroundService extends Service {
     public void onDestroy() {
         super.onDestroy();
         //startService(new Intent(this, BackgroundService.class));
-
     }
 
 
@@ -113,45 +117,36 @@ public class BackgroundService extends Service {
         }
     }
 
-    private void setTimeout(){
+    private void setTimeout() {
         mHandler = new Handler();
         timeoutRunnable = new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "AdvertiserService has reached timeout of "+TIMEOUT+" milliseconds, stopping advertising.");
+                Log.d(TAG, "AdvertiserService has reached timeout of " + TIMEOUT + " milliseconds, stopping advertising.");
                 sendFailureIntent(ADVERTISING_TIMED_OUT);
-              //  stopSelf();
+                //  stopSelf();
                 stopAdvertising();
             }
         };
         mHandler.postDelayed(timeoutRunnable, TIMEOUT);
 
 
-
     }
 
-
-    /**
-     * Starts BLE Advertising.
-     */
     private void startAdvertising() {
         Log.d(TAG, "Service: Starting Advertising");
         if (mAdvertiseCallback == null) {
-            AdvertiseSettings settings = buildAdvertiseSettings();
-            AdvertiseData data = buildAdvertiseData();
+            AdvertiseSettings settings = BluetoothHelper.buildAdvertiseSettings();
+            AdvertiseData data = BluetoothHelper.buildAdvertiseData(this);
             mAdvertiseCallback = new SampleAdvertiseCallback();
             if (mBluetoothLeAdvertiser != null) {
                 mBluetoothLeAdvertiser.startAdvertising(settings, data, mAdvertiseCallback);
             }
-           // mBluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
+            // mBluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
             BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(scanCallback);
         }
     }
 
-
-    /**
-     * Stops BLE Advertising.
-     */
     private void stopAdvertising() {
         Log.d(TAG, "Service: Stopping Advertising");
         if (mBluetoothLeAdvertiser != null) {
@@ -159,10 +154,10 @@ public class BackgroundService extends Service {
             mAdvertiseCallback = null;
             BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().stopScan(scanCallback);
         }
-        showToast("Stopping Advertising");
+        GeneralHelper.showToastLooper("Stopping Advertising", this);
 
 
-                new Handler().postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
 
             @Override
             public void run() {
@@ -179,97 +174,30 @@ public class BackgroundService extends Service {
 
     }
 
-
-    /**
-     * Returns an AdvertiseData object which includes the Service UUID and Device Name.
-     */
-    private AdvertiseData buildAdvertiseData() {
-
-        String userPhone = PrefsHelper.getString("MOBILE");
-        String isAffected = PrefsHelper.getString("AFFECTED" , "0");
-        String mServiceData = userPhone+"-"+isAffected;
-
-       // ParcelUuid pUuid = new ParcelUuid(UUID.fromString("CDB7950D-73F1-4D4D-8E47-C090502DBD63"));
-
-        ParcelUuid pUuid = new ParcelUuid(UUID.fromString("00001234-0000-1000-8000-00805F9B34FB"));
-
-
-        AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder();
-        //dataBuilder.addServiceUuid(pUuid);
-
-        dataBuilder.addServiceData(pUuid, "03452081685|0|24.322,64.555".getBytes());
-        dataBuilder.setIncludeDeviceName(false);
-
-         dataBuilder.setIncludeTxPowerLevel(false);
-
-        return dataBuilder.build();
-    }
-
-    /**
-     * Returns an AdvertiseSettings object set to use low power (to help preserve battery life)
-     * and disable the built-in timeout since this code uses its own timeout runnable.
-     */
-    private AdvertiseSettings buildAdvertiseSettings() {
-        AdvertiseSettings.Builder settingsBuilder = new AdvertiseSettings.Builder();
-        settingsBuilder.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED);
-        settingsBuilder.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM);
-        settingsBuilder.setConnectable(false);
-        settingsBuilder.setTimeout(0);
-        return settingsBuilder.build();
-    }
-    /**
-     * Custom callback after Advertising succeeds or fails to start. Broadcasts the error code
-     * in an Intent to be picked up by AdvertiserFragment and stops this Service.
-     */
     private class SampleAdvertiseCallback extends AdvertiseCallback {
         @Override
         public void onStartFailure(int errorCode) {
             super.onStartFailure(errorCode);
             Log.d(TAG, "Advertising failed");
             sendFailureIntent(errorCode);
-           // stopSelf();
-            showToast("Advertising failed");
+            // stopSelf();
+            GeneralHelper.showToastLooper("Advertising failed", BackgroundService.this);
         }
+
         @Override
         public void onStartSuccess(AdvertiseSettings settingsInEffect) {
             super.onStartSuccess(settingsInEffect);
             Log.d(TAG, "Advertising successfully started");
-            showToast("Advertising successfully started");
+            GeneralHelper.showToastLooper("Advertising successfully started", BackgroundService.this);
         }
     }
-    /**
-     * Builds and sends a broadcast intent indicating Advertising has failed. Includes the error
-     * code as an extra. This is intended to be picked up by the {@code AdvertiserFragment}.
-     */
-    private void sendFailureIntent(int errorCode){
+
+    private void sendFailureIntent(int errorCode) {
         Intent failureIntent = new Intent();
         failureIntent.setAction(ADVERTISING_FAILED);
         failureIntent.putExtra(ADVERTISING_FAILED_EXTRA_CODE, errorCode);
         sendBroadcast(failureIntent);
     }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private void startMyOwnForeground()
-    {
-        String NOTIFICATION_CHANNEL_ID = "example.permanence";
-        String channelName = "Background Service";
-        NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
-        chan.setLightColor(Color.BLUE);
-        chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        assert manager != null;
-        manager.createNotificationChannel(chan);
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-        Notification notification = notificationBuilder.setOngoing(true)
-                .setContentTitle("App is running in background")
-                .setPriority(Notification.PRIORITY_MAX)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .build();
-        startForeground(2, notification);
-    }
-
 
     private void scanningResult() {
 
@@ -324,29 +252,30 @@ public class BackgroundService extends Service {
         try {
             String s = new String(data.entrySet().iterator().next().getValue(), "UTF-8");
 
+            String userData[] = s.split("|");
+            String Mobile  = userData[0] != null ? userData[0] : "";
+            String Affected  = userData[1] != null ? userData[1] : "";
+
+            String LatData  = userData[2] != null ? userData[2] : "";
+            String LATLNG[] = LatData.split(",");
+
+            String Lat  = LATLNG[0] != null ? LATLNG[0] : "0";
+            String Lng  = LATLNG[1] != null ? LATLNG[1] : "0";
 
             Log.d("###", s);
             System.out.println("All keys are: " + s);
-            showToast(s);
+            GeneralHelper.showToastLooper(s, this);
+
+            DatabaseHelper.insertInDB(this , Mobile , Affected , Lat , Lng);
 
 
         } catch (Exception e) {
             Log.d("error", "" + e.getMessage());
             e.printStackTrace();
-            showToast("error aya");
+            GeneralHelper.showToastLooper("error while parsing", this);
         }
 
     }
 
 
-    private void showToast(final String msg){
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                Toast.makeText(BackgroundService.this.getApplicationContext(), msg ,Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 }
