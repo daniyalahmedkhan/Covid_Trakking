@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
+import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.R;
 
@@ -58,8 +59,8 @@ public class ValidatePin extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                PrefsHelper.putString("MOBILE", mobileNumber.trim());
-                                PrefsHelper.putBoolean("AlreadyLoggedIn", true);
+                                PrefsHelper.putString(PrefConstants.MOBILE, mobileNumber.trim());
+                                PrefsHelper.putBoolean(PrefConstants.AlreadyLoggedIn, true);
                                 Intent i = new Intent(ValidatePin.this, MainActivity.class);
                                 startActivity(i);
                                 finish();

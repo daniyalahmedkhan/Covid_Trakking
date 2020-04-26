@@ -109,11 +109,14 @@ public class BluetoothHelper {
         locationHelper.LocationInitialize(context);
 
         String userPhone = PrefsHelper.getString(PrefConstants.MOBILE);
+        userPhone = userPhone.replace("+92" ,"0");
         String isAffected = PrefsHelper.getString(PrefConstants.AFFECTED, "0");
         String lat = String.valueOf(PrefsHelper.getDouble(PrefConstants.LAT , 0));
         String lng = String.valueOf(PrefsHelper.getDouble(PrefConstants.LNG , 0));
 
         String mServiceData = userPhone + "|" + isAffected+"|"+lat+","+lng;
+
+        //03452081685|0|24.322,64.555
 
         // ParcelUuid pUuid = new ParcelUuid(UUID.fromString("CDB7950D-73F1-4D4D-8E47-C090502DBD63"));
 
@@ -123,7 +126,7 @@ public class BluetoothHelper {
         AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder();
         //dataBuilder.addServiceUuid(pUuid);
 
-        dataBuilder.addServiceData(pUuid, "03452081685|0|24.322,64.555".getBytes());
+        dataBuilder.addServiceData(pUuid, mServiceData.getBytes());
         dataBuilder.setIncludeDeviceName(false);
 
         dataBuilder.setIncludeTxPowerLevel(false);
@@ -145,7 +148,8 @@ public class BluetoothHelper {
         dist = Math.acos(dist);
         dist = rad2deg(dist);
         dist = dist * 60 * 1.1515;
-        return String.valueOf((dist));
+
+        return String.valueOf((String.format("%.3f",dist)));
     }
 
     private static double deg2rad(double deg) {

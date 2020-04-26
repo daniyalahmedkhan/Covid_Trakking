@@ -55,7 +55,13 @@ public class LocationHelper implements LocationListener {
         double lng =  (location.getLongitude());
        // latituteField.setText(String.valueOf(lat));
        // longitudeField.setText(String.valueOf(lng));
+
+        lat = Double.parseDouble((String.format("%.3f",lat)));
+        lng = Double.parseDouble((String.format("%.3f",lng)));
+
+
         Log.d("LATLNG" , String.valueOf(lat +" "+lng));
+
         PrefsHelper.putDouble(PrefConstants.LAT , lat);
         PrefsHelper.putDouble(PrefConstants.LNG , lng);
     }

@@ -25,10 +25,10 @@ public class DatabaseHelper {
         }
 
         MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);
-        if (!myDatabase.daoAccess().checkUserData(Mobile, GeneralHelper.todayDate())) {
+        //if (!myDatabase.daoAccess().checkUserData(Mobile, GeneralHelper.todayDate())) {
             TracingData tracingData = new TracingData(Mobile, Affected, Lat, Lng, DIS ,GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate(), "N");
             myDatabase.daoAccess().insertRecord(tracingData);
-        }
+        //}
 
     }
 }

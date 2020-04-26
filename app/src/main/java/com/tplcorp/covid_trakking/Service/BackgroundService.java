@@ -152,7 +152,7 @@ public class BackgroundService extends Service {
         if (mBluetoothLeAdvertiser != null) {
             mBluetoothLeAdvertiser.stopAdvertising(mAdvertiseCallback);
             mAdvertiseCallback = null;
-            BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().stopScan(scanCallback);
+          //  BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().stopScan(scanCallback);
         }
         GeneralHelper.showToastLooper("Stopping Advertising", this);
 
@@ -252,7 +252,7 @@ public class BackgroundService extends Service {
         try {
             String s = new String(data.entrySet().iterator().next().getValue(), "UTF-8");
 
-            String userData[] = s.split("|");
+            String userData[] = s.split("\\|");
             String Mobile  = userData[0] != null ? userData[0] : "";
             String Affected  = userData[1] != null ? userData[1] : "";
 

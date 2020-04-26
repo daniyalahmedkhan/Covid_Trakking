@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
@@ -53,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    private void requestPin(String mobileNumber) {
+    private void requestPin(final String mobileNumber) {
         // removing the leading zeros from the mobile number.
         final String updated_mobilenumber = mobileNumber.replaceAll("^0*", "");
 
@@ -65,7 +66,11 @@ public class RegisterActivity extends AppCompatActivity {
                 new OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-// verification completed automatically
+                        PrefsHelper.putString(PrefConstants.MOBILE, mobileNumber.trim());
+                        PrefsHelper.putBoolean(PrefConstants.AlreadyLoggedIn, true);
+                        Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+                        startActivity(i);
+                        finish();
                     }
 
                     @Override
@@ -93,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     boolean checkIfUserAlreadyLoggedIn() {
-        return PrefsHelper.getBoolean("AlreadyLoggedIn", false);
+        return PrefsHelper.getBoolean(PrefConstants.AlreadyLoggedIn, false);
 
 
     }
