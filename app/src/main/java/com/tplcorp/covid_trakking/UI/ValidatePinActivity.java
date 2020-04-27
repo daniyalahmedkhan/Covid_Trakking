@@ -21,7 +21,7 @@ import com.tplcorp.covid_trakking.R;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class ValidatePin extends AppCompatActivity {
+public class ValidatePinActivity extends AppCompatActivity {
     String verificationId = "";
     String mobileNumber = "";
 
@@ -61,14 +61,14 @@ public class ValidatePin extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 PrefsHelper.putString(PrefConstants.MOBILE, mobileNumber.trim());
                                 PrefsHelper.putBoolean(PrefConstants.AlreadyLoggedIn, true);
-                                Intent i = new Intent(ValidatePin.this, MainActivity.class);
+                                Intent i = new Intent(ValidatePinActivity.this, MainActivity.class);
                                 startActivity(i);
                                 finish();
                             } else {
                                 if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
 
                                 }
-                                GeneralHelper.showToast(ValidatePin.this, "Error occured.");
+                                GeneralHelper.showToast(ValidatePinActivity.this, "Error occured.");
 
 
                             }

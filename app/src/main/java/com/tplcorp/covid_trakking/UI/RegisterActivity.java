@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
@@ -60,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 "+92" + updated_mobilenumber,        // Phone number to verify
-                120,                 // Timeout duration
+                0,                 // Timeout duration
                 TimeUnit.SECONDS,   // Unit of timeout
                 this,               // Activity (for callback binding)
                 new OnVerificationStateChangedCallbacks() {
@@ -86,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                       //  mVerificationId = verificationId;
 
-                        Intent i = new Intent(RegisterActivity.this, ValidatePin.class);
+                        Intent i = new Intent(RegisterActivity.this, ValidatePinActivity.class);
                         i.putExtra("verificationId", verificationId);
                         i.putExtra("mobileNumber", "+92"+updated_mobilenumber);
                         startActivity(i);
