@@ -61,7 +61,7 @@
 
         </activity>
 
-      
+
 
         <service
             android:name=".Service.BackgroundService"
