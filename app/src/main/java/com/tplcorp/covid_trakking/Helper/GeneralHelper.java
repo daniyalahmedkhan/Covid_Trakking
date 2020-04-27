@@ -86,33 +86,19 @@ public class GeneralHelper {
     }
 
 
-    public static boolean buildAlertMessageNoGps(final Context context) {
+    public static boolean checkGPS(final Context context) {
 
         final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface dialog, final int id) {
-                            context.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface dialog, final int id) {
-                            dialog.cancel();
-                        }
-                    });
-            final AlertDialog alert = builder.create();
-            alert.show();
-        }else{
+        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             return true;
+        }else{
+            return false;
         }
-        return false;
+
     }
 
-    public static  boolean turnGPSOn(final Context context , final Activity activity)
+    public static  void turnGPSOn(final Context context , final Activity activity)
     {
          SettingsClient mSettingsClient;
          LocationSettingsRequest mLocationSettingsRequest;
@@ -159,8 +145,6 @@ public class GeneralHelper {
                         Log.e("GPS","checkLocationSettings -> onCanceled");
                     }
                 });
-
-        return true;
     }
 
     public static String todayDate(){

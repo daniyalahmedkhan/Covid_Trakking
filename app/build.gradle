@@ -49,5 +49,11 @@ dependencies {
     implementation 'androidx.room:room-runtime:2.2.5'
     annotationProcessor 'androidx.room:room-compiler:2.2.5'
 
+    implementation 'com.airbnb.android:lottie:3.4.0'
+
+    implementation('com.mikepenz:materialdrawer:6.0.8@aar') {
+        transitive = true
+        exclude group: 'com.android.support'
+    }
 
 }

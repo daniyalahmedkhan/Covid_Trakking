@@ -33,9 +33,13 @@ import com.tplcorp.covid_trakking.Helper.DatabaseHelper;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Helper.NotificationHelper;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
+import com.tplcorp.covid_trakking.Interface.ScanningCallback;
+import com.tplcorp.covid_trakking.Model.Connections;
 import com.tplcorp.covid_trakking.R;
+import com.tplcorp.covid_trakking.UI.ConnectionsActivity;
 import com.tplcorp.covid_trakking.UI.MainActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,6 +59,8 @@ public class BackgroundService extends Service {
     private Runnable timeoutRunnable;
     private ScanCallback scanCallback;
     private BluetoothLeScanner mBluetoothLeScanner;
+    ScanningCallback scanningCallback;
+    List<Connections> connectionsList;
 
     /**
      * Length of time to allow advertising before automatically shutting off. (10 minutes)
@@ -73,11 +79,11 @@ public class BackgroundService extends Service {
         }
 
 
+        scanningCallback = new ConnectionsActivity();
         running = true;
         initialize();
         scanningResult();
         startAdvertising();
-
         setTimeout();
         super.onCreate();
     }
@@ -142,6 +148,7 @@ public class BackgroundService extends Service {
             if (mBluetoothLeAdvertiser != null) {
                 mBluetoothLeAdvertiser.startAdvertising(settings, data, mAdvertiseCallback);
             }
+            connectionsList = new ArrayList<>();
             // mBluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
             BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(scanCallback);
         }
@@ -152,10 +159,10 @@ public class BackgroundService extends Service {
         if (mBluetoothLeAdvertiser != null) {
             mBluetoothLeAdvertiser.stopAdvertising(mAdvertiseCallback);
             mAdvertiseCallback = null;
-          //  BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().stopScan(scanCallback);
+           //BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().stopScan(scanCallback);
         }
         GeneralHelper.showToastLooper("Stopping Advertising", this);
-
+        scanningCallback.updateScanningData(connectionsList);
 
         new Handler().postDelayed(new Runnable() {
 
@@ -267,6 +274,9 @@ public class BackgroundService extends Service {
             GeneralHelper.showToastLooper(s, this);
 
             DatabaseHelper.insertInDB(this , Mobile , Affected , Lat , Lng);
+
+           connectionsList.add(new Connections(Mobile));
+
 
 
         } catch (Exception e) {
