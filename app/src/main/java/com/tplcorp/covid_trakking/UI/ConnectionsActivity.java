@@ -28,7 +28,13 @@ public class ConnectionsActivity extends AppCompatActivity implements ScanningCa
 
     @Override
     public void updateScanningData(List<Connections> connectionsList) {
-        Log.d("connectionsList" , ""+connectionsList);
-        Toast.makeText(this, ""+connectionsList, Toast.LENGTH_SHORT).show();
+        try {
+            for (int i =0 ; i<connectionsList.size(); i++){
+                Log.d("connectionsList" , ""+connectionsList.get(i).getMobile());
+            }
+
+        }catch (Exception e){}
+
+        //Toast.makeText(this, ""+connectionsList, Toast.LENGTH_SHORT).show();
     }
 }

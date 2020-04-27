@@ -80,6 +80,7 @@ public class BackgroundService extends Service {
 
 
         scanningCallback = new ConnectionsActivity();
+        connectionsList = new ArrayList<>();
         running = true;
         initialize();
         scanningResult();
@@ -148,7 +149,7 @@ public class BackgroundService extends Service {
             if (mBluetoothLeAdvertiser != null) {
                 mBluetoothLeAdvertiser.startAdvertising(settings, data, mAdvertiseCallback);
             }
-            connectionsList = new ArrayList<>();
+
             // mBluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
             BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(scanCallback);
         }
@@ -162,7 +163,8 @@ public class BackgroundService extends Service {
            //BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().stopScan(scanCallback);
         }
         GeneralHelper.showToastLooper("Stopping Advertising", this);
-        scanningCallback.updateScanningData(connectionsList);
+
+
 
         new Handler().postDelayed(new Runnable() {
 
@@ -176,7 +178,7 @@ public class BackgroundService extends Service {
 
 
             }
-        }, 10000);
+        }, 15000);
 
 
     }
@@ -276,7 +278,8 @@ public class BackgroundService extends Service {
             DatabaseHelper.insertInDB(this , Mobile , Affected , Lat , Lng);
 
            connectionsList.add(new Connections(Mobile));
-
+            scanningCallback.updateScanningData(connectionsList);
+            connectionsList.clear();
 
 
         } catch (Exception e) {
