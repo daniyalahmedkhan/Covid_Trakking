@@ -1,6 +1,7 @@
 package com.tplcorp.covid_trakking.Service;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
@@ -27,11 +28,15 @@ import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.Interface.ScanningCallback;
 import com.tplcorp.covid_trakking.Model.Connections;
+import com.tplcorp.covid_trakking.R;
+import com.tplcorp.covid_trakking.UI.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import androidx.core.app.NotificationCompat;
 
 public class BackgroundService extends Service {
 
@@ -60,14 +65,27 @@ public class BackgroundService extends Service {
     @Override
     public void onCreate() {
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
-//            Notification notification = NotificationHelper.startMyOwnForeground(this);
+//        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+//         //   Notification notification = NotificationHelper.startMyOwnForeground(this);
+//          // startForeground(2, notification);
+//            Notification notification = NotificationHelper.foregroundNotification("TPL Covid is running in background" , this);
 //            startForeground(2, notification);
-            Notification notification = NotificationHelper.foregroundNotification("TPL Covid is running in background" , this);
-            startForeground(2, notification);
-        } else {
-            startForeground(1, new Notification());
-        }
+//        } else {
+//            startForeground(1, new Notification());
+//        }
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this, "CHANNEL_ID")
+                .setContentTitle("TPL Covid is running in background")
+                .setContentText("")
+                .setSmallIcon(R.drawable.shield)
+                .setContentIntent(pendingIntent)
+                .build();
+
+        startForeground(1, notification);
 
 
 
