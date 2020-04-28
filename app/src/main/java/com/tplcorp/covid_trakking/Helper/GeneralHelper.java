@@ -37,9 +37,12 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.tplcorp.covid_trakking.Interface.LocationPermission;
 import com.tplcorp.covid_trakking.Model.Connections;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
+import com.tplcorp.covid_trakking.UI.RegisterActivity;
+import com.tplcorp.covid_trakking.UI.SetupActivity;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -68,7 +71,9 @@ public class GeneralHelper {
         });
     }
 
-    public static boolean locationPermission(final Context context){
+    public static void locationPermission(final Context context , LocationPermission lp){
+
+        final LocationPermission locationPermission = lp;
 
         Dexter.withContext(context).withPermissions(Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION).withListener(new MultiplePermissionsListener() {
@@ -76,9 +81,9 @@ public class GeneralHelper {
             public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
 
                 if (multiplePermissionsReport.areAllPermissionsGranted()){
-                    isPermissionGranted = true;
+                    locationPermission.locationPermission(true);
                 }else {
-                    isPermissionGranted = false;
+                    locationPermission.locationPermission(false);
                 }
             }
 
@@ -88,7 +93,6 @@ public class GeneralHelper {
             }
         }).check();
 
-        return isPermissionGranted;
     }
 
 
@@ -124,7 +128,7 @@ public class GeneralHelper {
                 .addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
                     @Override
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                        //Success Perform Task Here
+                        Toast.makeText(context, "aya ghori", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

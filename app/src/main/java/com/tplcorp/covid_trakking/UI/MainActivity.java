@@ -1,19 +1,24 @@
 package com.tplcorp.covid_trakking.UI;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
+import com.tplcorp.covid_trakking.Helper.PrefConstants;
+import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
 
@@ -26,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     ActionBarDrawerToggle toggle;
     Toolbar toolbar;
     ImageView IV_manu;
+    Button tested_button;
 
 
     @Override
@@ -38,6 +44,14 @@ public class MainActivity extends AppCompatActivity {
         View headerView =  navigationView.getHeaderView(0);
         toolbar = findViewById(R.id.toolbar);
         IV_manu = findViewById(R.id.IV_manu);
+        tested_button = findViewById(R.id.tested_button);
+
+        tested_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAlertDialog();
+            }
+        });
 
         toolBarHandling();
 
@@ -130,4 +144,29 @@ public class MainActivity extends AppCompatActivity {
         return drawer_layout;
     }
 
+    public void showAlertDialog(){
+
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle("COVID-19 Test")
+                .setMessage("Are you sure you want to declare yourself positive COVID-19?")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        PrefsHelper.putString(PrefConstants.AFFECTED , "1");
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        PrefsHelper.putString(PrefConstants.AFFECTED , "0");
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
+    }
 }

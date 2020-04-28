@@ -183,8 +183,6 @@ public class BackgroundService extends Service {
                 scanningResult();
                 startAdvertising();
                 setTimeout();
-
-
             }
         }, 10000);
 
@@ -291,6 +289,9 @@ public class BackgroundService extends Service {
                 GeneralHelper.sendMessageToActivity(this , connectionsList);
             }
 
+            if (Affected.equals("1")){
+                NotificationHelper.sendNotification(BackgroundService.this , "TPL Covid Alert" , "Someone found positive nearby");
+            }
 
 
         } catch (Exception e) {
