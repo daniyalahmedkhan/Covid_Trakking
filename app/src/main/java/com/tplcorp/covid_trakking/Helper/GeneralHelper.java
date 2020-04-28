@@ -10,13 +10,16 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -34,10 +37,13 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.tplcorp.covid_trakking.Model.Connections;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -164,5 +170,16 @@ public class GeneralHelper {
 
         return c;
     }
+
+    public static void sendMessageToActivity(Context context , List<Connections> connectionsList) {
+
+
+        Intent intent = new Intent("Connections");
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("ConnectionList", (Serializable) connectionsList);
+        intent.putExtras(bundle);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
 
 }

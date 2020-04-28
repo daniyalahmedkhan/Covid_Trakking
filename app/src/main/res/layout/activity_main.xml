@@ -96,7 +96,7 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/main_drawer_menu"
         app:itemIconTint="@color/maroon"
-        app:itemIconSize="30dp">
+        app:itemIconSize="25dp">
 
         <TextView
             android:layout_width="wrap_content"

@@ -73,11 +73,12 @@ public class MainActivity extends AppCompatActivity {
         switch (id){
 
             case R.id.Connections:
-
+                Intent Connections = new Intent(MainActivity.this , ConnectionsActivity.class);
+                startActivity(Connections);
                 break;
             case R.id.Precautions:
-                Intent intent = new Intent(MainActivity.this , PrecautionsActivity.class);
-                startActivity(intent);
+                Intent Precautions = new Intent(MainActivity.this , PrecautionsActivity.class);
+                startActivity(Precautions);
                 break;
             case R.id.About:
                 Toast.makeText(this, "About not configured", Toast.LENGTH_SHORT).show();

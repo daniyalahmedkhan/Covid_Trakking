@@ -15,6 +15,7 @@ public class PrecautionsActivity extends BaseActivity {
     TextView TV_home;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

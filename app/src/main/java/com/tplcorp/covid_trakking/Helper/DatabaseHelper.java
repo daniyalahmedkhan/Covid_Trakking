@@ -22,6 +22,7 @@ public class DatabaseHelper {
 
         if (!(Lat.equals("0") || Lng.equals("0") || OwnLat == 0 || OwnLng == 0)){
             DIS  = BluetoothHelper.distanceCalculate(Lat , Lng , OwnLat , OwnLng);
+            PrefsHelper.putString(PrefConstants.TEMP_DISTANCE , DIS);
         }
 
         MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);

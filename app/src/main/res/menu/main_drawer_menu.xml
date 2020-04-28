@@ -4,7 +4,7 @@
         <item
             android:id="@+id/Connections"
             android:icon="@drawable/connection"
-            android:title="Connections"/>
+            android:title="Connections" />
         <item
             android:id="@+id/Precautions"
             android:icon="@drawable/shield"

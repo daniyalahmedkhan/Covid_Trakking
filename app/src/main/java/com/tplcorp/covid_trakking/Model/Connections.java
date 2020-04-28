@@ -1,16 +1,28 @@
 package com.tplcorp.covid_trakking.Model;
 
-public class Connections {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class Connections implements Serializable {
 
     private String Name;
-    private String Mobile;
     private String Distance;
     private String Affected;
 
-
-    public Connections(String mobile) {
-        Mobile = mobile;
+    public Connections(String name, String distance, String affected) {
+        Name = name;
+        Distance = distance;
+        Affected = affected;
     }
+
+    protected Connections(Parcel in) {
+        Name = in.readString();
+        Distance = in.readString();
+        Affected = in.readString();
+    }
+
 
     public String getName() {
         return Name;
@@ -18,14 +30,6 @@ public class Connections {
 
     public void setName(String name) {
         Name = name;
-    }
-
-    public String getMobile() {
-        return Mobile;
-    }
-
-    public void setMobile(String mobile) {
-        Mobile = mobile;
     }
 
     public String getDistance() {
@@ -43,4 +47,6 @@ public class Connections {
     public void setAffected(String affected) {
         Affected = affected;
     }
+
+
 }

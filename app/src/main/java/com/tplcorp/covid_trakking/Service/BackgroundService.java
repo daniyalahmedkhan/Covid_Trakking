@@ -1,8 +1,6 @@
 package com.tplcorp.covid_trakking.Service;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
@@ -15,34 +13,24 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.ParcelUuid;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
-
-import com.google.android.gms.common.internal.Constants;
 import com.tplcorp.covid_trakking.Helper.BluetoothHelper;
 import com.tplcorp.covid_trakking.Helper.DatabaseHelper;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Helper.NotificationHelper;
+import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.Interface.ScanningCallback;
 import com.tplcorp.covid_trakking.Model.Connections;
-import com.tplcorp.covid_trakking.R;
-import com.tplcorp.covid_trakking.UI.ConnectionsActivity;
-import com.tplcorp.covid_trakking.UI.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class BackgroundService extends Service {
@@ -61,25 +49,28 @@ public class BackgroundService extends Service {
     private BluetoothLeScanner mBluetoothLeScanner;
     ScanningCallback scanningCallback;
     List<Connections> connectionsList;
+    String Mobile;
 
     /**
      * Length of time to allow advertising before automatically shutting off. (10 minutes)
      */
 
-    private long TIMEOUT = TimeUnit.MILLISECONDS.convert(10000, TimeUnit.MILLISECONDS);
+    private long TIMEOUT = TimeUnit.MILLISECONDS.convert(30000, TimeUnit.MILLISECONDS);
 
     @Override
     public void onCreate() {
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
-            Notification notification = NotificationHelper.startMyOwnForeground(this);
+//            Notification notification = NotificationHelper.startMyOwnForeground(this);
+//            startForeground(2, notification);
+            Notification notification = NotificationHelper.foregroundNotification("TPL Covid is running in background" , this);
             startForeground(2, notification);
         } else {
             startForeground(1, new Notification());
         }
 
 
-        scanningCallback = new ConnectionsActivity();
+
         connectionsList = new ArrayList<>();
         running = true;
         initialize();
@@ -150,6 +141,7 @@ public class BackgroundService extends Service {
                 mBluetoothLeAdvertiser.startAdvertising(settings, data, mAdvertiseCallback);
             }
 
+            connectionsList.clear();
             // mBluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
             BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(scanCallback);
         }
@@ -160,11 +152,9 @@ public class BackgroundService extends Service {
         if (mBluetoothLeAdvertiser != null) {
             mBluetoothLeAdvertiser.stopAdvertising(mAdvertiseCallback);
             mAdvertiseCallback = null;
-           //BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().stopScan(scanCallback);
+            // BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().stopScan(scanCallback);
         }
         GeneralHelper.showToastLooper("Stopping Advertising", this);
-
-
 
         new Handler().postDelayed(new Runnable() {
 
@@ -178,7 +168,7 @@ public class BackgroundService extends Service {
 
 
             }
-        }, 15000);
+        }, 10000);
 
 
     }
@@ -262,32 +252,46 @@ public class BackgroundService extends Service {
             String s = new String(data.entrySet().iterator().next().getValue(), "UTF-8");
 
             String userData[] = s.split("\\|");
-            String Mobile  = userData[0] != null ? userData[0] : "";
-            String Affected  = userData[1] != null ? userData[1] : "";
+            String Mobile = userData[0] != null ? userData[0] : "";
+            String Affected = userData[1] != null ? userData[1] : "";
 
-            String LatData  = userData[2] != null ? userData[2] : "";
+            String LatData = userData[2] != null ? userData[2] : "";
             String LATLNG[] = LatData.split(",");
 
-            String Lat  = LATLNG[0] != null ? LATLNG[0] : "0";
-            String Lng  = LATLNG[1] != null ? LATLNG[1] : "0";
+            String Lat = LATLNG[0] != null ? LATLNG[0] : "0";
+            String Lng = LATLNG[1] != null ? LATLNG[1] : "0";
 
             Log.d("###", s);
             System.out.println("All keys are: " + s);
             GeneralHelper.showToastLooper(s, this);
 
-            DatabaseHelper.insertInDB(this , Mobile , Affected , Lat , Lng);
+            DatabaseHelper.insertInDB(this, Mobile, Affected, Lat, Lng);
 
-           connectionsList.add(new Connections(Mobile));
-            scanningCallback.updateScanningData(connectionsList);
-            connectionsList.clear();
+
+            if (!isUserExist(Mobile)){
+                connectionsList.add(new Connections(Mobile, PrefsHelper.getString(PrefConstants.TEMP_DISTANCE, "0"), Affected));
+                GeneralHelper.sendMessageToActivity(this , connectionsList);
+            }
+
 
 
         } catch (Exception e) {
+
+
             Log.d("error", "" + e.getMessage());
             e.printStackTrace();
             GeneralHelper.showToastLooper("error while parsing", this);
         }
 
+    }
+
+    private boolean isUserExist(String Mobile){
+        for (int i=0; i<connectionsList.size(); i++){
+            if (connectionsList.get(i).getName().equals(Mobile)){
+                return true;
+            }
+        }
+        return false;
     }
 
 

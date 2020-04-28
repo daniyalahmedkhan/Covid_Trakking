@@ -7,5 +7,6 @@ public interface PrefConstants {
     public String AlreadyLoggedIn = "AlreadyLoggedIn";
     public String LAT = "LAT";
     public String LNG = "LNG";
+    public String TEMP_DISTANCE = "TEMP_DISTANCE";
 
 }
