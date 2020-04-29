@@ -43,7 +43,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.Distance.setText(connectionsList.get(position).getDistance()+" "+"In Meter");
+        holder.Distance.setText(connectionsList.get(position).getDistance()+" "+"In Meters");
         holder.Affected.setText(connectionsList.get(position).getAffected().equals("0") ? "No" : "Yes");
 
         if (connectionsList.get(position).getAffected().equals("0")){
