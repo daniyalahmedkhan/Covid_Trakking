@@ -40,8 +40,6 @@ public class ConnectionsActivity extends AppCompatActivity {
 
     LottieAnimationView loading;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +57,8 @@ public class ConnectionsActivity extends AppCompatActivity {
         RV_connection = findViewById(R.id.RV_connection);
         connectionsList = new ArrayList<>();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver, new IntentFilter("Connections"));
+
+        //connectionsList.add(new Connections("0" , "25" , "1" , "24.832223" , "67.076565" , 0));
 
         adapter = new ConnectionAdapter(connectionsList , this);
         setUpConnectionList();
@@ -95,7 +93,7 @@ public class ConnectionsActivity extends AppCompatActivity {
             Bundle bundle = intent.getExtras();
             List<Connections> connections = (List<Connections>)bundle.getSerializable("ConnectionList");
             for (int i=0; i<connections.size(); i++){
-                connectionsList.add(new Connections(connections.get(i).getName() , connections.get(i).getDistance(), connections.get(i).getAffected()));
+                connectionsList.add(new Connections(connections.get(i).getName() , connections.get(i).getDistance(), connections.get(i).getAffected() , connections.get(i).getLat() , connections.get(i).getLng() , connections.get(i).getTimeStamp()));
             }
             adapter.notifyDataSetChanged();
         }
@@ -122,5 +120,20 @@ public class ConnectionsActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver, new IntentFilter("Connections"));
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //unregisterReceiver(mMessageReceiver);
     }
 }

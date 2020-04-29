@@ -2,12 +2,23 @@ package com.tplcorp.covid_trakking.Service;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.ContextWrapper;
 import android.os.Build;
+
+import androidx.multidex.MultiDex;
 
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 
 public class Application extends android.app.Application {
+
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
 
     @Override
     public void onCreate() {
@@ -24,7 +35,6 @@ public class Application extends android.app.Application {
                 .setUseDefaultSharedPreference(true)
                 .build();
     }
-// suno... i am calling u om skype
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

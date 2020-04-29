@@ -1,26 +1,42 @@
 package com.tplcorp.covid_trakking.UI;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.google.android.material.navigation.NavigationView;
+import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
+import com.tplcorp.covid_trakking.Helper.ProtectedHelper;
 import com.tplcorp.covid_trakking.R;
+import com.tplcorp.covid_trakking.Room.DatabaseClient;
+import com.tplcorp.covid_trakking.Room.MyDatabase;
+import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
+import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
+
+import java.util.Date;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     ImageView IV_manu;
     Button tested_button;
+    MyDatabase myDatabase;
+    TextView textPositive;
+    LinearLayout mainLinear;
 
 
     @Override
@@ -39,17 +58,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        drawer_layout = (DrawerLayout ) findViewById(R.id.drawer_layout);
+        drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        View headerView =  navigationView.getHeaderView(0);
+        View headerView = navigationView.getHeaderView(0);
         toolbar = findViewById(R.id.toolbar);
         IV_manu = findViewById(R.id.IV_manu);
         tested_button = findViewById(R.id.tested_button);
+        textPositive = findViewById(R.id.textPositive);
+        mainLinear = findViewById(R.id.mainLinear);
 
         tested_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAlertDialog();
+                if (!(checkAffectedDate() >= 0 && checkAffectedDate() <= 14)) {
+                    showAlertDialog();
+                } else {
+                    Toast.makeText(MainActivity.this, "You need to wait 14 days to mark again", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -60,7 +85,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        startService(new Intent(this, BackgroundService.class));
+
+        ProtectedHelper.startPowerSaverIntent(this);
+
+        if (!GeneralHelper.isTimeAutomatic(this)) {
+            mainLinear.setVisibility(View.GONE);
+            Toast.makeText(this, "Please change the Date&Time settings to automatically", Toast.LENGTH_LONG).show();
+            stopService(new Intent(this, BackgroundService.class));
+        } else {
+            mainLinear.setVisibility(View.VISIBLE);
+            checkBannerState();
+            startService(new Intent(this, BackgroundService.class));
+        }
+
     }
 
     @Override
@@ -82,16 +119,16 @@ public class MainActivity extends AppCompatActivity {
         }, 2000);
     }
 
-    private void switchScreen(int id){
+    private void switchScreen(int id) {
 
-        switch (id){
+        switch (id) {
 
             case R.id.Connections:
-                Intent Connections = new Intent(MainActivity.this , ConnectionsActivity.class);
+                Intent Connections = new Intent(MainActivity.this, ConnectionsActivity.class);
                 startActivity(Connections);
                 break;
             case R.id.Precautions:
-                Intent Precautions = new Intent(MainActivity.this , PrecautionsActivity.class);
+                Intent Precautions = new Intent(MainActivity.this, PrecautionsActivity.class);
                 startActivity(Precautions);
                 break;
             case R.id.About:
@@ -105,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void toolBarHandling(){
+    private void toolBarHandling() {
 
         try {
 
@@ -113,11 +150,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
-                    if(getDrawer_layout().isDrawerOpen(Gravity.LEFT))
-                    {
+                    if (getDrawer_layout().isDrawerOpen(Gravity.LEFT)) {
                         getDrawer_layout().closeDrawer(Gravity.RIGHT);
-                    }
-                    else {
+                    } else {
                         getDrawer_layout().openDrawer(Gravity.LEFT);
                     }
                 }
@@ -136,7 +171,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
 
     }
 
@@ -144,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         return drawer_layout;
     }
 
-    public void showAlertDialog(){
+    public void showAlertDialog() {
 
         AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle("COVID-19 Test")
@@ -154,7 +190,11 @@ public class MainActivity extends AppCompatActivity {
                 // The dialog is automatically dismissed when a dialog button is clicked.
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        PrefsHelper.putString(PrefConstants.AFFECTED , "1");
+                        PrefsHelper.putString(PrefConstants.AFFECTED, "1");
+                        CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
+                        myDatabase.daoAccess().deleteCovidAffects();
+                        myDatabase.daoAccess().insertAffectedRecord(covidAffected);
+                        checkBannerState();
                     }
                 })
 
@@ -162,11 +202,44 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        PrefsHelper.putString(PrefConstants.AFFECTED , "0");
+                        PrefsHelper.putString(PrefConstants.AFFECTED, "0");
+                        checkBannerState();
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
 
     }
+
+    private long checkAffectedDate() {
+
+        long days = -1;
+
+        myDatabase = DatabaseClient.getDatabaseInstance(this);
+        List<CovidAffected> affectedList = myDatabase.daoAccess().affectedList();
+        if (affectedList.size() > 0) {
+            Date date = affectedList.get(0).getTIME_STAMP();
+            days = GeneralHelper.daysDifferent(GeneralHelper.todayDate_DATE(), date);
+            return days;
+        }
+
+        return days;
+    }
+
+    private void checkBannerState() {
+        if (PrefsHelper.getString(PrefConstants.AFFECTED, "0").equals("1")) {
+            long days = checkAffectedDate();
+            if (days == 0) {
+                textPositive.setText("You have marked yourself Covid-19 positive today");
+            } else {
+                textPositive.setText("You had marked yourself Covid-19 positive " + days + " day ago");
+            }
+            textPositive.setVisibility(View.VISIBLE);
+        } else {
+            textPositive.setVisibility(View.GONE);
+        }
+
+    }
+
+
 }

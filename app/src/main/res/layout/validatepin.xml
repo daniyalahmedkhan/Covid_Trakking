@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:maxLength="11"
-                android:textColor="#000" />
+                android:textColor="@color/white" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -78,6 +78,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"  />
+
+
+        <Button
+            android:id="@+id/resend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="80dp"
+            android:backgroundTint="@color/buttonColor"
+            android:text="Resend OTP"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:layout_gravity="bottom"/>
 
 
     </LinearLayout>

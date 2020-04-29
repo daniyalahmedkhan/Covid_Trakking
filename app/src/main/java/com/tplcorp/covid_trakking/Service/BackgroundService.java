@@ -12,14 +12,18 @@ import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.ParcelUuid;
 import android.util.Log;
 
+import com.tplcorp.covid_trakking.Helper.BackgroundServiceHelper;
 import com.tplcorp.covid_trakking.Helper.BluetoothHelper;
 import com.tplcorp.covid_trakking.Helper.DatabaseHelper;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
@@ -30,6 +34,7 @@ import com.tplcorp.covid_trakking.Interface.ScanningCallback;
 import com.tplcorp.covid_trakking.Model.Connections;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.UI.MainActivity;
+import com.tplcorp.covid_trakking.UI.SetupActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +62,7 @@ public class BackgroundService extends Service {
     String Mobile;
 
     /**
-     * Length of time to allow advertising before automatically shutting off. (10 minutes)
+     * Length of time to allow advertising before automatically shutting off. (30 seconds)
      */
 
     private long TIMEOUT = TimeUnit.MILLISECONDS.convert(30000, TimeUnit.MILLISECONDS);
@@ -65,28 +70,8 @@ public class BackgroundService extends Service {
     @Override
     public void onCreate() {
 
-//        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
-//         //   Notification notification = NotificationHelper.startMyOwnForeground(this);
-//          // startForeground(2, notification);
-//            Notification notification = NotificationHelper.foregroundNotification("TPL Covid is running in background" , this);
-//            startForeground(2, notification);
-//        } else {
-//            startForeground(1, new Notification());
-//        }
-
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0);
-
-        Notification notification = new NotificationCompat.Builder(this, "CHANNEL_ID")
-                .setContentTitle("TPL Covid is running in background")
-                .setContentText("")
-                .setSmallIcon(R.drawable.shield)
-                .setContentIntent(pendingIntent)
-                .build();
-
-        startForeground(1, notification);
-
+       Notification notification = BackgroundServiceHelper.showForegroundNotification(this);
+       startForeground(1, notification);
 
 
         connectionsList = new ArrayList<>();
@@ -95,6 +80,10 @@ public class BackgroundService extends Service {
         scanningResult();
         startAdvertising();
         setTimeout();
+
+        registerReceiver(BackgroundServiceHelper.mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+        registerReceiver(BackgroundServiceHelper.mBluetoothStateReceiver , new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+
         super.onCreate();
     }
 
@@ -107,7 +96,9 @@ public class BackgroundService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //startService(new Intent(this, BackgroundService.class));
+        unregisterReceiver(BackgroundServiceHelper.mGpsSwitchStateReceiver);
+        unregisterReceiver(BackgroundServiceHelper.mBluetoothStateReceiver);
+        startService(new Intent(this, BackgroundService.class));
     }
 
 
@@ -115,7 +106,6 @@ public class BackgroundService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
 
     private void initialize() {
         if (mBluetoothLeAdvertiser == null) {
@@ -174,19 +164,22 @@ public class BackgroundService extends Service {
         }
         GeneralHelper.showToastLooper("Stopping Advertising", this);
 
+
+        // ** Again start advertising after 5 mins.
         new Handler().postDelayed(new Runnable() {
 
             @Override
             public void run() {
+
                 running = true;
                 initialize();
                 scanningResult();
                 startAdvertising();
                 setTimeout();
             }
-        }, 10000);
+        }, 300000);
 
-
+//300000
     }
 
     private class SampleAdvertiseCallback extends AdvertiseCallback {
@@ -285,12 +278,13 @@ public class BackgroundService extends Service {
 
 
             if (!isUserExist(Mobile)){
-                connectionsList.add(new Connections(Mobile, PrefsHelper.getString(PrefConstants.TEMP_DISTANCE, "0"), Affected));
-                GeneralHelper.sendMessageToActivity(this , connectionsList);
+                connectionsList.add(new Connections(Mobile, PrefsHelper.getString(PrefConstants.TEMP_DISTANCE, "0"), Affected , Lat , Lng , result.getTimestampNanos()));
             }
+            GeneralHelper.sendMessageToActivity(this , connectionsList);
+
 
             if (Affected.equals("1")){
-                NotificationHelper.sendNotification(BackgroundService.this , "TPL Covid Alert" , "Someone found positive nearby");
+                NotificationHelper.sendNotification(BackgroundService.this , "TPL Covid-19 Alert" , "Someone found positive nearby");
             }
 
 

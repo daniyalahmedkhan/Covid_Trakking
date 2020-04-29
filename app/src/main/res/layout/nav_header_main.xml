@@ -6,25 +6,49 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="150dp"
+        android:orientation="vertical"
         android:padding="20.0dip"
         android:background="@drawable/background_gradient_nav">
 
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/tplcorp"/>
-
-        <TextView
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TPL Corp Ltd."
-            android:textSize="20.0dip"
-            android:textStyle="bold"
-            android:layout_marginLeft="20dp"
-            android:layout_gravity="center"/>
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/tplcorp"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="TPL Corp Ltd."
+                android:textSize="20.0dip"
+                android:textStyle="bold"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="center"
+                />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="70dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12th Floor Centrepoint, Off Shaheed-e-Millat Expressway Near K.P.T. Interchange Flyover, Karachi, 74900"/>
+
+        </LinearLayout>
+
+
 
     </LinearLayout>
 

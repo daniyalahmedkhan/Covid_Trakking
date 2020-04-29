@@ -1,70 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="5dp"
-        app:cardCornerRadius="5dp"
-        app:cardUseCompatPadding="true"
-        app:cardBackgroundColor="#ECEAEA">
+
+        app:cardCornerRadius="6dp"
+        app:cardElevation="6dp"
+        app:cardUseCompatPadding="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            android:padding="10dp">
+            android:orientation="horizontal">
 
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="match_parent"
+                android:background="@color/md_green_500"
+                android:id="@+id/view"/>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.5"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="18dp"
-                    android:text="Name"
-                    android:id="@+id/name"/>
+                    android:orientation="horizontal"
+                    android:weightSum="4"
+                    android:padding="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Distance In Meter"
+                            android:textColor="@color/buttonColor"
+                            android:textSize="16dp"
+                            android:textStyle="bold"
+                            android:id="@+id/distance"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="*Distance can be vary due to gps location"
+                            android:textSize="10dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:id="@+id/map">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="25dp"
+                            android:src="@android:drawable/ic_dialog_map"
+                            android:tint="@color/md_green_500"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="View on Map"
+                            android:textSize="11dp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/lightGray"
+                    android:layout_margin="5dp"/>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16dp"
-                    android:text="Distance"
-                    android:id="@+id/distance"/>
+                    android:orientation="horizontal"
+                    android:weightSum="4"
+                    android:padding="10dp">
 
 
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2.5"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="COVID-19 Affected :"
+                            android:textSize="12dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="YES"
+                            android:textColor="@color/md_green_500"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="12dp"
+                            android:id="@+id/affected"/>
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="04/29/2020 01:30 AM"
+                            android:textSize="12dp"
+                            android:id="@+id/timeStamp"/>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
 
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:orientation="vertical"
-                android:gravity="right">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16dp"
-                    android:text="Affected"
-                    android:id="@+id/affected"/>
-
-
-
-            </LinearLayout>
-
 
 
         </LinearLayout>

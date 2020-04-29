@@ -44,7 +44,7 @@ public class NotificationHelper {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
         Notification notification = notificationBuilder.setOngoing(true)
                 .setSmallIcon(R.drawable.shield)
-                .setContentTitle("TPL Covid Tracing is working")
+                .setContentTitle("TPL Covid-19 Tracing is working")
                 .setPriority(Notification.PRIORITY_MAX)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build();
@@ -152,7 +152,7 @@ public class NotificationHelper {
 
 
             mNotificationManager.notify(notifyID, n);
-            toneG.startTone(ToneGenerator.TONE_CDMA_HIGH_L, 3000);
+            toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
             ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
 
         } else {
@@ -180,7 +180,7 @@ public class NotificationHelper {
 
 // Issue the notification.
                 mNotificationManager.notify(notifyID, notification);
-                toneG.startTone(ToneGenerator.TONE_CDMA_HIGH_L, 3000);
+                toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
                 ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
 
             } else {
@@ -207,7 +207,7 @@ public class NotificationHelper {
 
 // Issue the notification.
                 mNotificationManager.notify(notifyID, notification);
-                toneG.startTone(ToneGenerator.TONE_CDMA_HIGH_L, 3000);
+                toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
                 ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
             }
 

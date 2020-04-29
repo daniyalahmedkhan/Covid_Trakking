@@ -10,11 +10,17 @@ public class Connections implements Serializable {
     private String Name;
     private String Distance;
     private String Affected;
+    private String Lat;
+    private String Lng;
+    private Long   TimeStamp;
 
-    public Connections(String name, String distance, String affected) {
+    public Connections(String name, String distance, String affected , String lat, String lng , long timeStamp) {
         Name = name;
         Distance = distance;
         Affected = affected;
+        Lat = lat;
+        Lng = lng;
+        TimeStamp = timeStamp;
     }
 
     protected Connections(Parcel in) {
@@ -48,5 +54,27 @@ public class Connections implements Serializable {
         Affected = affected;
     }
 
+    public String getLat() {
+        return Lat;
+    }
 
+    public void setLat(String lat) {
+        Lat = lat;
+    }
+
+    public String getLng() {
+        return Lng;
+    }
+
+    public void setLng(String lng) {
+        Lng = lng;
+    }
+
+    public Long getTimeStamp() {
+        return TimeStamp;
+    }
+
+    public void setTimeStamp(Long timeStamp) {
+        TimeStamp = timeStamp;
+    }
 }

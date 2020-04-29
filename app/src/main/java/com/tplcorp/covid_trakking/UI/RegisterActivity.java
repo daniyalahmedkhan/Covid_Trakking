@@ -88,6 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Intent i = new Intent(RegisterActivity.this, ValidatePinActivity.class);
                         i.putExtra("verificationId", verificationId);
                         i.putExtra("mobileNumber", "+92"+updated_mobilenumber);
+                        i.putExtra("token", token);
                         startActivity(i);
 
                     }

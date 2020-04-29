@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="We use Bluetooth to anonymously log interactions with other Covid Watch users. Your personal data is always private and never shared."
+            android:text="We use Bluetooth to anonymously log interactions with other Covid-19 Watch users. Your personal data is always private and never shared."
             app:layout_constraintEnd_toEndOf="parent"
             android:textColor="@color/white"/>
 

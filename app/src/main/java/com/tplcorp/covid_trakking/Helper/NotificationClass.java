@@ -14,7 +14,7 @@ import androidx.annotation.RequiresApi;
 
 public class NotificationClass {
     private String CHANNEL_ID = "1";
-    private String CHANNEL_NAME = "TPL Covid Tracing";
+    private String CHANNEL_NAME = "TPL Covid-19 Tracing";
     private String CHANNEL_DESCRIPTION = "TPL App Notifications..";
 
     @RequiresApi(Build.VERSION_CODES.O)

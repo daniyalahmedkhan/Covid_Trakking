@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient">
 
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/imageView"
         android:layout_width="250dp"
@@ -23,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="TPL Covid Tracing"
+        android:text="TPL Covid-19 Tracing"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"

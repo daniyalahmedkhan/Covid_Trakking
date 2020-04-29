@@ -10,10 +10,12 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -50,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class GeneralHelper {
 
@@ -183,6 +186,57 @@ public class GeneralHelper {
         bundle.putSerializable("ConnectionList", (Serializable) connectionsList);
         intent.putExtras(bundle);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
+    public static long daysDifferent(Date startDate, Date endDate) {
+
+
+        long different = endDate.getTime() - startDate.getTime();
+
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+
+        long elapsedDays = different / daysInMilli;
+        different = different % daysInMilli;
+
+        long elapsedHours = different / hoursInMilli;
+        different = different % hoursInMilli;
+
+        long elapsedMinutes = different / minutesInMilli;
+        different = different % minutesInMilli;
+
+        long elapsedSeconds = different / secondsInMilli;
+
+//        System.out.printf(
+//                "%d days, %d hours, %d minutes, %d seconds%n",
+//                elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
+
+        return elapsedDays;
+    }
+
+    public static boolean isTimeAutomatic(Context c) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return Settings.Global.getInt(c.getContentResolver(), Settings.Global.AUTO_TIME, 0) == 1;
+        } else {
+            return android.provider.Settings.System.getInt(c.getContentResolver(), android.provider.Settings.System.AUTO_TIME, 0) == 1;
+        }
+    }
+
+    public static String getTime(long time){
+
+        long rxTimestampMillis = System.currentTimeMillis() -
+                SystemClock.elapsedRealtime() +
+                time / 1000000;
+
+        Date rxDate = new Date(rxTimestampMillis);
+
+
+        String sDate = new SimpleDateFormat("HH:mm:ss.SSS").format(rxDate);
+
+        return sDate;
+
     }
 
 
