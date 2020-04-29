@@ -117,7 +117,7 @@ public class NotificationHelper {
 
         int notifyID = 3;
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, ToneGenerator.MAX_VOLUME);
+      //  ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, ToneGenerator.MAX_VOLUME);
 
 
         //  intent = new Intent(getApplicationContext(), com.tpltrakker.main.Activities.MainMenuActivities.TrackMe.Notification.class);
@@ -152,8 +152,8 @@ public class NotificationHelper {
 
 
             mNotificationManager.notify(notifyID, n);
-            toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
-            ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
+         // toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
+        //    ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
 
         } else {
 
@@ -180,8 +180,8 @@ public class NotificationHelper {
 
 // Issue the notification.
                 mNotificationManager.notify(notifyID, notification);
-                toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
-                ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
+               /// toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
+              //  ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
 
             } else {
                 // String GROUP_KEY_ALERTS = "com.tpltrakker.main.ALERTS";
@@ -207,8 +207,8 @@ public class NotificationHelper {
 
 // Issue the notification.
                 mNotificationManager.notify(notifyID, notification);
-                toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
-                ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
+               // toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
+              //  ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
             }
 
 

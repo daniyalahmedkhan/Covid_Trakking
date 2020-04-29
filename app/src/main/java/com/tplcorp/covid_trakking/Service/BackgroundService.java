@@ -177,7 +177,7 @@ public class BackgroundService extends Service {
                 startAdvertising();
                 setTimeout();
             }
-        }, 300000);
+        }, 10000);
 
 //300000
     }

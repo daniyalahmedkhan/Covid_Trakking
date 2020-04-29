@@ -18,9 +18,9 @@ public class DatabaseHelper {
         Double OwnLng = PrefsHelper.getDouble(PrefConstants.LNG , 0);
 
 
-        String DIS = "0";
+        String DIS = "-";
 
-        if (!(Lat.equals("0") || Lng.equals("0") || OwnLat == 0 || OwnLng == 0)){
+        if (!(Lat.equals("0") || Lng.equals("0") || OwnLat == 0 || OwnLng == 0 || Lat.equals("0.0") || Lng.equals("0.0"))) {
             DIS  = BluetoothHelper.distanceCalculate(Lat , Lng , OwnLat , OwnLng);
             PrefsHelper.putString(PrefConstants.TEMP_DISTANCE , DIS);
         }
