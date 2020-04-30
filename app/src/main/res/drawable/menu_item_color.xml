@@ -6,5 +6,5 @@
     <item android:state_checked="true" android:color="#4A5CC3" />
 
     <!-- Default state: white 70% -->
-    <item android:color="@color/white"  />
+    <item android:color="@color/black"  />
 </selector>

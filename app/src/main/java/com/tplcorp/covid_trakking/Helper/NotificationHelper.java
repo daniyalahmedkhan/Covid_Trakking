@@ -44,7 +44,8 @@ public class NotificationHelper {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
         Notification notification = notificationBuilder.setOngoing(true)
                 .setSmallIcon(R.drawable.shield)
-                .setContentTitle("TPL Contact Tracing is Running")
+                .setContentTitle("TPL Contact Tracing")
+                .setContentText("App is running in background")
                 .setPriority(Notification.PRIORITY_MAX)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build();

@@ -95,8 +95,6 @@ public class HomeFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-
-
         testedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,17 +178,15 @@ public class HomeFragment extends BaseFragment {
     }
 
 
-    private void uploadDataToServer(String mobileNumber)
-    {
+    private void uploadDataToServer(String mobileNumber) {
 
 
-
-        AffectedDataRequest model=new AffectedDataRequest();
+        AffectedDataRequest model = new AffectedDataRequest();
         model.setUserPhoneNumber(mobileNumber);
         model.setData(getAffectedUsersFromDB());
 
 
-         dialog=new ProgressDialog(getActivity());
+        dialog = new ProgressDialog(getActivity());
         dialog.setCancelable(false);
         dialog.setTitle("Please wait data uploading ...");
         dialog.show();
@@ -201,12 +197,10 @@ public class HomeFragment extends BaseFragment {
 
 
                 dialog.dismiss();
-                if(response.body()!=null&&response.body().get("RespMsg").toString().equalsIgnoreCase("Success"))
-                {
+                if (response.body() != null && response.body().get("RespMsg").toString().equalsIgnoreCase("Success")) {
                     Toast.makeText(getActivity(), "Data Uploaded successfully", Toast.LENGTH_SHORT).show();
                     myDatabase.daoAccess().deleteTracingData();
-                }
-                else {
+                } else {
                     Toast.makeText(getActivity(), response.body().get("RespMsg").toString(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -250,10 +244,9 @@ public class HomeFragment extends BaseFragment {
 
     }
 
-    private List<AffectedUser> getAffectedUsersFromDB()
-    {
+    private List<AffectedUser> getAffectedUsersFromDB() {
 
-        List<AffectedUser> arrData=new ArrayList<>();
+        List<AffectedUser> arrData = new ArrayList<>();
         myDatabase = DatabaseClient.getDatabaseInstance(getActivity());
         List<TracingData> affectedList = myDatabase.daoAccess().getTracingData();
         if (affectedList.size() > 0) {
@@ -273,7 +266,6 @@ public class HomeFragment extends BaseFragment {
 
         return arrData;
     }
-
 
     public void showCustomDialog() {
 
@@ -312,7 +304,6 @@ public class HomeFragment extends BaseFragment {
         dialog.show();
 
     }
-
 
     @Override
     public void onDestroyView() {

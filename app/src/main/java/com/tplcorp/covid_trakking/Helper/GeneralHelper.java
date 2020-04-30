@@ -69,7 +69,7 @@ public class GeneralHelper {
 
             @Override
             public void run() {
-                Toast.makeText(context .getApplicationContext(), msg ,Toast.LENGTH_SHORT).show();
+                Toast.makeText(context .getApplicationContext(), msg ,Toast.LENGTH_SHORT);
             }
         });
     }

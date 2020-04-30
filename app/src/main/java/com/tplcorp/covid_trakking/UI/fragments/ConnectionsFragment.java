@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,8 +42,8 @@ public class ConnectionsFragment extends BaseFragment {
     LottieAnimationView loading;
     @BindView(R.id.RV_connection)
     RecyclerView RVConnection;
-
-
+    @BindView(R.id.textNoConenction)
+    LinearLayout textNoConenction;
 
     public static ConnectionsFragment newInstance() {
         
@@ -83,6 +85,10 @@ public class ConnectionsFragment extends BaseFragment {
         //connectionsList.add(new Connections("0" , "25" , "1" , "24.832223" , "67.076565" , 0));
 
         adapter = new ConnectionAdapter(connectionsList, getActivity());
+
+        textNoConenction.setVisibility(View.VISIBLE);
+        RVConnection.setVisibility(View.GONE);
+
         setUpConnectionList();
     }
 
@@ -98,9 +104,10 @@ public class ConnectionsFragment extends BaseFragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
+            textNoConenction.setVisibility(View.GONE);
+            RVConnection.setVisibility(View.GONE);
 
             loading.setVisibility(View.VISIBLE);
-
 
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -112,11 +119,24 @@ public class ConnectionsFragment extends BaseFragment {
 
             connectionsList.clear();
             Bundle bundle = intent.getExtras();
+
             List<Connections> connections = (List<Connections>) bundle.getSerializable("ConnectionList");
-            for (int i = 0; i < connections.size(); i++) {
-                connectionsList.add(new Connections(connections.get(i).getName(), connections.get(i).getDistance(), connections.get(i).getAffected(), connections.get(i).getLat(), connections.get(i).getLng(), connections.get(i).getTimeStamp()));
+
+            if (connections.size() > 0){
+
+                textNoConenction.setVisibility(View.GONE);
+                RVConnection.setVisibility(View.VISIBLE);
+
+                for (int i = 0; i < connections.size(); i++) {
+                    connectionsList.add(new Connections(connections.get(i).getName(), connections.get(i).getDistance(), connections.get(i).getAffected(), connections.get(i).getLat(), connections.get(i).getLng(), connections.get(i).getTimeStamp()));
+                }
+                adapter.notifyDataSetChanged();
+
+            }else{
+                textNoConenction.setVisibility(View.VISIBLE);
+                RVConnection.setVisibility(View.GONE);
             }
-            adapter.notifyDataSetChanged();
+
         }
     };
 
