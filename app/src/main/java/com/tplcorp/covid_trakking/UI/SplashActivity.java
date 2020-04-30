@@ -28,6 +28,8 @@ public class SplashActivity extends AppCompatActivity {
             finish();
         }
 
+
+
         start_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
