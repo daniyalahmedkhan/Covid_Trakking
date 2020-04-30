@@ -4,6 +4,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
+import com.tplcorp.covid_trakking.Room.Tables.Notifications;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 
 import java.util.List;
@@ -30,4 +31,10 @@ public interface Dao {
 
     @Query("Delete from CovidAffected")
     void deleteCovidAffects();
+
+    // ******** Notifications *********** //
+
+    @Insert
+    void insertNotification(Notifications notifications);
+
 }

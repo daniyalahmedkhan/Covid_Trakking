@@ -21,7 +21,7 @@ public class BackgroundServiceHelper {
                 0, notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(context, "CHANNEL_ID")
-                .setContentTitle("TPL Covid-19 is running in background")
+                .setContentTitle("TPL Contact Tracing Running in Background")
                 .setContentText("")
                 .setSmallIcon(R.drawable.shield)
                 .setContentIntent(pendingIntent)

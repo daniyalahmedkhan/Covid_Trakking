@@ -4,7 +4,10 @@ import android.content.Context;
 
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
 import com.tplcorp.covid_trakking.Room.MyDatabase;
+import com.tplcorp.covid_trakking.Room.Tables.Notifications;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
+
+import java.util.Date;
 
 public class DatabaseHelper {
 
@@ -30,6 +33,16 @@ public class DatabaseHelper {
             TracingData tracingData = new TracingData(Mobile, Affected, Lat, Lng, DIS ,GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate(), "N");
             myDatabase.daoAccess().insertRecord(tracingData);
         //}
+
+    }
+
+
+    public static void insertNotificationDB(Context context , String affected , Date date , String date_){
+
+        MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);
+        Notifications notifications = new Notifications(affected , date , date_);
+        myDatabase.daoAccess().insertNotification(notifications);
+
 
     }
 }

@@ -43,7 +43,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.Distance.setText(connectionsList.get(position).getDistance() + " " + "In Meters");
+        holder.Distance.setText(connectionsList.get(position).getDistance() + " " + "Meters");
         holder.Affected.setText(connectionsList.get(position).getAffected().equals("0") ? "No" : "Yes");
 
         if (connectionsList.get(position).getAffected().equals("0")) {
@@ -56,8 +56,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
 
         try {
             holder.timeStamp.setText(GeneralHelper.getTime(connectionsList.get(position).getTimeStamp()));
-        } catch (Exception e) {
-        }
+        } catch (Exception e) { }
 // samsung abi location de rha hai
 
         holder.map.setOnClickListener(new View.OnClickListener() {

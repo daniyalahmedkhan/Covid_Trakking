@@ -1,5 +1,7 @@
 package com.tplcorp.covid_trakking.UI;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +12,7 @@ import android.provider.Settings;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -71,10 +74,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (!(checkAffectedDate() >= 0 && checkAffectedDate() <= 14)) {
-                    showAlertDialog();
+                    showDialog();
                 } else {
                     Toast.makeText(MainActivity.this, "You need to wait 14 days to mark again", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
@@ -180,36 +184,36 @@ public class MainActivity extends AppCompatActivity {
         return drawer_layout;
     }
 
-    public void showAlertDialog() {
-
-        AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setTitle("COVID-19 Test")
-                .setMessage("Are you sure you want to declare yourself positive COVID-19?")
-
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        PrefsHelper.putString(PrefConstants.AFFECTED, "1");
-                        CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
-                        myDatabase.daoAccess().deleteCovidAffects();
-                        myDatabase.daoAccess().insertAffectedRecord(covidAffected);
-                        checkBannerState();
-                    }
-                })
-
-                // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        PrefsHelper.putString(PrefConstants.AFFECTED, "0");
-                        checkBannerState();
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-
-    }
+//    public void showAlertDialog() {
+//
+//        AlertDialog alertDialog = new AlertDialog.Builder(this)
+//                .setTitle("COVID-19 Test")
+//                .setMessage("Are you sure, you want to declare yourself Covid-19 positive?")
+//
+//                // Specifying a listener allows you to take an action before dismissing the dialog.
+//                // The dialog is automatically dismissed when a dialog button is clicked.
+//                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        PrefsHelper.putString(PrefConstants.AFFECTED, "1");
+//                        CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
+//                        myDatabase.daoAccess().deleteCovidAffects();
+//                        myDatabase.daoAccess().insertAffectedRecord(covidAffected);
+//                        checkBannerState();
+//                    }
+//                })
+//
+//                // A null listener allows the button to dismiss the dialog and take no further action.
+//                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        PrefsHelper.putString(PrefConstants.AFFECTED, "0");
+//                        checkBannerState();
+//                    }
+//                })
+//                .setIcon(android.R.drawable.ic_dialog_alert)
+//                .show();
+//
+//    }
 
     private long checkAffectedDate() {
 
@@ -240,6 +244,44 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    public void showDialog(){
+            final Dialog dialog = new Dialog(this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(true);
+            dialog.setContentView(R.layout.custom_dialog);
+
+            Button btnYes = (Button) dialog.findViewById(R.id.yes);
+            Button btnNo = (Button) dialog.findViewById(R.id.no);
+
+            btnNo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    PrefsHelper.putString(PrefConstants.AFFECTED, "0");
+                    checkBannerState();
+                    dialog.dismiss();
+                }
+            });
+
+            btnYes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    PrefsHelper.putString(PrefConstants.AFFECTED, "1");
+                    CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
+                    myDatabase.daoAccess().deleteCovidAffects();
+                    myDatabase.daoAccess().insertAffectedRecord(covidAffected);
+                    checkBannerState();
+
+                    dialog.dismiss();
+                }
+            });
+
+
+            dialog.show();
+
+        }
 
 
 }

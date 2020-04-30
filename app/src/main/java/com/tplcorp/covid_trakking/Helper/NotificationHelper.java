@@ -44,7 +44,7 @@ public class NotificationHelper {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
         Notification notification = notificationBuilder.setOngoing(true)
                 .setSmallIcon(R.drawable.shield)
-                .setContentTitle("TPL Covid-19 Tracing is working")
+                .setContentTitle("TPL Contact Tracing is Running")
                 .setPriority(Notification.PRIORITY_MAX)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build();

@@ -258,7 +258,8 @@ public class BackgroundService extends Service {
 
             // show notification to user if mobile no is not added in the list in current scan
             if (Affected.equals("1") && !isUserExist(Mobile)) {
-                NotificationHelper.sendNotification(BackgroundService.this, "TPL Covid-19 Alert", "Someone found positive nearby");
+                NotificationHelper.sendNotification(BackgroundService.this, "TPL Contact Tracing Alert", "Someone found positive nearby");
+                DatabaseHelper.insertNotificationDB(this , "1" , GeneralHelper.todayDate_DATE() , GeneralHelper.todayDate());
             }
 
 

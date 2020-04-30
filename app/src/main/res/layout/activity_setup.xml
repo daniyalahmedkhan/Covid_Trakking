@@ -49,15 +49,16 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="32dp"
-            android:backgroundTint="@color/buttonColor"
+            android:backgroundTint="@color/white"
             android:text="Grant Location Access"
-            android:textColor="@color/white" />
+            android:textColor="@color/black" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Apps using Bluetooth® Low Energy (BLE) are required to have location access enabled."
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 </ScrollView>

@@ -233,9 +233,10 @@ public class GeneralHelper {
         Date rxDate = new Date(rxTimestampMillis);
 
 
-        String sDate = new SimpleDateFormat("HH:mm:ss.SSS").format(rxDate);
 
-        return sDate;
+        String sDate = new SimpleDateFormat("HH:mm:ss").format(rxDate);
+
+        return GeneralHelper.todayDate()+" "+sDate;
 
     }
 

@@ -17,14 +17,14 @@
         app:lottie_autoPlay="true"
         app:lottie_rawRes="@raw/splash"
         app:lottie_loop="true"
-        app:lottie_speed="1.25" />
+        app:lottie_speed="0.7" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="TPL Covid-19 Tracing"
+        android:text="TPL Contact Tracing"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +40,7 @@
         android:layout_marginBottom="24dp"
         android:text="Help your community stay safe, anonymously."
         android:textAlignment="center"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/start_button"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,9 +53,9 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/buttonColor"
+        android:backgroundTint="@color/white"
         android:text="Start"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

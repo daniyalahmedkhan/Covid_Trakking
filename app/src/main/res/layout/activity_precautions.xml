@@ -94,7 +94,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cover your Nose and Mouth"
+                    android:text="Cover Your Nose and Mouth"
                     android:textStyle="bold"
                     android:textSize="23dp"
                     android:textColor="@color/black"/>
@@ -102,7 +102,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="When coughing with tissue or flexed elbow"
+                    android:text="With tissue or flexed elbow when coughing"
                     android:textSize="15dp"
                     android:gravity="center"
                     android:textColor="@color/black"/>
