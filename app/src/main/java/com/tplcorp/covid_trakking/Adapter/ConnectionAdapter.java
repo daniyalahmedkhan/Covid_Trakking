@@ -10,15 +10,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Model.Connections;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.UI.MapActivity;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.ViewHolder> {
 
@@ -43,31 +43,37 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.Distance.setText(connectionsList.get(position).getDistance()+" "+"In Meters");
+        holder.Distance.setText(connectionsList.get(position).getDistance() + " " + "In Meters");
         holder.Affected.setText(connectionsList.get(position).getAffected().equals("0") ? "No" : "Yes");
 
-        if (connectionsList.get(position).getAffected().equals("0")){
+        if (connectionsList.get(position).getAffected().equals("0")) {
             holder.Affected.setTextColor(context.getResources().getColor(R.color.md_green_500));
             holder.view1.setBackgroundColor(context.getResources().getColor(R.color.md_green_500));
-        }else{
+        } else {
             holder.Affected.setTextColor(Color.RED);
             holder.view1.setBackgroundColor(Color.RED);
-        } 
+        }
 
         try {
             holder.timeStamp.setText(GeneralHelper.getTime(connectionsList.get(position).getTimeStamp()));
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
+// samsung abi location de rha hai
 
+        holder.map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!(connectionsList.get(position).getLat().equals("0.0") || connectionsList.get(position).getLng().equals("0.0"))) {
+                    Intent intent = new Intent(context, MapActivity.class);
+                    intent.putExtra("LAT", connectionsList.get(position).getLat());
+                    intent.putExtra("LNG", connectionsList.get(position).getLng());
+                    context.startActivity(intent);
+                }else{
+                    Toast.makeText(context, "GPS location not available for the selected connection.", Toast.LENGTH_SHORT).show();
+                }
 
-       holder.map.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               Intent intent = new Intent(context , MapActivity.class);
-               intent.putExtra("LAT" , connectionsList.get(position).getLat());
-               intent.putExtra("LNG" , connectionsList.get(position).getLng());
-               context.startActivity(intent);
-           }
-       }); 
+            }
+        });
     }
 
     @Override
@@ -75,11 +81,11 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
         return connectionsList.size();
     }
 
-    public class  ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView Distance , Affected , timeStamp;
+        public TextView Distance, Affected, timeStamp;
         public LinearLayout map;
-        public  View view1;
+        public View view1;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

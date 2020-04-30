@@ -1,7 +1,6 @@
 package com.tplcorp.covid_trakking.Service;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
@@ -12,16 +11,15 @@ import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.ParcelUuid;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.tplcorp.covid_trakking.Helper.BackgroundServiceHelper;
 import com.tplcorp.covid_trakking.Helper.BluetoothHelper;
@@ -32,35 +30,29 @@ import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.Interface.ScanningCallback;
 import com.tplcorp.covid_trakking.Model.Connections;
-import com.tplcorp.covid_trakking.R;
-import com.tplcorp.covid_trakking.UI.MainActivity;
-import com.tplcorp.covid_trakking.UI.SetupActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import androidx.core.app.NotificationCompat;
-
 public class BackgroundService extends Service {
 
-    private static final String TAG = BackgroundService.class.getSimpleName();
-    public static boolean running = false;
     public static final String ADVERTISING_FAILED =
             "com.example.android.bluetoothadvertisements.advertising_failed";
     public static final String ADVERTISING_FAILED_EXTRA_CODE = "failureCode";
     public static final int ADVERTISING_TIMED_OUT = 6;
+    private static final String TAG = BackgroundService.class.getSimpleName();
+    public static boolean running = false;
+    ScanningCallback scanningCallback;
+    List<Connections> connectionsList;
+    String Mobile;
     private BluetoothLeAdvertiser mBluetoothLeAdvertiser;
     private AdvertiseCallback mAdvertiseCallback;
     private Handler mHandler;
     private Runnable timeoutRunnable;
     private ScanCallback scanCallback;
     private BluetoothLeScanner mBluetoothLeScanner;
-    ScanningCallback scanningCallback;
-    List<Connections> connectionsList;
-    String Mobile;
-
     /**
      * Length of time to allow advertising before automatically shutting off. (30 seconds)
      */
@@ -70,8 +62,8 @@ public class BackgroundService extends Service {
     @Override
     public void onCreate() {
 
-       Notification notification = BackgroundServiceHelper.showForegroundNotification(this);
-       startForeground(1, notification);
+        Notification notification = BackgroundServiceHelper.showForegroundNotification(this);
+        startForeground(1, notification);
 
 
         connectionsList = new ArrayList<>();
@@ -82,7 +74,7 @@ public class BackgroundService extends Service {
         setTimeout();
 
         registerReceiver(BackgroundServiceHelper.mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
-        registerReceiver(BackgroundServiceHelper.mBluetoothStateReceiver , new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+        registerReceiver(BackgroundServiceHelper.mBluetoothStateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
 
         super.onCreate();
     }
@@ -130,12 +122,11 @@ public class BackgroundService extends Service {
             public void run() {
                 Log.d(TAG, "AdvertiserService has reached timeout of " + TIMEOUT + " milliseconds, stopping advertising.");
                 sendFailureIntent(ADVERTISING_TIMED_OUT);
-                //  stopSelf();
                 stopAdvertising();
             }
         };
         mHandler.postDelayed(timeoutRunnable, TIMEOUT);
-
+// u there ? yes 0,0 lat long p map na khule ye b kradena..wait abhi kr dta hn
 
     }
 
@@ -146,12 +137,18 @@ public class BackgroundService extends Service {
             AdvertiseData data = BluetoothHelper.buildAdvertiseData(this);
             mAdvertiseCallback = new SampleAdvertiseCallback();
             if (mBluetoothLeAdvertiser != null) {
-                mBluetoothLeAdvertiser.startAdvertising(settings, data, mAdvertiseCallback);
-            }
+                if (!(BluetoothHelper.isBluetooth(BackgroundService.this) && GeneralHelper.checkGPS(this))) {
+                    // just show toast
+                    Toast.makeText(this, "Please enable your device's Bluetooth / GPS", Toast.LENGTH_LONG).show();
+                } else {
+                    mBluetoothLeAdvertiser.startAdvertising(settings, data, mAdvertiseCallback);
+                    BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(scanCallback);
+                }
 
+            }
             connectionsList.clear();
-            // mBluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
-            BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(scanCallback);
+
+
         }
     }
 
@@ -180,24 +177,6 @@ public class BackgroundService extends Service {
         }, 10000);
 
 //300000
-    }
-
-    private class SampleAdvertiseCallback extends AdvertiseCallback {
-        @Override
-        public void onStartFailure(int errorCode) {
-            super.onStartFailure(errorCode);
-            Log.d(TAG, "Advertising failed");
-            sendFailureIntent(errorCode);
-            // stopSelf();
-            GeneralHelper.showToastLooper("Advertising failed", BackgroundService.this);
-        }
-
-        @Override
-        public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-            super.onStartSuccess(settingsInEffect);
-            Log.d(TAG, "Advertising successfully started");
-            GeneralHelper.showToastLooper("Advertising successfully started", BackgroundService.this);
-        }
     }
 
     private void sendFailureIntent(int errorCode) {
@@ -277,15 +256,17 @@ public class BackgroundService extends Service {
             DatabaseHelper.insertInDB(this, Mobile, Affected, Lat, Lng);
 
 
-            if (!isUserExist(Mobile)){
-                connectionsList.add(new Connections(Mobile, PrefsHelper.getString(PrefConstants.TEMP_DISTANCE, "0"), Affected , Lat , Lng , result.getTimestampNanos()));
+            // show notification to user if mobile no is not added in the list in current scan
+            if (Affected.equals("1") && !isUserExist(Mobile)) {
+                NotificationHelper.sendNotification(BackgroundService.this, "TPL Covid-19 Alert", "Someone found positive nearby");
             }
-            GeneralHelper.sendMessageToActivity(this , connectionsList);
 
 
-            if (Affected.equals("1")){
-                NotificationHelper.sendNotification(BackgroundService.this , "TPL Covid-19 Alert" , "Someone found positive nearby");
+            //  add user in the list if not exist in current scan
+            if (!isUserExist(Mobile)) {
+                connectionsList.add(new Connections(Mobile, PrefsHelper.getString(PrefConstants.TEMP_DISTANCE, "0"), Affected, Lat, Lng, result.getTimestampNanos()));
             }
+            GeneralHelper.sendMessageToActivity(this, connectionsList);
 
 
         } catch (Exception e) {
@@ -298,13 +279,31 @@ public class BackgroundService extends Service {
 
     }
 
-    private boolean isUserExist(String Mobile){
-        for (int i=0; i<connectionsList.size(); i++){
-            if (connectionsList.get(i).getName().equals(Mobile)){
+    private boolean isUserExist(String Mobile) {
+        for (int i = 0; i < connectionsList.size(); i++) {
+            if (connectionsList.get(i).getName().equals(Mobile)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private class SampleAdvertiseCallback extends AdvertiseCallback {
+        @Override
+        public void onStartFailure(int errorCode) {
+            super.onStartFailure(errorCode);
+            Log.d(TAG, "Advertising failed");
+            sendFailureIntent(errorCode);
+            // stopSelf();
+            GeneralHelper.showToastLooper("Advertising failed", BackgroundService.this);
+        }
+
+        @Override
+        public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+            super.onStartSuccess(settingsInEffect);
+            Log.d(TAG, "Advertising successfully started");
+            GeneralHelper.showToastLooper("Advertising successfully started", BackgroundService.this);
+        }
     }
 
 
