@@ -28,6 +28,13 @@ public interface Dao {
     @Query("SELECT * FROM CovidAffected")
     List<CovidAffected> affectedList();
 
+    @Query("SELECT * FROM TracingData")
+    List<TracingData> getTracingData();
+
     @Query("Delete from CovidAffected")
     void deleteCovidAffects();
+
+
+    @Query("Delete from TracingData")
+    void deleteTracingData();
 }

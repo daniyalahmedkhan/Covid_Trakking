@@ -1,5 +1,6 @@
 package com.tplcorp.covid_trakking.UI.fragments;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,19 +21,27 @@ import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.Helper.ProtectedHelper;
+import com.tplcorp.covid_trakking.Model.AffectedDataRequest;
+import com.tplcorp.covid_trakking.Model.AffectedUser;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
 import com.tplcorp.covid_trakking.Room.MyDatabase;
 import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
+import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
 import com.tplcorp.covid_trakking.UI.MainActivity;
+import com.tplcorp.covid_trakking.retrofit.WebServiceFactory;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class HomeFragment extends BaseFragment {
@@ -55,16 +64,8 @@ public class HomeFragment extends BaseFragment {
     TextView testedButtonText;
     @BindView(R.id.mainLinear)
     LinearLayout mainLinear;
+    private ProgressDialog dialog;
 
-
-
-//    @Nullable
-//    @Override
-//    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.fragment_home, container, false);
-//        unbinder = ButterKnife.bind(this, view);
-//        return view;
-//    }
 
     public static HomeFragment newInstance() {
 
@@ -85,6 +86,7 @@ public class HomeFragment extends BaseFragment {
         testedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                
                 if (!(checkAffectedDate() >= 0 && checkAffectedDate() <= 14)) {
                     showAlertDialog();
                 } else {
@@ -147,6 +149,8 @@ public class HomeFragment extends BaseFragment {
                         CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
                         myDatabase.daoAccess().deleteCovidAffects();
                         myDatabase.daoAccess().insertAffectedRecord(covidAffected);
+
+                        uploadDataToServer(PrefsHelper.getString(PrefConstants.MOBILE));
                         checkBannerState();
                     }
                 })
@@ -162,6 +166,47 @@ public class HomeFragment extends BaseFragment {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
 
+    }
+
+
+    private void uploadDataToServer(String mobileNumber)
+    {
+
+
+
+        AffectedDataRequest model=new AffectedDataRequest();
+        model.setUserPhoneNumber(mobileNumber);
+        model.setData(getAffectedUsersFromDB());
+
+
+         dialog=new ProgressDialog(getActivity());
+        dialog.setCancelable(false);
+        dialog.setTitle("Please wait data uploading ...");
+        dialog.show();
+
+        WebServiceFactory.getInstance().postInteractionsData(model).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+
+
+                dialog.dismiss();
+                if(response.body()!=null&&response.body().get("RespMsg").toString().equalsIgnoreCase("Success"))
+                {
+                    Toast.makeText(getActivity(), "Data Uploaded successfully", Toast.LENGTH_SHORT).show();
+                    myDatabase.daoAccess().deleteTracingData();
+                }
+                else {
+                    Toast.makeText(getActivity(), response.body().get("RespMsg").toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                dialog.dismiss();
+                t.printStackTrace();
+
+            }
+        });
     }
 
     private long checkAffectedDate() {
@@ -192,6 +237,30 @@ public class HomeFragment extends BaseFragment {
             textPositive.setVisibility(View.GONE);
         }
 
+    }
+
+    private List<AffectedUser> getAffectedUsersFromDB()
+    {
+
+        List<AffectedUser> arrData=new ArrayList<>();
+        myDatabase = DatabaseClient.getDatabaseInstance(getActivity());
+        List<TracingData> affectedList = myDatabase.daoAccess().getTracingData();
+        if (affectedList.size() > 0) {
+
+            for (TracingData model : affectedList) {
+
+                AffectedUser entity = new AffectedUser();
+                entity.setPhoneNumber(model.getUSER_MOBILE());
+                entity.setInteractionTime(String.valueOf(model.getTIME_STAMP()));
+                entity.setIsAffected(Integer.valueOf(model.getIS_AFFECTED()));
+                entity.setDistance(model.getDISTANCE());
+                arrData.add(entity);
+
+            }
+
+        }
+
+        return arrData;
     }
 
 

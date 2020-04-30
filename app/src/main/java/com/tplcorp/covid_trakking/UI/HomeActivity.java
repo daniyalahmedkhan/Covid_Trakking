@@ -23,12 +23,14 @@ import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.Helper.ProtectedHelper;
+import com.tplcorp.covid_trakking.Model.AffectedUser;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
 import com.tplcorp.covid_trakking.Room.MyDatabase;
 import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -214,6 +216,9 @@ bottom_navigation.setMinimumHeight(navigationBarHeight);
 
         return days;
     }
+
+
+
 
     private void checkBannerState() {
         if (PrefsHelper.getString(PrefConstants.AFFECTED, "0").equals("1")) {
