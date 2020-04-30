@@ -80,16 +80,16 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-//    @Override
-//    public void onBackPressed() {
-//
-//        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-//            super.onBackPressed();
-//        } else {
-//            finish();
-//        }
-//
-//    }
+    @Override
+    public void onBackPressed() {
+
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+           getSupportFragmentManager().popBackStack();
+        } else {
+            finish();
+        }
+
+    }
 
     private void switchScreen(int id) {
 
@@ -116,6 +116,7 @@ public class MainActivity extends BaseActivity {
                 Toast.makeText(this, "About not configured", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.Feedback:
+                initToolbar("Feedback" , false);
                 addDockableFragment(new Feedback());
                 break;
 
@@ -134,7 +135,7 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                getFragmentManager().popBackStack();
+                getSupportFragmentManager().popBackStack();
             case R.id.notification:
                 addDockableFragment(Notification.newInstance());
             default:

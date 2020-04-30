@@ -7,7 +7,9 @@ import android.widget.Toast;
 
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.R;
+import com.tplcorp.covid_trakking.UI.MainActivity;
 
+import androidx.annotation.Nullable;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -16,7 +18,16 @@ import androidx.preference.SwitchPreferenceCompat;
 public class Feedback extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+
         setPreferencesFromResource(R.xml.settings, rootKey);
+
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
 
     }
 
@@ -50,8 +61,9 @@ public class Feedback extends PreferenceFragmentCompat implements SharedPreferen
     @Override
     public void onResume() {
         super.onResume();
+        ((MainActivity) getActivity()).initToolbar("Feedback", false);
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
+        //   getPreferenceScreen().setTitle("Feedback");
 
     }
 
@@ -61,4 +73,6 @@ public class Feedback extends PreferenceFragmentCompat implements SharedPreferen
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
 
     }
+
+
 }

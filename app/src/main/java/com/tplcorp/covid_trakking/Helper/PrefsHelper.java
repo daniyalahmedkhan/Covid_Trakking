@@ -13,6 +13,9 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import androidx.preference.Preference;
+import androidx.preference.SwitchPreferenceCompat;
+
 @SuppressWarnings("unused")
 public final class PrefsHelper {
 
@@ -550,5 +553,7 @@ public final class PrefsHelper {
         }
 
     }
+
+
 
 }

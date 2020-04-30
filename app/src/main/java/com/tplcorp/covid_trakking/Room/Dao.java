@@ -46,6 +46,6 @@ public interface Dao {
     @Insert
     void insertNotification(Notifications notifications);
 
-    @Query("SELECT * FROM Notifications")
+    @Query("SELECT * FROM Notifications order by TIME_STAMP desc")
     List<Notifications> getNotificationList();
 }
