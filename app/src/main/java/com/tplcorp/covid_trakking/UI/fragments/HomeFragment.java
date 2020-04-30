@@ -1,22 +1,16 @@
 package com.tplcorp.covid_trakking.UI.fragments;
 
-import android.app.ProgressDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
@@ -31,7 +25,6 @@ import com.tplcorp.covid_trakking.Room.MyDatabase;
 import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
-import com.tplcorp.covid_trakking.UI.MainActivity;
 import com.tplcorp.covid_trakking.retrofit.WebServiceFactory;
 
 import java.util.ArrayList;
@@ -39,8 +32,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -116,7 +110,7 @@ public class HomeFragment extends BaseFragment {
 
         if (!GeneralHelper.isTimeAutomatic(getActivity())) {
             mainLinear.setVisibility(View.GONE);
-            Toast.makeText(getActivity(), "Please change the Date&Time settings to automatically", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Please change the Date&Time settings to automatic", Toast.LENGTH_LONG).show();
             getActivity().stopService(new Intent(getActivity(), BackgroundService.class));
         } else {
             mainLinear.setVisibility(View.VISIBLE);
@@ -149,8 +143,8 @@ public class HomeFragment extends BaseFragment {
     public void showAlertDialog() {
 
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                .setTitle("COVID-19 Test")
-                .setMessage("Are you sure you want to declare yourself positive COVID-19?")
+                .setTitle("Report COVID-19")
+                .setMessage("Are you sure ?")
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.

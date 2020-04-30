@@ -28,7 +28,6 @@ public class Feedback extends PreferenceFragmentCompat implements SharedPreferen
         super.onCreate(savedInstanceState);
 
 
-
     }
 
     @Override
@@ -61,7 +60,7 @@ public class Feedback extends PreferenceFragmentCompat implements SharedPreferen
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).initToolbar("Feedback", false);
+        ((MainActivity) getActivity()).initToolbar("Settings", false);
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         //   getPreferenceScreen().setTitle("Feedback");
 

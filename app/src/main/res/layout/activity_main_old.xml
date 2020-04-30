@@ -84,7 +84,7 @@
                         android:layout_height="56dp"
                         android:layout_marginHorizontal="32dp"
                         android:layout_marginTop="16dp"
-                        android:text="Tested positive for COVID-19?" />
+                        android:text="Are you Covid-19 positive ?" />
 
                     <TextView
                         android:id="@+id/tested_button_text"

@@ -116,7 +116,7 @@ public class MainActivity extends BaseActivity {
                 Toast.makeText(this, "About not configured", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.Feedback:
-                initToolbar("Feedback" , false);
+                //initToolbar("Feedback" , false);
                 addDockableFragment(new Feedback());
                 break;
 

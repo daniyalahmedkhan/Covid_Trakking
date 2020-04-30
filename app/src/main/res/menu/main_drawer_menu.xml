@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <item
-            android:id="@+id/Home"
-            android:icon="@drawable/home_new"
-            android:title="Home" />
+    <item
+        android:id="@+id/Home"
+        android:icon="@drawable/home_new"
+        android:title="Home" />
 
-        <item
-            android:id="@+id/Connections"
-            android:icon="@drawable/connection"
-            android:title="Connections" />
-        <item
-            android:id="@+id/Precautions"
-            android:icon="@drawable/shield"
-            android:title="Precautions" />
-        <item
-            android:id="@+id/About"
-            android:icon="@drawable/about"
-            android:title="About" />
-        <item
-            android:id="@+id/Feedback"
-            android:icon="@drawable/feedback"
-            android:title="Feedback" />
+    <item
+        android:id="@+id/Connections"
+        android:icon="@drawable/connection"
+        android:title="Connections" />
+    <item
+        android:id="@+id/Precautions"
+        android:icon="@drawable/shield"
+        android:title="Precautions" />
+    <item
+        android:id="@+id/About"
+        android:icon="@drawable/about"
+        android:title="About" />
+    <item
+        android:id="@+id/Feedback"
+        android:icon="@drawable/feedback"
+        android:title="Settings" />
 
 </menu>

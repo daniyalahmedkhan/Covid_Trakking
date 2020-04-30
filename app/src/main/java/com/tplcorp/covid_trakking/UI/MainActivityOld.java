@@ -183,8 +183,8 @@ public class MainActivityOld extends AppCompatActivity {
     public void showAlertDialog() {
 
         AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setTitle("COVID-19 Test")
-                .setMessage("Are you sure you want to declare yourself positive COVID-19?")
+                .setTitle("Report COVID-19")
+                .setMessage("Are you sure ?")
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.

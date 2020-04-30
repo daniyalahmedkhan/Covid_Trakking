@@ -12,28 +12,25 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.Helper.ProtectedHelper;
-import com.tplcorp.covid_trakking.Model.AffectedUser;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
 import com.tplcorp.covid_trakking.Room.MyDatabase;
 import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import re.robz.bottomnavigation.circularcolorreveal.BottomNavigationCircularColorReveal;
 
 
@@ -57,8 +54,8 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bottom_navigation= (BottomNavigationView) findViewById(R.id.bottom_navigation);
-  //      navigationView = (NavigationView) findViewById(R.id.nav_view);
+        bottom_navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        //      navigationView = (NavigationView) findViewById(R.id.nav_view);
 //        View headerView = navigationView.getHeaderView(0);
 
         toolbar = findViewById(R.id.toolbar);
@@ -72,7 +69,7 @@ public class HomeActivity extends BaseActivity {
         if (resourceId > 0) {
             navigationBarHeight = getResources().getDimensionPixelSize(resourceId);
         }
-bottom_navigation.setMinimumHeight(navigationBarHeight);
+        bottom_navigation.setMinimumHeight(navigationBarHeight);
 
         tested_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,13 +82,12 @@ bottom_navigation.setMinimumHeight(navigationBarHeight);
             }
         });
 
-     configBottomNavigation();
+        configBottomNavigation();
 
     }
 
 
-    private void configBottomNavigation()
-    {
+    private void configBottomNavigation() {
         int[] colors = getResources().getIntArray(R.array.menu_colors);
 
         BottomNavigationCircularColorReveal reveal = new BottomNavigationCircularColorReveal(colors);
@@ -109,6 +105,7 @@ bottom_navigation.setMinimumHeight(navigationBarHeight);
         });
 
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -170,12 +167,11 @@ bottom_navigation.setMinimumHeight(navigationBarHeight);
     }
 
 
-
     public void showAlertDialog() {
 
         AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setTitle("COVID-19 Test")
-                .setMessage("Are you sure you want to declare yourself positive COVID-19?")
+                .setTitle("Report COVID-19")
+                .setMessage("Are you sure ?")
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
@@ -216,8 +212,6 @@ bottom_navigation.setMinimumHeight(navigationBarHeight);
 
         return days;
     }
-
-
 
 
     private void checkBannerState() {
