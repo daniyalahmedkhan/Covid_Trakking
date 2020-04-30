@@ -1,5 +1,6 @@
 package com.tplcorp.covid_trakking.UI.fragments;
 
+import android.app.ProgressDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,19 +23,27 @@ import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.Helper.ProtectedHelper;
+import com.tplcorp.covid_trakking.Model.AffectedDataRequest;
+import com.tplcorp.covid_trakking.Model.AffectedUser;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
 import com.tplcorp.covid_trakking.Room.MyDatabase;
 import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
+import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
 import com.tplcorp.covid_trakking.UI.MainActivity;
+import com.tplcorp.covid_trakking.retrofit.WebServiceFactory;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class HomeFragment extends BaseFragment {
@@ -57,7 +66,7 @@ public class HomeFragment extends BaseFragment {
     TextView testedButtonText;
     @BindView(R.id.mainLinear)
     LinearLayout mainLinear;
-
+    private ProgressDialog dialog;
 
 
 //    @Nullable
@@ -114,37 +123,97 @@ public class HomeFragment extends BaseFragment {
 
     }
 
-
-//    public void showAlertDialog() {
+//    @Override
+//    public void onBackPressed() {
+//        if (doubleBackToExitPressedOnce) {
+//            super.onBackPressed();
+//            return;
+//        }
 //
-//        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-//                .setTitle("COVID-19 Test")
-//                .setMessage("Are you sure you want to declare yourself positive COVID-19?")
+//        this.doubleBackToExitPressedOnce = true;
+//        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
 //
-//                // Specifying a listener allows you to take an action before dismissing the dialog.
-//                // The dialog is automatically dismissed when a dialog button is clicked.
-//                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        PrefsHelper.putString(PrefConstants.AFFECTED, "1");
-//                        CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
-//                        myDatabase.daoAccess().deleteCovidAffects();
-//                        myDatabase.daoAccess().insertAffectedRecord(covidAffected);
-//                        checkBannerState();
-//                    }
-//                })
+//        new Handler().postDelayed(new Runnable() {
 //
-//                // A null listener allows the button to dismiss the dialog and take no further action.
-//                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        PrefsHelper.putString(PrefConstants.AFFECTED, "0");
-//                        checkBannerState();
-//                    }
-//                })
-//                .setIcon(android.R.drawable.ic_dialog_alert)
-//                .show();
-//
+//            @Override
+//            public void run() {
+//                doubleBackToExitPressedOnce = false;
+//            }
+//        }, 2000);
 //    }
+
+
+    public void showAlertDialog() {
+
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setTitle("COVID-19 Test")
+                .setMessage("Are you sure you want to declare yourself positive COVID-19?")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        PrefsHelper.putString(PrefConstants.AFFECTED, "1");
+                        CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
+                        myDatabase.daoAccess().deleteCovidAffects();
+                        myDatabase.daoAccess().insertAffectedRecord(covidAffected);
+                        checkBannerState();
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        PrefsHelper.putString(PrefConstants.AFFECTED, "0");
+                        checkBannerState();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
+    }
+
+
+    private void uploadDataToServer(String mobileNumber)
+    {
+
+
+
+        AffectedDataRequest model=new AffectedDataRequest();
+        model.setUserPhoneNumber(mobileNumber);
+        model.setData(getAffectedUsersFromDB());
+
+
+         dialog=new ProgressDialog(getActivity());
+        dialog.setCancelable(false);
+        dialog.setTitle("Please wait data uploading ...");
+        dialog.show();
+
+        WebServiceFactory.getInstance().postInteractionsData(model).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+
+
+                dialog.dismiss();
+                if(response.body()!=null&&response.body().get("RespMsg").toString().equalsIgnoreCase("Success"))
+                {
+                    Toast.makeText(getActivity(), "Data Uploaded successfully", Toast.LENGTH_SHORT).show();
+                    myDatabase.daoAccess().deleteTracingData();
+                }
+                else {
+                    Toast.makeText(getActivity(), response.body().get("RespMsg").toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                dialog.dismiss();
+                t.printStackTrace();
+
+            }
+        });
+    }
 
     private long checkAffectedDate() {
 
@@ -174,6 +243,30 @@ public class HomeFragment extends BaseFragment {
             textPositive.setVisibility(View.GONE);
         }
 
+    }
+
+    private List<AffectedUser> getAffectedUsersFromDB()
+    {
+
+        List<AffectedUser> arrData=new ArrayList<>();
+        myDatabase = DatabaseClient.getDatabaseInstance(getActivity());
+        List<TracingData> affectedList = myDatabase.daoAccess().getTracingData();
+        if (affectedList.size() > 0) {
+
+            for (TracingData model : affectedList) {
+
+                AffectedUser entity = new AffectedUser();
+                entity.setPhoneNumber(model.getUSER_MOBILE());
+                entity.setInteractionTime(String.valueOf(model.getTIME_STAMP()));
+                entity.setIsAffected(Integer.valueOf(model.getIS_AFFECTED()));
+                entity.setDistance(model.getDISTANCE());
+                arrData.add(entity);
+
+            }
+
+        }
+
+        return arrData;
     }
 
 

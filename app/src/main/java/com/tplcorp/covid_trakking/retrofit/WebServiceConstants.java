@@ -9,4 +9,5 @@ public class WebServiceConstants {
 
 
     public static final String KEY_USER_LOGIN = "SignIn";
+    public static final String KEY_POST_INTERACTIONS = "SendInteractions";
 }
