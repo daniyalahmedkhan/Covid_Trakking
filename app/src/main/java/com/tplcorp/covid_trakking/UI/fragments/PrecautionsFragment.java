@@ -31,4 +31,8 @@ public class PrecautionsFragment extends BaseFragment {
     }
 
 
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+
+    }
 }

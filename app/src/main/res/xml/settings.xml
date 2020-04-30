@@ -1,0 +1,36 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        app:iconSpaceReserved="false"
+        app:key="notifications"
+        app:title="Notifcation sound" />
+   <!-- <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:key="visible"
+        app:title="Visiblity" />-->
+
+   <!-- <ListPreference
+        android:defaultValue="1"
+        android:dialogTitle="Select Language"
+        android:entries="@array/pref_lang_enteries"
+        android:entryValues="@array/pref_lang_values"
+        android:key="language"
+        android:negativeButtonText="@null"
+
+        android:positiveButtonText="@null"
+        android:summary="Specify the language for the app"
+        android:title="Choose language"
+        app:iconSpaceReserved="false" />-->
+
+    <EditTextPreference
+        android:dialogMessage="Your feedback matters to us"
+        android:dialogTitle="Feedback"
+        android:inputType="text"
+        app:iconSpaceReserved="false"
+        app:key="feedback"
+        app:positiveButtonText="Submit"
+        app:summary="Report technical issues or suggest new features"
+        app:title="Send feedback" />
+</PreferenceScreen>

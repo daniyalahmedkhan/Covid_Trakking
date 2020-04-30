@@ -1,12 +1,13 @@
 package com.tplcorp.covid_trakking.UI;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.os.Bundle;
 import android.view.MenuItem;
+
 import com.tplcorp.covid_trakking.R;
-import com.tplcorp.covid_trakking.UI.fragments.BaseFragment;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceFragmentCompat;
 
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -21,22 +22,22 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
-    public void initToolbar(String title , boolean isButton){
-        Toolbar toolbar =(Toolbar) findViewById(R.id.toolbar);
+    public void initToolbar(String title, boolean isButton) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        if(title != null)
+        if (title != null)
             toolbar.setTitle(title);
 
         setSupportActionBar(toolbar);
-       getSupportActionBar().setDisplayHomeAsUpEnabled(isButton);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(isButton);
 
 
     }
 
 
-    public void addDockableFragment(BaseFragment fragment) {
+    public void addDockableFragment(PreferenceFragmentCompat fragment) {
 
-        getFragmentManager().beginTransaction().
+        getSupportFragmentManager().beginTransaction().
                 replace(R.id.container, fragment).
                 addToBackStack(fragment.getClass().getSimpleName())
 
@@ -47,7 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-               onBackPressed();
+                onBackPressed();
             default:
                 return super.onOptionsItemSelected(item);
         }

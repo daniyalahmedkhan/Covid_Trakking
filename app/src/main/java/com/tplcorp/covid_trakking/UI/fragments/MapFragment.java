@@ -55,6 +55,11 @@ public class MapFragment extends BaseFragment implements  MapView.OnMapReadyCall
 
 
     @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 

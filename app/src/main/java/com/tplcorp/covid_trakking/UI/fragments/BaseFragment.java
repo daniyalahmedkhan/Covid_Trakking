@@ -12,9 +12,10 @@ import androidx.annotation.Nullable;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.UI.MainActivity;
 
+import androidx.preference.PreferenceFragmentCompat;
 import butterknife.ButterKnife;
 
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends PreferenceFragmentCompat {
 
 
     @Nullable
