@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.view.View;
@@ -19,11 +21,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.tplcorp.covid_trakking.Helper.PrefConstants;
+import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.UI.fragments.ConnectionsFragment;
 import com.tplcorp.covid_trakking.UI.fragments.HomeFragment;
+import com.tplcorp.covid_trakking.UI.fragments.Notification;
 import com.tplcorp.covid_trakking.UI.fragments.PrecautionsFragment;
 
 import butterknife.BindView;
@@ -81,63 +87,31 @@ public class MainActivity extends BaseActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-
                 switchScreen(item.getItemId());
                 return true;
-            public void onClick(View view) {
-                if (!(checkAffectedDate() >= 0 && checkAffectedDate() <= 14)) {
-                    showDialog();
-                } else {
-                    Toast.makeText(MainActivity.this, "You need to wait 14 days to mark again", Toast.LENGTH_SHORT).show();
-                }
 
             }
+
         });
-
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        if(getSupportFragmentManager().getBackStackEntryCount()>1)
-        {
-            super.onBackPressed();
-        }
-        else
-        {
-            finish();
-        }
-
-//            if (doubleBackToExitPressedOnce) {
-//                super.onBackPressed();
-//                return;
-//            }
+//    @Override
+//    public void onBackPressed() {
 //
+//        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+//            super.onBackPressed();
+//        } else {
+//            finish();
+//        }
 //
-//        this.doubleBackToExitPressedOnce = true;
-//        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-//
-//        new Handler().postDelayed(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                doubleBackToExitPressedOnce = false;
-//            }
-//        }, 2000);
-    }
+//    }
 
     private void switchScreen(int id) {
 
         switch (id) {
 
             case R.id.Home:
-             initFragment();
+                initFragment();
                 break;
 
             case R.id.Connections:
@@ -164,5 +138,22 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+               getFragmentManager().popBackStack();
+            case R.id.notification:
+                addDockableFragment(Notification.newInstance());
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

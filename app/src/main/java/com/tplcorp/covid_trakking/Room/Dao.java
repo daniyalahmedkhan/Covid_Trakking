@@ -6,6 +6,7 @@ import androidx.room.Query;
 import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
 import com.tplcorp.covid_trakking.Room.Tables.Notifications;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
+import com.tplcorp.covid_trakking.UI.fragments.Notification;
 
 import java.util.List;
 
@@ -36,5 +37,8 @@ public interface Dao {
 
     @Insert
     void insertNotification(Notifications notifications);
+
+    @Query("SELECT * FROM Notifications")
+    List<Notifications> getNotificationList();
 
 }

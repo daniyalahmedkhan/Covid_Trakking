@@ -23,12 +23,15 @@ public abstract class BaseFragment extends Fragment {
         View view = inflater.inflate(getFragmentLayout(), container, false);
         ButterKnife.bind(this, view);
 
-        ((MainActivity) getActivity()).initToolbar(getTitleBarName());
+        ((MainActivity) getActivity()).initToolbar(getTitleBarName() , isBackButton());
+
         return view;
     }
 
     public abstract int getFragmentLayout();
 
     public abstract String getTitleBarName();
+
+    public abstract boolean isBackButton();
 
 }

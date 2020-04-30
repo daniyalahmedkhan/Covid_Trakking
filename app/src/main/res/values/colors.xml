@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#F87C7C</color>
-    <color name="colorPrimaryDark">#0ABFBC</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimaryDark">#697ADF</color>
+    <color name="colorAccent">#697ADF</color>
 
 
 
@@ -48,16 +48,27 @@
     <color name="system_bars_color">#33000000</color>
 
     <!-- Menu colors based oncolors from Material Design Guidelines -->
-    <array name="menu_colors">
-        <item>#0ABFBC</item>
-        <item>#B04040</item>
-        <item>#0ABFBC</item>
-        <item>#F05452</item>
-        <item>#2C58B1</item>
+<!--    <array name="menu_colors">-->
+<!--        <item>#0ABFBC</item>-->
+<!--        <item>#B04040</item>-->
+<!--        <item>#0ABFBC</item>-->
+<!--        <item>#F05452</item>-->
+<!--        <item>#2C58B1</item>-->
 
 
 
-    </array>
+<!--    </array>-->
 
+
+        <array name="menu_colors">
+            <item>#E1DFDF</item>
+            <item>#E1DFDF</item>
+            <item>#E1DFDF</item>
+            <item>#E1DFDF</item>
+            <item>#E1DFDF</item>
+
+
+
+        </array>
 
 </resources>

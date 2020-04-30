@@ -3,8 +3,8 @@
     <!-- Menu item color (for text and icon) -->
 
     <!-- Checked state: white -->
-    <item android:state_checked="true" android:color="@color/white" />
+    <item android:state_checked="true" android:color="#4A5CC3" />
 
     <!-- Default state: white 70% -->
-    <item android:color="@color/md_grey_500"  />
+    <item android:color="@color/white"  />
 </selector>

@@ -25,5 +25,10 @@ public class PrecautionsFragment extends BaseFragment {
         return "Precautions";
     }
 
+    @Override
+    public boolean isBackButton() {
+        return false;
+    }
+
 
 }

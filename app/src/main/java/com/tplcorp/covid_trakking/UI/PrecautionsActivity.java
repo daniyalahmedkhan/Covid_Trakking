@@ -25,7 +25,7 @@ public class PrecautionsActivity extends BaseActivity {
 
         IV_manu.setVisibility(View.GONE);
         TV_home.setVisibility(View.GONE);
-        initToolbar("Precautions");
+        initToolbar("Precautions" , false);
 
     }
 }

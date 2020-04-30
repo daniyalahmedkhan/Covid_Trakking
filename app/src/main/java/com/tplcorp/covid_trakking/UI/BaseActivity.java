@@ -21,17 +21,18 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
-    public void initToolbar(String title){
+    public void initToolbar(String title , boolean isButton){
         Toolbar toolbar =(Toolbar) findViewById(R.id.toolbar);
 
         if(title != null)
             toolbar.setTitle(title);
 
         setSupportActionBar(toolbar);
-       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       getSupportActionBar().setDisplayHomeAsUpEnabled(isButton);
 
 
     }
+
 
     public void addDockableFragment(BaseFragment fragment) {
 

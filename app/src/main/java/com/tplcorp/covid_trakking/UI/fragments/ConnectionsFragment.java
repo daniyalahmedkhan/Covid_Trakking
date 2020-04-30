@@ -64,6 +64,11 @@ public class ConnectionsFragment extends BaseFragment {
         return "Active Connections";
     }
 
+    @Override
+    public boolean isBackButton() {
+        return false;
+    }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -109,9 +114,6 @@ public class ConnectionsFragment extends BaseFragment {
             adapter.notifyDataSetChanged();
         }
     };
-
-
-
 
 
     @Override
