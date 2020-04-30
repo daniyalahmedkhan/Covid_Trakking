@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group>
+
+        <item
+            android:id="@+id/Home"
+            android:icon="@drawable/connection"
+            android:title="Home" />
+
         <item
             android:id="@+id/Connections"
             android:icon="@drawable/connection"
@@ -15,7 +20,7 @@
             android:title="About" />
         <item
             android:id="@+id/Feedback"
-            android:icon="@drawable/feedback"
+            android:icon="@drawable/about"
             android:title="Feedback" />
-    </group>
+
 </menu>

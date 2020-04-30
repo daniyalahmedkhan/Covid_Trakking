@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:id="@+id/mainLinear"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/mainLinear">
 
         <include layout="@layout/toolbar" />
 
@@ -76,7 +84,7 @@
                         android:layout_height="56dp"
                         android:layout_marginHorizontal="32dp"
                         android:layout_marginTop="16dp"
-                        android:text="Are you Corona Positive?" />
+                        android:text="Tested positive for COVID-19?" />
 
                     <TextView
                         android:id="@+id/tested_button_text"
@@ -91,15 +99,31 @@
             </ScrollView>
 
         </LinearLayout>
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header_main"
+        app:itemIconSize="35dp"
+        app:itemIconTint="@color/maroon"
+        app:menu="@menu/main_drawer_menu">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="25.0dip"
+            android:layout_marginBottom="20.0dip"
+            android:gravity="center"
+            android:text="Version 1.0"
+            android:textColor="@color/black"
+            android:textSize="12.0dip" />
+
+    </com.google.android.material.navigation.NavigationView>
 
 
-
-</LinearLayout>
-
-
-
-
-
-
-
+</androidx.drawerlayout.widget.DrawerLayout>
 

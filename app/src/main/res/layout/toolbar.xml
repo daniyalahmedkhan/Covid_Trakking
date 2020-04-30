@@ -12,6 +12,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:src="@drawable/ic_action_name"
         android:id="@+id/IV_manu" />
 
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/TV_home"
         android:text="Home"
+        android:visibility="gone"
         android:textStyle="bold"
         android:textColor="@color/white"
         android:textSize="18dp"
