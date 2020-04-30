@@ -34,4 +34,30 @@
     <color name="peachy">#F05452</color>
     <color name="lightGray">#BDBDBD</color>
 
+
+<!--    Bottom navigation COlors-->
+
+    <color name="white_12">#1EFFFFFF</color>
+    <color name="white_30">#4CFFFFFF</color>
+    <color name="white_70">#B2FFFFFF</color>
+
+    <!-- Fake transparent (medium gray with ALMOST 0 in alpha channel) -->
+    <color name="fake_transparent">#017A7A7A</color>
+
+    <!-- Color for system bars (status bar and navigation bar) -->
+    <color name="system_bars_color">#33000000</color>
+
+    <!-- Menu colors based oncolors from Material Design Guidelines -->
+    <array name="menu_colors">
+        <item>#0ABFBC</item>
+        <item>#B04040</item>
+        <item>#0ABFBC</item>
+        <item>#F05452</item>
+        <item>#2C58B1</item>
+
+
+
+    </array>
+
+
 </resources>

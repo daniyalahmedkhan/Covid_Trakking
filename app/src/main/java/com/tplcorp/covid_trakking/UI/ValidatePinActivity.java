@@ -83,6 +83,8 @@ public class ValidatePinActivity extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+
+
                             if (task.isSuccessful()) {
 
 
@@ -122,7 +124,7 @@ public class ValidatePinActivity extends AppCompatActivity {
             public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
 
 
-                if(response.body()!=null&&response.body().get("RespCode").equals("1")&&response.body().get("RespMsg").equals("Success"))
+                if(response.body()!=null&&response.body().get("RespMsg").equals("Success"))
                 {
                     PrefsHelper.putString(PrefConstants.MOBILE, phoneNumer);
                     PrefsHelper.putBoolean(PrefConstants.AlreadyLoggedIn, true);
