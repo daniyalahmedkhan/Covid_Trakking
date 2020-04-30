@@ -21,8 +21,8 @@ public class BackgroundServiceHelper {
                 0, notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(context, "CHANNEL_ID")
-                .setContentTitle("TPL Contact Tracing Running in Background")
-                .setContentText("")
+                .setContentTitle("TPL Contact Tracing Enabled")
+                .setContentText("App is running in background")
                 .setSmallIcon(R.drawable.shield)
                 .setContentIntent(pendingIntent)
                 .build();

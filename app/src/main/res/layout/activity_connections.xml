@@ -8,8 +8,6 @@
     tools:context=".UI.ConnectionsActivity"
     android:background="#ECEAEA">
 
-<!--    <include layout="@layout/toolbar"/>-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,11 +24,32 @@
             android:visibility="gone"
             android:id="@+id/loading"/>
 
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:id="@+id/textNoConenction">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No Active Connection"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/RV_connection"/>
+
+
+
 
 </LinearLayout>
