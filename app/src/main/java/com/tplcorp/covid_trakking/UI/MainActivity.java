@@ -5,16 +5,22 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tplcorp.covid_trakking.R;
+import com.tplcorp.covid_trakking.Room.DatabaseClient;
+import com.tplcorp.covid_trakking.Room.MyDatabase;
+import com.tplcorp.covid_trakking.Room.Tables.Notifications;
 import com.tplcorp.covid_trakking.UI.fragments.CasesFragment;
 import com.tplcorp.covid_trakking.UI.fragments.ConnectionsFragment;
 import com.tplcorp.covid_trakking.UI.fragments.Feedback;
 import com.tplcorp.covid_trakking.UI.fragments.HomeFragment;
 import com.tplcorp.covid_trakking.UI.fragments.Notification;
 import com.tplcorp.covid_trakking.UI.fragments.PrecautionsFragment;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -32,6 +38,7 @@ public class MainActivity extends BaseActivity {
     FrameLayout container;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigation;
+    TextView TV_notification;
 
 
     @Override
@@ -47,6 +54,7 @@ public class MainActivity extends BaseActivity {
             navigationBarHeight = getResources().getDimensionPixelSize(resourceId);
         }
         bottomNavigation.setMinimumHeight(navigationBarHeight);
+        TV_notification = toolbar.findViewById(R.id.TV_notification);
 
 
         configBottomNavigation();
@@ -93,11 +101,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private void switchScreen(int id) {
-
+        getActiveNotification();
         switch (id) {
 
             case R.id.Home:
                 initFragment();
+
                 break;
 
             case R.id.Connections:
@@ -105,6 +114,7 @@ public class MainActivity extends BaseActivity {
 //                startActivity(Connections);
 
                 addDockableFragment(ConnectionsFragment.newInstance());
+
 
                 break;
             case R.id.Precautions:
@@ -122,6 +132,14 @@ public class MainActivity extends BaseActivity {
                 break;
 
         }
+
+    }
+
+
+    private void getActiveNotification(){
+        MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(this);
+        List<Notifications> list = myDatabase.daoAccess().getActiveNotification();
+        TV_notification.setText(String.valueOf(list.size()));
 
     }
 

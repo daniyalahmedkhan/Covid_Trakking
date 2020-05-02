@@ -42,7 +42,7 @@ public class CasesFragment extends BaseFragment {
 
     @Override
     public String getTitleBarName() {
-        return "Cases";
+        return "Dashboard";
     }
 
     @Override

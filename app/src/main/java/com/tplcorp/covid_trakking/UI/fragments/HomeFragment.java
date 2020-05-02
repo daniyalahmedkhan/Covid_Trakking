@@ -237,10 +237,14 @@ public class HomeFragment extends BaseFragment {
             long days = checkAffectedDate();
             if (days == 0) {
                 textPositive.setText("You have marked yourself COVID-19 positive today.");
-            } else {
+                textPositive.setVisibility(View.VISIBLE);
+            } else if (days > 0){
                 textPositive.setText("You had marked yourself COVID-19 positive " + days + " day ago.");
+                textPositive.setVisibility(View.VISIBLE);
+            }else{
+                textPositive.setVisibility(View.GONE);
             }
-            textPositive.setVisibility(View.VISIBLE);
+
         } else {
             textPositive.setVisibility(View.GONE);
         }

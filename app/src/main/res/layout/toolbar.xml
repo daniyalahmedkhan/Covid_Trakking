@@ -35,6 +35,25 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/TV_notification"
+            android:padding="10dp"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:background="@drawable/circle_shape"
+            android:backgroundTint="@color/md_red_800"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+
 </androidx.appcompat.widget.Toolbar>
 
 

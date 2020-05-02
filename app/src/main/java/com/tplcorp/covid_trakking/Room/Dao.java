@@ -48,4 +48,11 @@ public interface Dao {
 
     @Query("SELECT * FROM Notifications order by TIME_STAMP desc")
     List<Notifications> getNotificationList();
+
+    @Query("update Notifications set IS_ACTIVE = 'false'")
+    void updateNotification();
+
+
+    @Query("SELECT * FROM Notifications where IS_ACTIVE == 'true' order by TIME_STAMP desc ")
+    List<Notifications> getActiveNotification();
 }
