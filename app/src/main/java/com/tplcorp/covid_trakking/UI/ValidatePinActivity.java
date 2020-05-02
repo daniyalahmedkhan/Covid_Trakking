@@ -87,8 +87,12 @@ public class ValidatePinActivity extends AppCompatActivity {
 
                             if (task.isSuccessful()) {
 
-
-                                loginUer(mobileNumber.trim());
+                                //PrefsHelper.putString(PrefConstants.MOBILE, mobileNumber.trim());
+                                PrefsHelper.putBoolean(PrefConstants.AlreadyLoggedIn, true);
+                                Intent i = new Intent(ValidatePinActivity.this, MainActivity.class);
+                                startActivity(i);
+                                finish();
+                               // loginUer(mobileNumber.trim());
 
                             } else {
                                 if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
@@ -112,7 +116,7 @@ public class ValidatePinActivity extends AppCompatActivity {
     {
 
         Map<String, Object> jsonParams = new ArrayMap<>();
-//put something inside the map, could be null
+        //put something inside the map, could be null
         jsonParams.put("PhoneNumber", phoneNumer);
         jsonParams.put("DeviceToken", FirebaseInstanceId.getInstance().getToken());
 
@@ -126,11 +130,7 @@ public class ValidatePinActivity extends AppCompatActivity {
 
                 if(response.body()!=null&&response.body().get("RespMsg").equals("Success"))
                 {
-                    PrefsHelper.putString(PrefConstants.MOBILE, phoneNumer);
-                    PrefsHelper.putBoolean(PrefConstants.AlreadyLoggedIn, true);
-                    Intent i = new Intent(ValidatePinActivity.this, MainActivity.class);
-                    startActivity(i);
-                    finish();
+
                 }
                 else
                 {

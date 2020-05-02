@@ -10,7 +10,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+       >
 
         <TextView
             android:layout_width="match_parent"
@@ -44,8 +46,7 @@
                     android:id="@+id/home_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:paddingHorizontal="32dp"
+                    android:paddingHorizontal="20dp"
                     android:text="You’re all set!"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                     android:textColor="@color/black"
@@ -57,7 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:paddingHorizontal="32dp"
+                    android:paddingHorizontal="20dp"
                     android:text="Thank you for helping protect your communities. You will be notified of potential contact to COVID-19.." />
 
                 <TextView
@@ -65,6 +66,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="32dp"
                     android:text="It works best when everyone uses it."
+                    android:layout_marginTop="25dp"
                     android:textAlignment="center" />
 
                 <Button
@@ -73,14 +75,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginHorizontal="32dp"
-                    android:layout_marginTop="16dp"
-                    android:text="Tested positive for COVID-19?" />
+                    android:layout_marginTop="5dp"
+                    android:text="Are you COVID-19 Positive?" />
 
                 <TextView
                     android:id="@+id/tested_button_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="32dp"
+                    android:layout_marginTop="15dp"
                     android:text="Share your result anonymously to help your community stay safe."
                     android:textAlignment="center" />
 

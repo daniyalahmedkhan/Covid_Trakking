@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tplcorp.covid_trakking.R;
+import com.tplcorp.covid_trakking.UI.fragments.CasesFragment;
 import com.tplcorp.covid_trakking.UI.fragments.ConnectionsFragment;
 import com.tplcorp.covid_trakking.UI.fragments.Feedback;
 import com.tplcorp.covid_trakking.UI.fragments.HomeFragment;
@@ -113,7 +114,7 @@ public class MainActivity extends BaseActivity {
                 addDockableFragment(new PrecautionsFragment());
                 break;
             case R.id.About:
-                Toast.makeText(this, "About not configured", Toast.LENGTH_SHORT).show();
+                addDockableFragment(new CasesFragment());
                 break;
             case R.id.Feedback:
                 //initToolbar("Feedback" , false);

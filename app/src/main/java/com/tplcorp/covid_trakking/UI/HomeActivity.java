@@ -71,16 +71,16 @@ public class HomeActivity extends BaseActivity {
         }
         bottom_navigation.setMinimumHeight(navigationBarHeight);
 
-        tested_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!(checkAffectedDate() >= 0 && checkAffectedDate() <= 14)) {
-                    showAlertDialog();
-                } else {
-                    Toast.makeText(HomeActivity.this, "You need to wait 14 days to mark again", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+//        tested_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (!(checkAffectedDate() >= 0 && checkAffectedDate() <= 14)) {
+//                    showAlertDialog();
+//                } else {
+//                    Toast.makeText(HomeActivity.this, "You need to wait 14 days to mark again", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
 
         configBottomNavigation();
 
@@ -167,36 +167,36 @@ public class HomeActivity extends BaseActivity {
     }
 
 
-    public void showAlertDialog() {
-
-        AlertDialog alertDialog = new AlertDialog.Builder(this)
-                .setTitle("Report COVID-19")
-                .setMessage("Are you sure ?")
-
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        PrefsHelper.putString(PrefConstants.AFFECTED, "1");
-                        CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
-                        myDatabase.daoAccess().deleteCovidAffects();
-                        myDatabase.daoAccess().insertAffectedRecord(covidAffected);
-                        checkBannerState();
-                    }
-                })
-
-                // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        PrefsHelper.putString(PrefConstants.AFFECTED, "0");
-                        checkBannerState();
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-
-    }
+//    public void showAlertDialog() {
+//
+//        AlertDialog alertDialog = new AlertDialog.Builder(this)
+//                .setTitle("Report COVID-19")
+//                .setMessage("Are you sure ?")
+//
+//                // Specifying a listener allows you to take an action before dismissing the dialog.
+//                // The dialog is automatically dismissed when a dialog button is clicked.
+//                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        PrefsHelper.putString(PrefConstants.AFFECTED, "1");
+//                        CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
+//                        myDatabase.daoAccess().deleteCovidAffects();
+//                        myDatabase.daoAccess().insertAffectedRecord(covidAffected);
+//                        checkBannerState();
+//                    }
+//                })
+//
+//                // A null listener allows the button to dismiss the dialog and take no further action.
+//                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        PrefsHelper.putString(PrefConstants.AFFECTED, "0");
+//                        checkBannerState();
+//                    }
+//                })
+//                .setIcon(android.R.drawable.ic_dialog_alert)
+//                .show();
+//
+//    }
 
     private long checkAffectedDate() {
 

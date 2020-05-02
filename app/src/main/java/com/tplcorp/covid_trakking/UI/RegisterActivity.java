@@ -2,23 +2,35 @@ package com.tplcorp.covid_trakking.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.ArrayMap;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider.OnVerificationStateChangedCallbacks;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.R;
+import com.tplcorp.covid_trakking.retrofit.WebServiceFactory;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONObject;
+
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -65,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
                 new OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                        PrefsHelper.putString(PrefConstants.MOBILE, mobileNumber.trim());
+                        PrefsHelper.putString(PrefConstants.MOBILE, "+92" + updated_mobilenumber);
                         PrefsHelper.putBoolean(PrefConstants.AlreadyLoggedIn, true);
                         Intent i = new Intent(RegisterActivity.this, MainActivity.class);
                         startActivity(i);
@@ -109,6 +121,5 @@ public class RegisterActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
-
 }
 

@@ -11,19 +11,41 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="No New Notification"
-            android:textSize="18dp"
-            android:textStyle="bold"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/Notification"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:id="@+id/textNotification"
-            android:visibility="gone"/>
+            android:gravity="center">
 
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/imageView"
+                android:layout_width="150dp"
+                android:layout_height="100dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_autoPlay="true"
+                app:lottie_rawRes="@raw/no_notification"
+                app:lottie_loop="true"
+                app:lottie_speed="0.7" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No New Notification"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+
+
+        </LinearLayout>
 
 
         <androidx.recyclerview.widget.RecyclerView

@@ -2,6 +2,7 @@ package com.tplcorp.covid_trakking.UI.fragments;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +25,8 @@ public class Notification extends BaseFragment {
 
     @BindView(R.id.RV_notification)
     RecyclerView RV_notification;
-    @BindView(R.id.textNotification)
-    TextView textNotification;
+    @BindView(R.id.Notification)
+    LinearLayout textNotification;
 
     NotificationAdapter adapter;
 

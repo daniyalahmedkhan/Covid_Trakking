@@ -30,7 +30,7 @@ public interface Dao {
     @Query("SELECT * FROM CovidAffected")
     List<CovidAffected> affectedList();
 
-    @Query("SELECT * FROM TracingData")
+    @Query("SELECT * FROM TracingData where IS_UPLOADED == 'N'")
     List<TracingData> getTracingData();
 
     @Query("Delete from CovidAffected")

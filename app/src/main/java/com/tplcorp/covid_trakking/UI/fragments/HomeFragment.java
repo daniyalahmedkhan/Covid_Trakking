@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.ArrayMap;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
@@ -25,6 +27,7 @@ import com.tplcorp.covid_trakking.Room.MyDatabase;
 import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
+import com.tplcorp.covid_trakking.UI.ValidatePinActivity;
 import com.tplcorp.covid_trakking.retrofit.WebServiceFactory;
 
 import java.util.ArrayList;
@@ -34,7 +37,11 @@ import java.util.Map;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+
+import org.json.JSONObject;
+
 import butterknife.BindView;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -81,6 +88,8 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+
+        loginUer(PrefsHelper.getString(PrefConstants.MOBILE));
 
     }
 
@@ -140,36 +149,36 @@ public class HomeFragment extends BaseFragment {
 //    }
 
 
-    public void showAlertDialog() {
-
-        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                .setTitle("Report COVID-19")
-                .setMessage("Are you sure ?")
-
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        PrefsHelper.putString(PrefConstants.AFFECTED, "1");
-                        CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
-                        myDatabase.daoAccess().deleteCovidAffects();
-                        myDatabase.daoAccess().insertAffectedRecord(covidAffected);
-                        checkBannerState();
-                    }
-                })
-
-                // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        PrefsHelper.putString(PrefConstants.AFFECTED, "0");
-                        checkBannerState();
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-
-    }
+//    public void showAlertDialog() {
+//
+//        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+//                .setTitle("Report COVID-19")
+//                .setMessage("Are you sure ?")
+//
+//                // Specifying a listener allows you to take an action before dismissing the dialog.
+//                // The dialog is automatically dismissed when a dialog button is clicked.
+//                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        PrefsHelper.putString(PrefConstants.AFFECTED, "1");
+//                        CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
+//                        myDatabase.daoAccess().deleteCovidAffects();
+//                        myDatabase.daoAccess().insertAffectedRecord(covidAffected);
+//                        checkBannerState();
+//                    }
+//                })
+//
+//                // A null listener allows the button to dismiss the dialog and take no further action.
+//                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        PrefsHelper.putString(PrefConstants.AFFECTED, "0");
+//                        checkBannerState();
+//                    }
+//                })
+//                .setIcon(android.R.drawable.ic_dialog_alert)
+//                .show();
+//
+//    }
 
 
     private void uploadDataToServer(String mobileNumber) {
@@ -227,9 +236,9 @@ public class HomeFragment extends BaseFragment {
         if (PrefsHelper.getString(PrefConstants.AFFECTED, "0").equals("1")) {
             long days = checkAffectedDate();
             if (days == 0) {
-                textPositive.setText("You have marked yourself Covid-19 positive today");
+                textPositive.setText("You have marked yourself COVID-19 positive today.");
             } else {
-                textPositive.setText("You had marked yourself Covid-19 positive " + days + " day ago");
+                textPositive.setText("You had marked yourself COVID-19 positive " + days + " day ago.");
             }
             textPositive.setVisibility(View.VISIBLE);
         } else {
@@ -318,5 +327,39 @@ public class HomeFragment extends BaseFragment {
     @Override
     public boolean isBackButton() {
         return false;
+    }
+
+    private void loginUer(String phoneNumer)
+    {
+
+        Map<String, Object> jsonParams = new ArrayMap<>();
+        //put something inside the map, could be null
+        jsonParams.put("PhoneNumber", phoneNumer);
+        jsonParams.put("DeviceToken", FirebaseInstanceId.getInstance().getToken());
+
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),(new JSONObject(jsonParams)).toString());
+
+
+        WebServiceFactory.getInstance().loginUser(body).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+
+
+                if(response.body()!=null&&response.body().get("RespMsg").equals("Success"))
+                {
+
+                }
+                else
+                {
+                    Toast.makeText(getActivity(), response.body().get("RespMsg").toString()+"", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+
+            }
+        });
     }
 }

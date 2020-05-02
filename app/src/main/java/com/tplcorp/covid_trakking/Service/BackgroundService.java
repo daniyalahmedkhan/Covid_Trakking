@@ -1,6 +1,7 @@
 package com.tplcorp.covid_trakking.Service;
 
 import android.app.Notification;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
@@ -29,12 +30,22 @@ import com.tplcorp.covid_trakking.Helper.NotificationHelper;
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.Interface.ScanningCallback;
+import com.tplcorp.covid_trakking.Model.AffectedDataRequest;
+import com.tplcorp.covid_trakking.Model.AffectedUser;
 import com.tplcorp.covid_trakking.Model.Connections;
+import com.tplcorp.covid_trakking.Room.DatabaseClient;
+import com.tplcorp.covid_trakking.Room.MyDatabase;
+import com.tplcorp.covid_trakking.Room.Tables.TracingData;
+import com.tplcorp.covid_trakking.retrofit.WebServiceFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BackgroundService extends Service {
 
@@ -173,6 +184,9 @@ public class BackgroundService extends Service {
                 scanningResult();
                 startAdvertising();
                 setTimeout();
+
+                //uploadDataToServer("+923432929045");
+
             }
         }, 10000);
 
@@ -306,6 +320,5 @@ public class BackgroundService extends Service {
             GeneralHelper.showToastLooper("Advertising successfully started", BackgroundService.this);
         }
     }
-
 
 }

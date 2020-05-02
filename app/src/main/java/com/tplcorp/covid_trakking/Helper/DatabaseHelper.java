@@ -2,12 +2,15 @@ package com.tplcorp.covid_trakking.Helper;
 
 import android.content.Context;
 
+import com.tplcorp.covid_trakking.Model.AffectedUser;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
 import com.tplcorp.covid_trakking.Room.MyDatabase;
 import com.tplcorp.covid_trakking.Room.Tables.Notifications;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class DatabaseHelper {
 
@@ -44,5 +47,32 @@ public class DatabaseHelper {
         myDatabase.daoAccess().insertNotification(notifications);
 
 
+    }
+
+
+    public static List<AffectedUser> getAffectedUsersFromDB(Context context) {
+
+        MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);
+
+        List<AffectedUser> arrData = new ArrayList<>();
+        myDatabase = DatabaseClient.getDatabaseInstance(context);
+        List<TracingData> affectedList = myDatabase.daoAccess().getTracingData();
+
+        if (affectedList.size() > 0) {
+
+            for (TracingData model : affectedList) {
+
+                AffectedUser entity = new AffectedUser();
+                entity.setPhoneNumber(model.getUSER_MOBILE());
+                entity.setInteractionTime(String.valueOf(model.getTIME_STAMP()));
+                entity.setIsAffected(Integer.valueOf(model.getIS_AFFECTED()));
+                entity.setDistance(model.getDISTANCE());
+                arrData.add(entity);
+
+            }
+
+        }
+
+        return arrData;
     }
 }
