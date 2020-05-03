@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -32,6 +34,9 @@ public class MainActivity extends BaseActivity {
     FrameLayout container;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigation;
+
+    TextView textNotification;
+    int mCartItemCount = 10;
 
 
     @Override
@@ -127,8 +132,21 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
+
+        final MenuItem menuItem = menu.findItem(R.id.notification);
+
+        View actionView = menuItem.getActionView();
+        textNotification = (TextView) actionView.findViewById(R.id.cart_badge);
+
+        setupBadge();
+
+        actionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(menuItem);
+            }
+        });
         return true;
     }
 
