@@ -68,8 +68,11 @@ public class Notification extends BaseFragment {
             RV_notification.setLayoutManager(mLayoutManager);
             RV_notification.setItemAnimator(new DefaultItemAnimator());
             RV_notification.setAdapter(adapter);
+            myDatabase.daoAccess().updateNotification();
         }
     }
+
+   // private void updateNotification()
 
 
     @Override
