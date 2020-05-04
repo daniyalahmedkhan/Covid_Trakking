@@ -8,6 +8,7 @@ import com.tplcorp.covid_trakking.Room.Tables.Notifications;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 import com.tplcorp.covid_trakking.UI.fragments.Notification;
 
+import java.util.Date;
 import java.util.List;
 
 @androidx.room.Dao
@@ -21,6 +22,15 @@ public interface Dao {
     @Insert
     void insertRecord(TracingData tracingData);
 
+    @Query("UPDATE TracingData set TIME_STAMP = :date , DATE_ = :date2 , IS_AFFECTED = :affected , LAT  = :lat , LNG = :lng where USER_MOBILE = :USERMOBILE")
+    void updateData(long date , String USERMOBILE , String lat , String lng , String date2 , String affected);
+
+
+    @Query("DELETE FROM TracingData WHERE TIME_STAMP < :date")
+    void deleteData(long date);
+
+    @Query("SELECT * FROM TracingData WHERE TIME_STAMP < :date")
+    List<TracingData> testData(long date);
 
     // ******** CovidAffected *********** //
 
@@ -32,6 +42,9 @@ public interface Dao {
 
     @Query("SELECT * FROM TracingData where IS_UPLOADED == 'N'")
     List<TracingData> getTracingData();
+
+    @Query("UPDATE TracingData SET IS_UPLOADED = 'Y'")
+    void updateUploadList();
 
     @Query("Delete from CovidAffected")
     void deleteCovidAffects();

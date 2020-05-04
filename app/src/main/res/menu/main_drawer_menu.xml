@@ -8,7 +8,7 @@
 
     <item
         android:id="@+id/About"
-        android:icon="@drawable/cases"
+        android:icon="@drawable/about"
         android:title="Dashboard" />
     <item
         android:id="@+id/Connections"

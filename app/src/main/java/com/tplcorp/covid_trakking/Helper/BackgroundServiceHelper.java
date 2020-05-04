@@ -81,14 +81,12 @@ public class BackgroundServiceHelper {
     };
 
 
-    private void uploadDataToServer(String mobileNumber , Context context) {
-
-        // delete old 15 days data....
+    public static void uploadDataToServer(String mobileNumber , Context context) {
 
         MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);
         List<AffectedUser> list = DatabaseHelper.getAffectedUsersFromDB(context);
 
-        if (list.size() >= 500 && GeneralHelper.isNetworkAvailable(context)){
+        if (GeneralHelper.isNetworkAvailable(context)){
             AffectedDataRequest model = new AffectedDataRequest();
             model.setUserPhoneNumber(mobileNumber);
             model.setData(list);
@@ -102,17 +100,18 @@ public class BackgroundServiceHelper {
                         // Toast.makeText(this, "Data Uploaded successfully", Toast.LENGTH_SHORT).show();
                         // myDatabase.daoAccess().deleteTracingData();
                         Log.d("DATADATA", "Date uploaded");
+                        DatabaseHelper.updateUploadData(context);
 
                     } else {
 
                         // Toast.makeText(getActivity(), response.body().get("RespMsg").toString(), Toast.LENGTH_SHORT).show();
-                        Log.d("DATADATA", "Date failed");
+                        Log.d("DATADATA", "Data failed");
                     }
                 }
                 @Override
                 public void onFailure(Call<Map<String, Object>> call, Throwable t) {
                     t.printStackTrace();
-                    Log.d("DATADATA", "Date failed " + t);
+                    Log.d("DATADATA", "Data failed Failure" + t);
 
                 }
             });

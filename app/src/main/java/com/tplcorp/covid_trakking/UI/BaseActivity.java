@@ -7,6 +7,7 @@ import com.tplcorp.covid_trakking.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceFragmentCompat;
 
 
@@ -37,12 +38,22 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void addDockableFragment(PreferenceFragmentCompat fragment) {
 
-        getSupportFragmentManager().beginTransaction().
-                replace(R.id.container, fragment).
-                addToBackStack(fragment.getClass().getSimpleName())
+        String backStateName =  fragment.getClass().getName();
+        String fragmentTag = backStateName;
 
-                .commit();
+        FragmentManager manager = ((AppCompatActivity) this).getSupportFragmentManager();
+        boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
+
+        if (!fragmentPopped && manager.findFragmentByTag(fragmentTag) == null){
+            getSupportFragmentManager().beginTransaction().
+                    replace(R.id.container, fragment , fragmentTag).
+                    addToBackStack(backStateName)
+                    .commit();
+        }
+
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -32,13 +32,17 @@ public class DatabaseHelper {
         }
 
         MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);
-        //if (!myDatabase.daoAccess().checkUserData(Mobile, GeneralHelper.todayDate())) {
+        if (!myDatabase.daoAccess().checkUserData(Mobile, GeneralHelper.todayDate())) {
             TracingData tracingData = new TracingData(Mobile, Affected, Lat, Lng, DIS ,GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate(), "N");
             myDatabase.daoAccess().insertRecord(tracingData);
-        //}
+        }else{
+            myDatabase.daoAccess().updateData(GeneralHelper.todayDate_Long() , Mobile , Lat , Lng , GeneralHelper.todayDate() , Affected);
+        }
+
+        // delete data older than 28 days
+        myDatabase.daoAccess().deleteData(GeneralHelper.dateToDelete(28));
 
     }
-
 
     public static void insertNotificationDB(Context context , String affected , Date date , String date_ , boolean isActive){
 
@@ -58,6 +62,9 @@ public class DatabaseHelper {
         myDatabase = DatabaseClient.getDatabaseInstance(context);
         List<TracingData> affectedList = myDatabase.daoAccess().getTracingData();
 
+     //   List<TracingData> affectedList = new ArrayList<>();
+     //   affectedList.add(new TracingData("+923432929045" , "0" , "0.25" , "0.25" , "25" , GeneralHelper.todayDate_DATE() , GeneralHelper.todayDate() , "N"));
+
         if (affectedList.size() > 0) {
 
             for (TracingData model : affectedList) {
@@ -74,5 +81,11 @@ public class DatabaseHelper {
         }
 
         return arrData;
+    }
+
+
+    public static void updateUploadData(Context context){
+        MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);
+        myDatabase.daoAccess().updateUploadList();
     }
 }

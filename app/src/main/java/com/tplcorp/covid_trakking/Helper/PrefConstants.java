@@ -5,6 +5,8 @@ public interface PrefConstants {
     public String MOBILE = "MOBILE";
     public String AFFECTED = "AFFECTED";
     public String AlreadyLoggedIn = "AlreadyLoggedIn";
+    public String REGISTER = "Register";
+    public String CHECK_FIRST_OPEN = "FirstOpen";
     public String LAT = "LAT";
     public String LNG = "LNG";
     public String TEMP_DISTANCE = "TEMP_DISTANCE";

@@ -46,13 +46,14 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.karumi:dexter:6.1.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-analytics:17.4.0'
 
     // Add the Firebase SDK for Crashlytics.
     implementation 'com.google.firebase:firebase-crashlytics:17.0.0'
     implementation 'com.google.firebase:firebase-messaging:20.1.6'
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.firebase:firebase-inappmessaging-display:19.0.6'
 
     //Room Database
     implementation 'androidx.room:room-runtime:2.2.5'
@@ -87,6 +88,9 @@ dependencies {
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.preference:preference:1.1.0'
+
+    //sdp
+    implementation 'com.intuit.sdp:sdp-android:1.0.5'
 
 
     implementation 'com.jakewharton:butterknife:10.0.0'

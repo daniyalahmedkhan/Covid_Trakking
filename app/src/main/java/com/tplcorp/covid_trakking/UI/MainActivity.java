@@ -105,18 +105,15 @@ public class MainActivity extends BaseActivity {
     }
 
     private void switchScreen(int id) {
-        getActiveNotification();
         switch (id) {
 
             case R.id.Home:
                 initFragment();
-
                 break;
 
             case R.id.Connections:
 //                Intent Connections = new Intent(MainActivity.this, ConnectionsActivity.class);
 //                startActivity(Connections);
-
                 addDockableFragment(ConnectionsFragment.newInstance());
 
 
@@ -143,7 +140,7 @@ public class MainActivity extends BaseActivity {
     private void getActiveNotification(){
         MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(this);
         List<Notifications> list = myDatabase.daoAccess().getActiveNotification();
-        TV_notification.setText(String.valueOf(list.size()));
+        textNotification.setText(String.valueOf(list.size()));
 
     }
 
@@ -156,7 +153,7 @@ public class MainActivity extends BaseActivity {
         View actionView = menuItem.getActionView();
         textNotification = (TextView) actionView.findViewById(R.id.cart_badge);
 
-        setupBadge();
+        getActiveNotification();
 
         actionView.setOnClickListener(new View.OnClickListener() {
             @Override

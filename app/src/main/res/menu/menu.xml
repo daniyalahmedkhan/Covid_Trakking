@@ -7,7 +7,7 @@
         app:showAsAction="always"
         android:id="@+id/notification"
         android:icon="@drawable/ic_action_name"
-        android:actionLayout="@layout/custom_notification"
+        app:actionLayout="@layout/custom_notification"
         >
     </item>
 

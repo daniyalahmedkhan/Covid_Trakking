@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.tplcorp.covid_trakking.Helper.BackgroundServiceHelper;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
@@ -28,6 +29,7 @@ import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
 import com.tplcorp.covid_trakking.UI.ValidatePinActivity;
+import com.tplcorp.covid_trakking.retrofit.WebService;
 import com.tplcorp.covid_trakking.retrofit.WebServiceFactory;
 
 import java.util.ArrayList;
@@ -67,16 +69,8 @@ public class HomeFragment extends BaseFragment {
     TextView testedButtonText;
     @BindView(R.id.mainLinear)
     LinearLayout mainLinear;
-    private ProgressDialog dialog;
+    boolean firstOpen = true;
 
-
-//    @Nullable
-//    @Override
-//    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.fragment_home, container, false);
-//        unbinder = ButterKnife.bind(this, view);
-//        return view;
-//    }
 
     public static HomeFragment newInstance() {
 
@@ -88,8 +82,10 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        if (!(PrefsHelper.getBoolean(PrefConstants.REGISTER, false))) {
+            loginUer(PrefsHelper.getString(PrefConstants.MOBILE));
+        }
 
-        loginUer(PrefsHelper.getString(PrefConstants.MOBILE));
 
     }
 
@@ -125,97 +121,15 @@ public class HomeFragment extends BaseFragment {
             mainLinear.setVisibility(View.VISIBLE);
             checkBannerState();
             getActivity().startService(new Intent(getActivity(), BackgroundService.class));
+            if (firstOpen){
+                checkUserIsInfected();
+            }
+
         }
 
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        if (doubleBackToExitPressedOnce) {
-//            super.onBackPressed();
-//            return;
-//        }
-//
-//        this.doubleBackToExitPressedOnce = true;
-//        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-//
-//        new Handler().postDelayed(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                doubleBackToExitPressedOnce = false;
-//            }
-//        }, 2000);
-//    }
 
-
-//    public void showAlertDialog() {
-//
-//        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-//                .setTitle("Report COVID-19")
-//                .setMessage("Are you sure ?")
-//
-//                // Specifying a listener allows you to take an action before dismissing the dialog.
-//                // The dialog is automatically dismissed when a dialog button is clicked.
-//                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        PrefsHelper.putString(PrefConstants.AFFECTED, "1");
-//                        CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
-//                        myDatabase.daoAccess().deleteCovidAffects();
-//                        myDatabase.daoAccess().insertAffectedRecord(covidAffected);
-//                        checkBannerState();
-//                    }
-//                })
-//
-//                // A null listener allows the button to dismiss the dialog and take no further action.
-//                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        PrefsHelper.putString(PrefConstants.AFFECTED, "0");
-//                        checkBannerState();
-//                    }
-//                })
-//                .setIcon(android.R.drawable.ic_dialog_alert)
-//                .show();
-//
-//    }
-
-
-    private void uploadDataToServer(String mobileNumber) {
-
-
-        AffectedDataRequest model = new AffectedDataRequest();
-        model.setUserPhoneNumber(mobileNumber);
-        model.setData(getAffectedUsersFromDB());
-
-
-        dialog = new ProgressDialog(getActivity());
-        dialog.setCancelable(false);
-        dialog.setTitle("Please wait data uploading ...");
-        dialog.show();
-
-        WebServiceFactory.getInstance().postInteractionsData(model).enqueue(new Callback<Map<String, Object>>() {
-            @Override
-            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
-
-
-                dialog.dismiss();
-                if (response.body() != null && response.body().get("RespMsg").toString().equalsIgnoreCase("Success")) {
-                    Toast.makeText(getActivity(), "Data Uploaded successfully", Toast.LENGTH_SHORT).show();
-                    myDatabase.daoAccess().deleteTracingData();
-                } else {
-                    Toast.makeText(getActivity(), response.body().get("RespMsg").toString(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
-                dialog.dismiss();
-                t.printStackTrace();
-
-            }
-        });
-    }
 
     private long checkAffectedDate() {
 
@@ -238,10 +152,10 @@ public class HomeFragment extends BaseFragment {
             if (days == 0) {
                 textPositive.setText("You have marked yourself COVID-19 positive today.");
                 textPositive.setVisibility(View.VISIBLE);
-            } else if (days > 0){
+            } else if (days > 0) {
                 textPositive.setText("You had marked yourself COVID-19 positive " + days + " day ago.");
                 textPositive.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 textPositive.setVisibility(View.GONE);
             }
 
@@ -249,29 +163,6 @@ public class HomeFragment extends BaseFragment {
             textPositive.setVisibility(View.GONE);
         }
 
-    }
-
-    private List<AffectedUser> getAffectedUsersFromDB() {
-
-        List<AffectedUser> arrData = new ArrayList<>();
-        myDatabase = DatabaseClient.getDatabaseInstance(getActivity());
-        List<TracingData> affectedList = myDatabase.daoAccess().getTracingData();
-        if (affectedList.size() > 0) {
-
-            for (TracingData model : affectedList) {
-
-                AffectedUser entity = new AffectedUser();
-                entity.setPhoneNumber(model.getUSER_MOBILE());
-                entity.setInteractionTime(String.valueOf(model.getTIME_STAMP()));
-                entity.setIsAffected(Integer.valueOf(model.getIS_AFFECTED()));
-                entity.setDistance(model.getDISTANCE());
-                arrData.add(entity);
-
-            }
-
-        }
-
-        return arrData;
     }
 
     public void showCustomDialog() {
@@ -288,11 +179,11 @@ public class HomeFragment extends BaseFragment {
         dialogYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PrefsHelper.putString(PrefConstants.AFFECTED, "1");
+              //  PrefsHelper.putString(PrefConstants.AFFECTED, "1");
                 CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
                 myDatabase.daoAccess().deleteCovidAffects();
                 myDatabase.daoAccess().insertAffectedRecord(covidAffected);
-                checkBannerState();
+              //  checkBannerState();
                 dialog.dismiss();
             }
         });
@@ -333,15 +224,14 @@ public class HomeFragment extends BaseFragment {
         return false;
     }
 
-    private void loginUer(String phoneNumer)
-    {
+    private void loginUer(String phoneNumer) {
 
         Map<String, Object> jsonParams = new ArrayMap<>();
         //put something inside the map, could be null
         jsonParams.put("PhoneNumber", phoneNumer);
         jsonParams.put("DeviceToken", FirebaseInstanceId.getInstance().getToken());
 
-        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"),(new JSONObject(jsonParams)).toString());
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), (new JSONObject(jsonParams)).toString());
 
 
         WebServiceFactory.getInstance().loginUser(body).enqueue(new Callback<Map<String, Object>>() {
@@ -349,13 +239,10 @@ public class HomeFragment extends BaseFragment {
             public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
 
 
-                if(response.body()!=null&&response.body().get("RespMsg").equals("Success"))
-                {
-
-                }
-                else
-                {
-                    Toast.makeText(getActivity(), response.body().get("RespMsg").toString()+"", Toast.LENGTH_SHORT).show();
+                if (response.body() != null && response.body().get("RespMsg").equals("Success")) {
+                    PrefsHelper.putBoolean(PrefConstants.REGISTER, true);
+                } else {
+                    //Toast.makeText(getActivity(), response.body().get("RespMsg").toString() + "", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -365,5 +252,34 @@ public class HomeFragment extends BaseFragment {
 
             }
         });
+    }
+
+    private void checkUserIsInfected() {
+
+        firstOpen = false;
+        Map<String, Object> jsonParams = new ArrayMap<>();
+
+        jsonParams.put("PhoneNumber", PrefsHelper.getString(PrefConstants.MOBILE));
+
+        RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), (new JSONObject(jsonParams)).toString());
+
+        WebServiceFactory.getInstance().getInfected(body).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+
+                if (response.body() != null) {
+                    if (response.body().get("RespCode").equals(1) || response.body().get("RespCode").equals(1.0)) {
+                        BackgroundServiceHelper.uploadDataToServer(PrefsHelper.getString(PrefConstants.MOBILE) , getActivity());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+
+            }
+        });
+
     }
 }

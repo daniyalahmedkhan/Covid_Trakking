@@ -174,12 +174,39 @@ public class GeneralHelper {
     public static Date todayDate_DATE(){
 
         Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-
-        String formattedDate = df.format(c);
-
         return c;
     }
+
+    public static long todayDate_Long(){
+
+        Calendar calendar = Calendar.getInstance();
+
+        return  calendar.getTimeInMillis();
+    }
+
+    public static long dateToDelete(int days){
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(calendar.getTime());
+        calendar.add(Calendar.DAY_OF_YEAR, -days);
+        Date newDate = calendar.getTime();
+
+        long timeInMilliseconds = newDate.getTime();
+
+        return timeInMilliseconds;
+    }
+
+    public static Date test(int days){
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(calendar.getTime());
+        calendar.add(Calendar.DAY_OF_YEAR, -days);
+        Date newDate = calendar.getTime();
+
+
+        return newDate;
+    }
+
 
     public static void sendMessageToActivity(Context context , List<Connections> connectionsList) {
 
