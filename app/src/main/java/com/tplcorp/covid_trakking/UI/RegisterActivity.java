@@ -96,7 +96,8 @@ public class RegisterActivity extends AppCompatActivity {
                         GeneralHelper.showToast(RegisterActivity.this, "Code sent");
 
                       //  mVerificationId = verificationId;
-
+                        PrefsHelper.putString(PrefConstants.MOBILE, "+92" + updated_mobilenumber);
+                        PrefsHelper.putBoolean(PrefConstants.AlreadyLoggedIn, true);
                         Intent i = new Intent(RegisterActivity.this, ValidatePinActivity.class);
                         i.putExtra("verificationId", verificationId);
                         i.putExtra("mobileNumber", "+92"+updated_mobilenumber);

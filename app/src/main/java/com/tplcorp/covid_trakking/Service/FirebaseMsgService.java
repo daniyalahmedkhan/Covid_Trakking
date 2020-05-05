@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tplcorp.covid_trakking.Helper.BackgroundServiceHelper;
+import com.tplcorp.covid_trakking.Helper.DatabaseHelper;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Helper.NotificationHelper;
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
@@ -39,8 +40,10 @@ public class FirebaseMsgService extends FirebaseMessagingService {
                     if (Is_Infected == 1){
                         PrefsHelper.putString(PrefConstants.AFFECTED , "1");
                         BackgroundServiceHelper.uploadDataToServer(PrefsHelper.getString(PrefConstants.MOBILE) , this);
+                        DatabaseHelper.insertNotificationDB(this, "you are marked positive by GOV data","1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate() , 1);
                     }else{
                         PrefsHelper.putString(PrefConstants.AFFECTED , "0");
+                        DatabaseHelper.insertNotificationDB(this, "you are marked negative by GOV data","0", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate() , 1);
                     }
                 }else{
                     NotificationHelper.sendNotification(this, title , content);

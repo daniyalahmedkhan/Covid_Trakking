@@ -44,5 +44,6 @@ public interface WebService {
     @Multipart
     @POST(WebServiceConstants.SUBMIT_REPORT)
     public Call<Map<String, Object>> uploadReport(@Part("PhoneNumber") RequestBody model,
-                                      @Part MultipartBody.Part file);
+                                                  @Part("Reason") RequestBody model2,
+                                                    @Part MultipartBody.Part file);
 }

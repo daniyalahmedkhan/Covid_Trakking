@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.ArrayMap;
@@ -91,6 +92,7 @@ public class HomeFragment extends BaseFragment {
     Button attachment;
     TextView TV_question;
     private Context context;
+    private String isAffectedUser = "0";
 
     public static HomeFragment newInstance() {
 
@@ -105,8 +107,6 @@ public class HomeFragment extends BaseFragment {
         if (!(PrefsHelper.getBoolean(PrefConstants.REGISTER, false))) {
             loginUer(PrefsHelper.getString(PrefConstants.MOBILE));
         }
-
-
     }
 
     @Override
@@ -158,7 +158,7 @@ public class HomeFragment extends BaseFragment {
             checkBannerState();
             getActivity().startService(new Intent(getActivity(), BackgroundService.class));
             if (firstOpen) {
-                checkUserIsInfected();
+              //  checkUserIsInfected();
             }
 
         }
@@ -179,19 +179,25 @@ public class HomeFragment extends BaseFragment {
     }
 
     private void checkBannerState() {
+
         if (PrefsHelper.getString(PrefConstants.AFFECTED, "0").equals("1")) {
             long days = checkAffectedDate();
+            testedButton.setText("Are you Corona Negative?");
+            testedButton.setTextColor(Color.GREEN);
             if (days == 0) {
                 textPositive.setText("You have marked yourself COVID-19 positive today.");
                 textPositive.setVisibility(View.VISIBLE);
             } else if (days > 0) {
                 textPositive.setText("You had marked yourself COVID-19 positive " + days + " day ago.");
                 textPositive.setVisibility(View.VISIBLE);
-            } else {
-                textPositive.setVisibility(View.GONE);
+            }  else {
+                textPositive.setText("You are marked COVID-19 positive by Gov.");
+                textPositive.setVisibility(View.VISIBLE);
             }
 
         } else {
+            testedButton.setText("Are you Corona Positive?");
+            testedButton.setTextColor(Color.GREEN);
             textPositive.setVisibility(View.GONE);
         }
 
@@ -242,6 +248,11 @@ public class HomeFragment extends BaseFragment {
                     if (attachment.getText().toString().equalsIgnoreCase("done")){
                         dialog.dismiss();
                     }else{
+                        if (testedButton.getText().toString().equalsIgnoreCase("are you corona positive?")){
+                            isAffectedUser = "1";
+                        }else{
+                            isAffectedUser = "2";
+                        }
                         uploadReport();
                     }
 
@@ -345,9 +356,10 @@ public class HomeFragment extends BaseFragment {
         MultipartBody.Part fileData = MultipartBody.Part.createFormData("uploaded_file", "uploaded_file", requestFile);
 
         RequestBody phoneNumber = RequestBody.create(MediaType.parse("text/plain"), PrefsHelper.getString(PrefConstants.MOBILE));
+        RequestBody isAffected = RequestBody.create(MediaType.parse("text/plain"), PrefsHelper.getString(PrefConstants.isAffectedUser));
        // MultipartBody.Part phone = MultipartBody.Part.createFormData("PhoneNumber", "PhoneNumber", phoneNumber);
 
-        WebServiceFactory.getInstance().uploadReport(phoneNumber, fileData).enqueue(new Callback<Map<String, Object>>() {
+        WebServiceFactory.getInstance().uploadReport(phoneNumber, isAffected ,  fileData).enqueue(new Callback<Map<String, Object>>() {
             @Override
             public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
 

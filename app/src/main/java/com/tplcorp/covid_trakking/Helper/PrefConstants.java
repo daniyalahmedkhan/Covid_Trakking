@@ -16,5 +16,6 @@ public interface PrefConstants {
     public String English = "1";
     public String Urdu = "2";
     public String Feedback = "feedback";
+    public String isAffectedUser = "isAffectedUser";
 
 }
