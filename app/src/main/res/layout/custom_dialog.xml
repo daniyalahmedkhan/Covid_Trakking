@@ -24,7 +24,8 @@
             android:gravity="center"
             android:text="Are you sure ?"
             android:textColor="@color/black"
-            android:textSize="17dp" />
+            android:textSize="17dp"
+            android:id="@+id/TV_question"/>
 
 
         <LinearLayout
@@ -64,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
-            android:text="Please select any medical report pic"
+            android:text="Please upload your test result"
             android:id="@+id/attachment"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginLeft="@dimen/_20sdp"

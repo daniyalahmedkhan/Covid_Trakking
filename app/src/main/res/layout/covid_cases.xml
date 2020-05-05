@@ -18,14 +18,17 @@
             android:orientation="vertical"
             android:padding="10dp"
             android:id="@+id/LL_Main"
-            android:visibility="gone">
+            android:layout_marginTop="@dimen/_20sdp"
+            android:visibility="gone"
+           >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="COVID-19 Cases in Pakistan"
                 android:textColor="@color/black"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:visibility="gone"/>
 
 
             <LinearLayout

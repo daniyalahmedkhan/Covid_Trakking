@@ -89,6 +89,7 @@ public class HomeFragment extends BaseFragment {
     boolean firstOpen = true;
     File file;
     Button attachment;
+    TextView TV_question;
     private Context context;
 
     public static HomeFragment newInstance() {
@@ -207,6 +208,7 @@ public class HomeFragment extends BaseFragment {
         Button dialogNo = (Button) dialog.findViewById(R.id.no);
         Button dialogYes = (Button) dialog.findViewById(R.id.yes);
         attachment = (Button) dialog.findViewById(R.id.attachment);
+        TV_question = (TextView) dialog.findViewById(R.id.TV_question);
         LinearLayout LL_Selection = (LinearLayout) dialog.findViewById(R.id.LL_Selection);
 
         dialogYes.setOnClickListener(new View.OnClickListener() {
@@ -216,6 +218,7 @@ public class HomeFragment extends BaseFragment {
                 file = null;
                 LL_Selection.setVisibility(View.GONE);
                 attachment.setVisibility(View.VISIBLE);
+                TV_question.setVisibility(View.GONE);
                 //  PrefsHelper.putString(PrefConstants.AFFECTED, "1");
                 //  checkBannerState();
                 // dialog.dismiss();
@@ -376,20 +379,21 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == 1) {
+                if (data.getData() != null) {
 
-        if (requestCode == 1) {
-            if (data.getData() != null) {
 
-                try {
                     Uri imageUri = data.getData();
                     file = new File(Path_from_Uri.getPath(getActivity(), imageUri));
-                    file = GeneralHelper.CompressPic(file , getActivity());
-                    attachment.setText("Do You Want To Submit Report?");
-                } catch (Exception e) {
-                    Toast.makeText(getActivity(), "Failed due to compress image", Toast.LENGTH_LONG).show();
-                }
+                    file = GeneralHelper.CompressPic(file, getActivity());
+                    attachment.setText("Do you want to submit the selected report?");
 
+
+                }
             }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG).show();
         }
     }
 }

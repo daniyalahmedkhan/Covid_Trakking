@@ -156,6 +156,8 @@ public class BackgroundService extends Service {
                     BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(scanCallback);
                 }
 
+            }else{
+                Toast.makeText(this, "Please enable your device's Bluetooth / GPS", Toast.LENGTH_LONG).show();
             }
             connectionsList.clear();
 

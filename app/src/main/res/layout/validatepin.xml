@@ -33,7 +33,7 @@
             android:layout_marginTop="50dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:text="We have sent you an OTP code on your mobile numebr."
+            android:text="We have sent you an OTP code on your mobile number."
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:textColor="@color/white"
