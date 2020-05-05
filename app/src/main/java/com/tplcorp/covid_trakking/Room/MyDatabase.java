@@ -7,7 +7,7 @@ import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
 import com.tplcorp.covid_trakking.Room.Tables.Notifications;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 
-@Database(entities = {TracingData.class , CovidAffected.class , Notifications.class} , version = 4 , exportSchema = true)
+@Database(entities = {TracingData.class , CovidAffected.class , Notifications.class} , version = 6 , exportSchema = true)
 public abstract class MyDatabase extends RoomDatabase {
     public abstract Dao daoAccess();
 }

@@ -1,6 +1,7 @@
 package com.tplcorp.covid_trakking.Helper;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -36,6 +37,8 @@ public class BackgroundServiceHelper {
         Notification notification = new NotificationCompat.Builder(context, "CHANNEL_ID")
                 .setContentTitle("TPL Contact Tracing Enabled")
                 .setContentText("App is running in background")
+                .setPriority(NotificationManager.IMPORTANCE_MIN)
+                .setCategory(Notification.CATEGORY_SERVICE)
                 .setSmallIcon(R.drawable.shield)
                 .setContentIntent(pendingIntent)
                 .build();
@@ -85,6 +88,8 @@ public class BackgroundServiceHelper {
 
         MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);
         List<AffectedUser> list = DatabaseHelper.getAffectedUsersFromDB(context);
+
+        Log.d("listKaSize" , String.valueOf(list.size()));
 
         if (GeneralHelper.isNetworkAvailable(context)){
             AffectedDataRequest model = new AffectedDataRequest();

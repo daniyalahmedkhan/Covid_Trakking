@@ -44,12 +44,11 @@ public class DatabaseHelper {
 
     }
 
-    public static void insertNotificationDB(Context context , String affected , Date date , String date_ , boolean isActive){
+    public static void insertNotificationDB(Context context , String text , String affected , Date date , String date_ , int isActive){
 
         MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);
-        Notifications notifications = new Notifications(affected , date , date_ , isActive);
+        Notifications notifications = new Notifications(text , affected , date , date_ , isActive);
         myDatabase.daoAccess().insertNotification(notifications);
-
 
     }
 

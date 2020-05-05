@@ -1,11 +1,16 @@
 package com.tplcorp.covid_trakking.UI.fragments;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -15,11 +20,19 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.tplcorp.covid_trakking.Helper.BackgroundServiceHelper;
+import com.tplcorp.covid_trakking.Helper.DatabaseHelper;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
+import com.tplcorp.covid_trakking.Helper.Path_from_Uri;
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.Helper.ProtectedHelper;
+import com.tplcorp.covid_trakking.Interface.BottomNavReselect;
 import com.tplcorp.covid_trakking.Model.AffectedDataRequest;
 import com.tplcorp.covid_trakking.Model.AffectedUser;
 import com.tplcorp.covid_trakking.R;
@@ -32,6 +45,8 @@ import com.tplcorp.covid_trakking.UI.ValidatePinActivity;
 import com.tplcorp.covid_trakking.retrofit.WebService;
 import com.tplcorp.covid_trakking.retrofit.WebServiceFactory;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +58,8 @@ import androidx.appcompat.app.AlertDialog;
 import org.json.JSONObject;
 
 import butterknife.BindView;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -70,7 +87,9 @@ public class HomeFragment extends BaseFragment {
     @BindView(R.id.mainLinear)
     LinearLayout mainLinear;
     boolean firstOpen = true;
-
+    File file;
+    Button attachment;
+    private Context context;
 
     public static HomeFragment newInstance() {
 
@@ -97,11 +116,24 @@ public class HomeFragment extends BaseFragment {
         testedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!(checkAffectedDate() >= 0 && checkAffectedDate() <= 14)) {
-                    showCustomDialog();
-                } else {
-                    Toast.makeText(getActivity(), "You need to wait 14 days to mark again", Toast.LENGTH_SHORT).show();
-                }
+//                if (!(checkAffectedDate() >= 0 && checkAffectedDate() <= 14)) {
+                    Dexter.withContext(getActivity()).withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE).withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+                            if (multiplePermissionsReport.areAllPermissionsGranted()) {
+                                showCustomDialog();
+                            }
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                            permissionToken.continuePermissionRequest();
+                        }
+                    }).check();
+//                } else {
+//                    Toast.makeText(getActivity(), "You need to wait 14 days to mark again", Toast.LENGTH_SHORT).show();
+//                }
             }
         });
     }
@@ -110,8 +142,11 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        ((BottomNavReselect) getActivity()).SetNavState(R.id.Home);
 
+        context = getActivity();
         ProtectedHelper.startPowerSaverIntent(getActivity());
+        myDatabase = DatabaseClient.getDatabaseInstance(getActivity());
 
         if (!GeneralHelper.isTimeAutomatic(getActivity())) {
             mainLinear.setVisibility(View.GONE);
@@ -121,21 +156,17 @@ public class HomeFragment extends BaseFragment {
             mainLinear.setVisibility(View.VISIBLE);
             checkBannerState();
             getActivity().startService(new Intent(getActivity(), BackgroundService.class));
-            if (firstOpen){
+            if (firstOpen) {
                 checkUserIsInfected();
             }
 
         }
-
     }
-
 
 
     private long checkAffectedDate() {
 
         long days = -1;
-
-        myDatabase = DatabaseClient.getDatabaseInstance(getActivity());
         List<CovidAffected> affectedList = myDatabase.daoAccess().affectedList();
         if (affectedList.size() > 0) {
             Date date = affectedList.get(0).getTIME_STAMP();
@@ -175,16 +206,19 @@ public class HomeFragment extends BaseFragment {
 
         Button dialogNo = (Button) dialog.findViewById(R.id.no);
         Button dialogYes = (Button) dialog.findViewById(R.id.yes);
+        attachment = (Button) dialog.findViewById(R.id.attachment);
+        LinearLayout LL_Selection = (LinearLayout) dialog.findViewById(R.id.LL_Selection);
 
         dialogYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              //  PrefsHelper.putString(PrefConstants.AFFECTED, "1");
-                CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
-                myDatabase.daoAccess().deleteCovidAffects();
-                myDatabase.daoAccess().insertAffectedRecord(covidAffected);
-              //  checkBannerState();
-                dialog.dismiss();
+
+                file = null;
+                LL_Selection.setVisibility(View.GONE);
+                attachment.setVisibility(View.VISIBLE);
+                //  PrefsHelper.putString(PrefConstants.AFFECTED, "1");
+                //  checkBannerState();
+                // dialog.dismiss();
             }
         });
 
@@ -195,6 +229,24 @@ public class HomeFragment extends BaseFragment {
                 PrefsHelper.putString(PrefConstants.AFFECTED, "0");
                 checkBannerState();
                 dialog.dismiss();
+            }
+        });
+
+        attachment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (file != null) {
+                    if (attachment.getText().toString().equalsIgnoreCase("done")){
+                        dialog.dismiss();
+                    }else{
+                        uploadReport();
+                    }
+
+                } else {
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(galleryIntent, 1);
+                }
+
             }
         });
 
@@ -269,7 +321,7 @@ public class HomeFragment extends BaseFragment {
 
                 if (response.body() != null) {
                     if (response.body().get("RespCode").equals(1) || response.body().get("RespCode").equals(1.0)) {
-                        BackgroundServiceHelper.uploadDataToServer(PrefsHelper.getString(PrefConstants.MOBILE) , getActivity());
+                        BackgroundServiceHelper.uploadDataToServer(PrefsHelper.getString(PrefConstants.MOBILE), getActivity());
                     }
                 }
 
@@ -281,5 +333,63 @@ public class HomeFragment extends BaseFragment {
             }
         });
 
+    }
+
+    private void uploadReport() {
+
+        attachment.setText("File is Uploading");
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part fileData = MultipartBody.Part.createFormData("uploaded_file", "uploaded_file", requestFile);
+
+        RequestBody phoneNumber = RequestBody.create(MediaType.parse("text/plain"), PrefsHelper.getString(PrefConstants.MOBILE));
+       // MultipartBody.Part phone = MultipartBody.Part.createFormData("PhoneNumber", "PhoneNumber", phoneNumber);
+
+        WebServiceFactory.getInstance().uploadReport(phoneNumber, fileData).enqueue(new Callback<Map<String, Object>>() {
+            @Override
+            public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+
+                if (response.body() != null && response.body().get("RespCode").equals(1) || response.body().get("RespCode").equals(1.0)) {
+
+                    Toast.makeText(context, "Your request submitted successfully", Toast.LENGTH_SHORT).show();
+                     CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
+                     myDatabase.daoAccess().deleteCovidAffects();
+                     myDatabase.daoAccess().insertAffectedRecord(covidAffected);
+                     DatabaseHelper.insertNotificationDB(context, "Your request submitted successfully","1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate() , 1);
+                     attachment.setText("Done");
+
+                } else {
+                    attachment.setText("Upload Failed! Try Again");
+                    Toast.makeText(context, "Your request failed to submit", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                Log.d("REPORT" , "FAILED " + t);
+                attachment.setText("Upload Failed! Try Again");
+                Toast.makeText(context, "Failed: "+t, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if (data.getData() != null) {
+
+                try {
+                    Uri imageUri = data.getData();
+                    file = new File(Path_from_Uri.getPath(getActivity(), imageUri));
+                    file = GeneralHelper.CompressPic(file , getActivity());
+                    attachment.setText("Do You Want To Submit Report?");
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), "Failed due to compress image", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        }
     }
 }

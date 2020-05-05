@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.tplcorp.covid_trakking.Adapter.CovidStatesAdapter;
+import com.tplcorp.covid_trakking.Interface.BottomNavReselect;
 import com.tplcorp.covid_trakking.Model.CovidStats;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.retrofit.WebService;
@@ -158,5 +159,11 @@ public class CasesFragment extends BaseFragment {
         RV_covid.setLayoutManager(mLayoutManager);
         RV_covid.setItemAnimator(new DefaultItemAnimator());
         RV_covid.setAdapter(covidStatesAdapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((BottomNavReselect) getActivity()).SetNavState(R.id.About);
     }
 }

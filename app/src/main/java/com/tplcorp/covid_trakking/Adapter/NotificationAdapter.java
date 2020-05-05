@@ -37,6 +37,7 @@ public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapt
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.dateTime.setText(String.valueOf(notifications.get(position).getTIME_STAMP()));
+        holder.tv_main.setText(String.valueOf(notifications.get(position).getText()));
     }
 
     @Override
@@ -45,10 +46,11 @@ public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapt
     }
 
     public class ViewHolder extends  RecyclerView.ViewHolder{
-        TextView dateTime;
+        TextView dateTime , tv_main;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             dateTime = itemView.findViewById(R.id.dateTime);
+            tv_main = itemView.findViewById(R.id.tv_main);
         }
     }
 }

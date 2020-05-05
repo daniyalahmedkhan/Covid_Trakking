@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.tplcorp.covid_trakking.Interface.BottomNavReselect;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.UI.MainActivity;
 
@@ -34,5 +35,11 @@ public class PrecautionsFragment extends BaseFragment {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((BottomNavReselect) getActivity()).SetNavState(R.id.Precautions);
     }
 }

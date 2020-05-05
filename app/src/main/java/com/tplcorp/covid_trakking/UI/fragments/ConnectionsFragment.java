@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.tplcorp.covid_trakking.Adapter.ConnectionAdapter;
+import com.tplcorp.covid_trakking.Interface.BottomNavReselect;
 import com.tplcorp.covid_trakking.Model.Connections;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.UI.MainActivity;
@@ -146,6 +147,8 @@ public class ConnectionsFragment extends BaseFragment {
         super.onResume();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
                 mMessageReceiver, new IntentFilter("Connections"));
+        ((BottomNavReselect) getActivity()).SetNavState(R.id.Connections);
+
     }
 
 

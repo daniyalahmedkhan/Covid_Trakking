@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
+import com.tplcorp.covid_trakking.Interface.BottomNavReselect;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.UI.MainActivity;
 
@@ -62,6 +63,7 @@ public class Feedback extends PreferenceFragmentCompat implements SharedPreferen
         super.onResume();
         ((MainActivity) getActivity()).initToolbar("Settings", false);
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        ((BottomNavReselect) getActivity()).SetNavState(R.id.Feedback);
         //   getPreferenceScreen().setTitle("Feedback");
 
     }

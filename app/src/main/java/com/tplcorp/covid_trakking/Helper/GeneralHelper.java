@@ -49,6 +49,8 @@ import com.tplcorp.covid_trakking.Service.BackgroundService;
 import com.tplcorp.covid_trakking.UI.RegisterActivity;
 import com.tplcorp.covid_trakking.UI.SetupActivity;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,6 +58,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import id.zelory.compressor.Compressor;
 
 public class GeneralHelper {
 
@@ -307,6 +311,31 @@ public class GeneralHelper {
         }
         Log.i("update_statut","Network is available : FALSE ");
         return false;
+    }
+
+    public static void startService(Context context){
+
+        Intent startServiceIntent = new Intent(context, BackgroundService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(startServiceIntent);
+        } else {
+            //  displayLocationSettingsRequest(TrackMe_Home.this);
+            context.startService(startServiceIntent);
+        }
+
+    }
+
+    public static File CompressPic(File img , Context context) throws IOException {
+
+        try {
+            File compressedImageFile = new Compressor(context).compressToFile(img);
+            return  compressedImageFile;
+        }catch (Exception e){
+            return  null;
+        }
+
+
+
     }
 
 }

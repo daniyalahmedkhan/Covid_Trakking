@@ -14,4 +14,5 @@ public class WebServiceConstants {
     public static final String KEY_POST_INTERACTIONS = "SendInteractions";
     public static final String KEY_POST_COVID_STATS = "GetProvinceWiseCases";
     public static final String CHECK_IS_INFECTED = "CheckIsInfected";
+    public static final String SUBMIT_REPORT = "SubmitReport";
 }

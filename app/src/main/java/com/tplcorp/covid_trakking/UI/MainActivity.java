@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.tplcorp.covid_trakking.Interface.BottomNavReselect;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
 import com.tplcorp.covid_trakking.Room.MyDatabase;
@@ -25,12 +26,13 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import re.robz.bottomnavigation.circularcolorreveal.BottomNavigationCircularColorReveal;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements BottomNavReselect {
 
     boolean doubleBackToExitPressedOnce = false;
     @BindView(R.id.toolbar)
@@ -42,7 +44,7 @@ public class MainActivity extends BaseActivity {
     TextView TV_notification;
 
     TextView textNotification;
-    int mCartItemCount = 10;
+    private int mMenuId;
 
 
     @Override
@@ -97,7 +99,7 @@ public class MainActivity extends BaseActivity {
     public void onBackPressed() {
 
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-           getSupportFragmentManager().popBackStack();
+            getSupportFragmentManager().popBackStack();
         } else {
             finish();
         }
@@ -115,8 +117,6 @@ public class MainActivity extends BaseActivity {
 //                Intent Connections = new Intent(MainActivity.this, ConnectionsActivity.class);
 //                startActivity(Connections);
                 addDockableFragment(ConnectionsFragment.newInstance());
-
-
                 break;
             case R.id.Precautions:
 //                Intent Precautions = new Intent(MainActivity.this, PrecautionsActivity.class);
@@ -136,12 +136,14 @@ public class MainActivity extends BaseActivity {
 
     }
 
-
-    private void getActiveNotification(){
+    private void getActiveNotification() {
         MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(this);
         List<Notifications> list = myDatabase.daoAccess().getActiveNotification();
-        textNotification.setText(String.valueOf(list.size()));
-
+        if (list.size() <= 0) {
+            textNotification.setVisibility(View.GONE);
+        } else {
+            textNotification.setText(String.valueOf(list.size()));
+        }
     }
 
     @Override
@@ -166,13 +168,22 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case android.R.id.home:
-                getSupportFragmentManager().popBackStack();
+                onBackPressed();
+                return true;
             case R.id.notification:
                 addDockableFragment(Notification.newInstance());
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+
+    }
+
+    @Override
+    public void SetNavState(int id) {
+        bottomNavigation.getMenu().findItem(id).setChecked(true);
     }
 }

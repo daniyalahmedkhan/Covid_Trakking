@@ -14,14 +14,16 @@ public class Notifications {
 
     @PrimaryKey(autoGenerate =  true)
     private int id;
+    private String text;
     private String IS_AFFECTED;
     @TypeConverters({TimeStamp_Converter.class})
     private Date TIME_STAMP;
     private String DATE_;
-    private boolean IS_ACTIVE;
+    private int IS_ACTIVE;
 
 
-    public Notifications(String IS_AFFECTED, Date TIME_STAMP, String DATE_ , boolean IS_ACTIVE) {
+    public Notifications(String text , String IS_AFFECTED, Date TIME_STAMP, String DATE_ , int IS_ACTIVE) {
+        this.text = text;
         this.IS_AFFECTED = IS_AFFECTED;
         this.TIME_STAMP = TIME_STAMP;
         this.DATE_ = DATE_;
@@ -60,11 +62,20 @@ public class Notifications {
         this.id = id;
     }
 
-    public boolean isIS_ACTIVE() {
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public int getIS_ACTIVE() {
         return IS_ACTIVE;
     }
 
-    public void setIS_ACTIVE(boolean IS_ACTIVE) {
+    public void setIS_ACTIVE(int IS_ACTIVE) {
         this.IS_ACTIVE = IS_ACTIVE;
     }
 }

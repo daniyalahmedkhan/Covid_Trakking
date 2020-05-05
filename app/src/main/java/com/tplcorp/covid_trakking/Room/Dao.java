@@ -62,10 +62,13 @@ public interface Dao {
     @Query("SELECT * FROM Notifications order by TIME_STAMP desc")
     List<Notifications> getNotificationList();
 
-    @Query("update Notifications set IS_ACTIVE = 'false'")
+    @Query("update Notifications set IS_ACTIVE = 0")
     void updateNotification();
 
 
-    @Query("SELECT * FROM Notifications where IS_ACTIVE == 'true' order by TIME_STAMP desc ")
+    @Query("SELECT * FROM Notifications where IS_ACTIVE == 1 order by TIME_STAMP desc ")
     List<Notifications> getActiveNotification();
+
+    @Query("DELETE from notifications where TIME_STAMP < :date")
+    void deleteOlderNotification(long date);
 }

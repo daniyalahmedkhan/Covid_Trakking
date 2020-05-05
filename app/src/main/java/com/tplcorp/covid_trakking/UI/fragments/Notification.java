@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tplcorp.covid_trakking.Adapter.NotificationAdapter;
+import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
 import com.tplcorp.covid_trakking.Room.MyDatabase;
@@ -69,6 +70,7 @@ public class Notification extends BaseFragment {
             RV_notification.setItemAnimator(new DefaultItemAnimator());
             RV_notification.setAdapter(adapter);
             myDatabase.daoAccess().updateNotification();
+            myDatabase.daoAccess().deleteOlderNotification(GeneralHelper.dateToDelete(7));
         }
     }
 
