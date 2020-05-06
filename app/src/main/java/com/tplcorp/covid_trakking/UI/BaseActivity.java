@@ -19,8 +19,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     public void initToolbar(String title, boolean isButton) {
@@ -52,6 +50,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
     }
+
+
+
 
 
 

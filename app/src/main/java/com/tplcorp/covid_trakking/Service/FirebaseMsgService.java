@@ -37,11 +37,13 @@ public class FirebaseMsgService extends FirebaseMessagingService {
             //    startService(new Intent(this, BackgroundService.class));
 
                 if (is_Silent.equals("1")){
+                    GeneralHelper.updateHomeFragment(this);
                     if (Is_Infected == 1){
                         PrefsHelper.putString(PrefConstants.AFFECTED , "1");
                         BackgroundServiceHelper.uploadDataToServer(PrefsHelper.getString(PrefConstants.MOBILE) , this);
                         DatabaseHelper.insertNotificationDB(this, "you are marked positive by GOV data","1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate() , 1);
                     }else{
+                        DatabaseHelper.deleteCovidAffects(this);
                         PrefsHelper.putString(PrefConstants.AFFECTED , "0");
                         DatabaseHelper.insertNotificationDB(this, "you are marked negative by GOV data","0", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate() , 1);
                     }

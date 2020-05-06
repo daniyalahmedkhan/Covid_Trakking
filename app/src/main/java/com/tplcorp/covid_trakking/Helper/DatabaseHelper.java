@@ -53,6 +53,11 @@ public class DatabaseHelper {
     }
 
 
+    public static void deleteCovidAffects(Context context){
+        MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);
+        myDatabase.daoAccess().deleteCovidAffects();
+    }
+
     public static List<AffectedUser> getAffectedUsersFromDB(Context context) {
 
         MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);

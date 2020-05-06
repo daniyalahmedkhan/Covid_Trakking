@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.tplcorp.covid_trakking.Adapter.CovidStatesAdapter;
+import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Interface.BottomNavReselect;
 import com.tplcorp.covid_trakking.Model.CovidStats;
 import com.tplcorp.covid_trakking.R;
@@ -131,10 +132,14 @@ public class CasesFragment extends BaseFragment {
         try {
             for (int i = 0; i < covidStatsList.size(); i++) {
                 if (covidStatsList.get(i).getProvince().equalsIgnoreCase("pakistan")) {
-                    tvTotalCases.setText(String.valueOf(covidStatsList.get(i).getTotalcases()));
-                    tvRecovered.setText(String.valueOf("Recovered" + " " + covidStatsList.get(i).getRecovered()));
-                    tvActive.setText(String.valueOf("Active" + " " + covidStatsList.get(i).getActive()));
-                    tvDeath.setText(String.valueOf("Deaths" + " " + covidStatsList.get(i).getTotaldeaths()));
+                    if ((covidStatsList.get(i).getTotalcases() >= 100000)){
+                        tvTotalCases.setText(String.valueOf(GeneralHelper.LargeNumberStandard(covidStatsList.get(i).getTotalcases())));
+                    }else{
+                        tvTotalCases.setText(String.valueOf(GeneralHelper.NumberStandard(covidStatsList.get(i).getTotalcases())));
+                    }
+                    tvRecovered.setText(String.valueOf("Recovered" + " " + GeneralHelper.NumberStandard(covidStatsList.get(i).getRecovered())));
+                    tvActive.setText(String.valueOf("Active" + " " + GeneralHelper.NumberStandard(covidStatsList.get(i).getActive())));
+                    tvDeath.setText(String.valueOf("Deaths" + " " + GeneralHelper.NumberStandard(covidStatsList.get(i).getTotaldeaths())));
                     ///  ---  ///
                     pbRecovered.setMax(covidStatsList.get(i).getTotalcases());
                     pbActive.setMax(covidStatsList.get(i).getTotalcases());

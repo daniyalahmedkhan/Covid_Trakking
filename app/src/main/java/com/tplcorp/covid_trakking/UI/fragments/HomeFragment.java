@@ -1,11 +1,14 @@
 package com.tplcorp.covid_trakking.UI.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
@@ -42,6 +45,7 @@ import com.tplcorp.covid_trakking.Room.MyDatabase;
 import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
+import com.tplcorp.covid_trakking.UI.MainActivity;
 import com.tplcorp.covid_trakking.UI.ValidatePinActivity;
 import com.tplcorp.covid_trakking.retrofit.WebService;
 import com.tplcorp.covid_trakking.retrofit.WebServiceFactory;
@@ -53,8 +57,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import org.json.JSONObject;
 
@@ -110,6 +116,12 @@ public class HomeFragment extends BaseFragment {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -118,20 +130,20 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
 //                if (!(checkAffectedDate() >= 0 && checkAffectedDate() <= 14)) {
-                    Dexter.withContext(getActivity()).withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE).withListener(new MultiplePermissionsListener() {
-                        @Override
-                        public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
-                            if (multiplePermissionsReport.areAllPermissionsGranted()) {
-                                showCustomDialog();
-                            }
+                Dexter.withContext(getActivity()).withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE).withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+                        if (multiplePermissionsReport.areAllPermissionsGranted()) {
+                            showCustomDialog();
                         }
+                    }
 
-                        @Override
-                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
-                            permissionToken.continuePermissionRequest();
-                        }
-                    }).check();
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                        permissionToken.continuePermissionRequest();
+                    }
+                }).check();
 //                } else {
 //                    Toast.makeText(getActivity(), "You need to wait 14 days to mark again", Toast.LENGTH_SHORT).show();
 //                }
@@ -149,19 +161,14 @@ public class HomeFragment extends BaseFragment {
         ProtectedHelper.startPowerSaverIntent(getActivity());
         myDatabase = DatabaseClient.getDatabaseInstance(getActivity());
 
-        if (!GeneralHelper.isTimeAutomatic(getActivity())) {
-            mainLinear.setVisibility(View.GONE);
-            Toast.makeText(getActivity(), "Please change the Date&Time settings to automatic", Toast.LENGTH_LONG).show();
-            getActivity().stopService(new Intent(getActivity(), BackgroundService.class));
-        } else {
-            mainLinear.setVisibility(View.VISIBLE);
-            checkBannerState();
-            getActivity().startService(new Intent(getActivity(), BackgroundService.class));
-            if (firstOpen) {
-              //  checkUserIsInfected();
-            }
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
+                mMessageReceiver, new IntentFilter("HOME"));
 
-        }
+        checkDataOnResume();
+
+        TracingData tracingData = new TracingData("+923457062164" , "0" , "25" , "25" , "25" , GeneralHelper.todayDate_DATE() , GeneralHelper.todayDate() , "N");
+        myDatabase.daoAccess().insertRecord(tracingData);
+
     }
 
 
@@ -190,14 +197,14 @@ public class HomeFragment extends BaseFragment {
             } else if (days > 0) {
                 textPositive.setText("You had marked yourself COVID-19 positive " + days + " day ago.");
                 textPositive.setVisibility(View.VISIBLE);
-            }  else {
+            } else {
                 textPositive.setText("You are marked COVID-19 positive by Gov.");
                 textPositive.setVisibility(View.VISIBLE);
             }
 
         } else {
             testedButton.setText("Are you Corona Positive?");
-            testedButton.setTextColor(Color.GREEN);
+            testedButton.setTextColor(Color.RED);
             textPositive.setVisibility(View.GONE);
         }
 
@@ -245,12 +252,13 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 if (file != null) {
-                    if (attachment.getText().toString().equalsIgnoreCase("done")){
+                    if (attachment.getText().toString().equalsIgnoreCase("done")) {
+                        ((MainActivity) getActivity()).getActiveNotification();
                         dialog.dismiss();
-                    }else{
-                        if (testedButton.getText().toString().equalsIgnoreCase("are you corona positive?")){
+                    } else {
+                        if (testedButton.getText().toString().equalsIgnoreCase("are you corona positive?")) {
                             isAffectedUser = "1";
-                        }else{
+                        } else {
                             isAffectedUser = "2";
                         }
                         uploadReport();
@@ -290,12 +298,24 @@ public class HomeFragment extends BaseFragment {
         return false;
     }
 
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            checkBannerState();
+           // ((MainActivity) context).getActiveNotification();
+
+        }
+    };
+
     private void loginUer(String phoneNumer) {
 
+        String deviceToken = FirebaseInstanceId.getInstance().getToken();
         Map<String, Object> jsonParams = new ArrayMap<>();
-        //put something inside the map, could be null
         jsonParams.put("PhoneNumber", phoneNumer);
-        jsonParams.put("DeviceToken", FirebaseInstanceId.getInstance().getToken());
+        jsonParams.put("DeviceToken", deviceToken);
+
+        Log.d("DeviceToken", deviceToken);
 
         RequestBody body = RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), (new JSONObject(jsonParams)).toString());
 
@@ -356,21 +376,21 @@ public class HomeFragment extends BaseFragment {
         MultipartBody.Part fileData = MultipartBody.Part.createFormData("uploaded_file", "uploaded_file", requestFile);
 
         RequestBody phoneNumber = RequestBody.create(MediaType.parse("text/plain"), PrefsHelper.getString(PrefConstants.MOBILE));
-        RequestBody isAffected = RequestBody.create(MediaType.parse("text/plain"), PrefsHelper.getString(PrefConstants.isAffectedUser));
-       // MultipartBody.Part phone = MultipartBody.Part.createFormData("PhoneNumber", "PhoneNumber", phoneNumber);
+        RequestBody isAffected = RequestBody.create(MediaType.parse("text/plain"), isAffectedUser);
+        // MultipartBody.Part phone = MultipartBody.Part.createFormData("PhoneNumber", "PhoneNumber", phoneNumber);
 
-        WebServiceFactory.getInstance().uploadReport(phoneNumber, isAffected ,  fileData).enqueue(new Callback<Map<String, Object>>() {
+        WebServiceFactory.getInstance().uploadReport(phoneNumber, isAffected, fileData).enqueue(new Callback<Map<String, Object>>() {
             @Override
             public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
 
                 if (response.body() != null && response.body().get("RespCode").equals(1) || response.body().get("RespCode").equals(1.0)) {
 
                     Toast.makeText(context, "Your request submitted successfully", Toast.LENGTH_SHORT).show();
-                     CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
-                     myDatabase.daoAccess().deleteCovidAffects();
-                     myDatabase.daoAccess().insertAffectedRecord(covidAffected);
-                     DatabaseHelper.insertNotificationDB(context, "Your request submitted successfully","1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate() , 1);
-                     attachment.setText("Done");
+                    CovidAffected covidAffected = new CovidAffected(PrefsHelper.getString(PrefConstants.MOBILE), "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate());
+                    DatabaseHelper.deleteCovidAffects(getActivity());
+                    myDatabase.daoAccess().insertAffectedRecord(covidAffected);
+                    DatabaseHelper.insertNotificationDB(context, "Your request submitted successfully", "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate(), 1);
+                    attachment.setText("Done");
 
                 } else {
                     attachment.setText("Upload Failed! Try Again");
@@ -380,11 +400,28 @@ public class HomeFragment extends BaseFragment {
 
             @Override
             public void onFailure(Call<Map<String, Object>> call, Throwable t) {
-                Log.d("REPORT" , "FAILED " + t);
+                Log.d("REPORT", "FAILED " + t);
                 attachment.setText("Upload Failed! Try Again");
-                Toast.makeText(context, "Failed: "+t, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Failed: " + t, Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+    private void checkDataOnResume() {
+        if (!GeneralHelper.isTimeAutomatic(context)) {
+            mainLinear.setVisibility(View.GONE);
+            Toast.makeText(getActivity(), "Please change the Date&Time settings to automatic", Toast.LENGTH_LONG).show();
+            getActivity().stopService(new Intent(getActivity(), BackgroundService.class));
+        } else {
+            mainLinear.setVisibility(View.VISIBLE);
+            checkBannerState();
+            getActivity().startService(new Intent(getActivity(), BackgroundService.class));
+            if (firstOpen) {
+                //checkUserIsInfected();
+            }
+
+        }
 
     }
 

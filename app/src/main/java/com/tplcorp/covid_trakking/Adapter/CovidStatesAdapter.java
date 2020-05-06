@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tplcorp.covid_trakking.Helper.GeneralHelper;
 import com.tplcorp.covid_trakking.Model.CovidStats;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.Room.Tables.Notifications;
@@ -40,7 +41,7 @@ public class CovidStatesAdapter extends RecyclerView.Adapter<CovidStatesAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if(!covidStatsList.get(position).getProvince().equalsIgnoreCase("pakistan")){
             holder.CV_Main.setVisibility(View.VISIBLE);
-            holder.province.setText("Total cases in"+" "+covidStatsList.get(position).getProvince()+":  "+covidStatsList.get(position).getTotalcases());
+            holder.province.setText("Total cases in"+" "+covidStatsList.get(position).getProvince()+":  "+ GeneralHelper.NumberStandard(covidStatsList.get(position).getTotalcases()));
             holder.date.setText(covidStatsList.get(position).getUpdatedOn());
         }else{
             holder.CV_Main.setVisibility(View.GONE);

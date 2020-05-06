@@ -36,7 +36,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="With soap and water or alchol-based hand rub"
+                    android:text="With soap and water or alcohol-based hand rub"
                     android:textSize="15dp"
                     android:gravity="center"
                     android:textColor="@color/black"/>
@@ -136,7 +136,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Stay at your Home when you are sick"
+                    android:text="Stay at your home when you are sick"
                     android:textSize="15dp"
                     android:gravity="center"
                     android:textColor="@color/black"/>

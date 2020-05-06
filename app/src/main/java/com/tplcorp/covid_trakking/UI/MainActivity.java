@@ -1,5 +1,9 @@
 package com.tplcorp.covid_trakking.UI;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +30,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.preference.PreferenceFragmentCompat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -136,12 +142,13 @@ public class MainActivity extends BaseActivity implements BottomNavReselect {
 
     }
 
-    private void getActiveNotification() {
+    public void getActiveNotification() {
         MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(this);
         List<Notifications> list = myDatabase.daoAccess().getActiveNotification();
         if (list.size() <= 0) {
             textNotification.setVisibility(View.GONE);
         } else {
+            textNotification.setVisibility(View.VISIBLE);
             textNotification.setText(String.valueOf(list.size()));
         }
     }
@@ -180,6 +187,21 @@ public class MainActivity extends BaseActivity implements BottomNavReselect {
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            getActiveNotification();
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver, new IntentFilter("HOME"));
     }
 
     @Override

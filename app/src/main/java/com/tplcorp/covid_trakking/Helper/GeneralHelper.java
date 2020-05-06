@@ -52,6 +52,7 @@ import com.tplcorp.covid_trakking.UI.SetupActivity;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -222,6 +223,13 @@ public class GeneralHelper {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
+
+    public static void updateHomeFragment(Context context) {
+
+        Intent intent = new Intent("HOME");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
     public static long daysDifferent(Date startDate, Date endDate) {
 
 
@@ -333,9 +341,30 @@ public class GeneralHelper {
         }catch (Exception e){
             return  null;
         }
+    }
 
+    public static String NumberStandard(int num){
 
+        DecimalFormat formatter = new DecimalFormat("#,###,###");
+        String yourFormattedString = formatter.format(num);
 
+        return yourFormattedString;
+    }
+
+    public static String LargeNumberStandard(int number){
+        String numberString = "";
+        if (Math.abs(number / 1000000) > 1) {
+            numberString = String.valueOf((number / 1000000)) + "m";
+
+        } else if (Math.abs(number / 1000) > 1) {
+            numberString = String.valueOf((number / 1000)) + "k";
+
+        } else {
+            numberString = String.valueOf(number);
+
+        }
+
+        return numberString + "+";
     }
 
 }
