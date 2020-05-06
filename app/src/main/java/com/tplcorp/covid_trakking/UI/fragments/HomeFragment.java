@@ -166,8 +166,8 @@ public class HomeFragment extends BaseFragment {
 
         checkDataOnResume();
 
-        TracingData tracingData = new TracingData("+923457062164" , "0" , "25" , "25" , "25" , GeneralHelper.todayDate_DATE() , GeneralHelper.todayDate() , "N");
-        myDatabase.daoAccess().insertRecord(tracingData);
+      //  TracingData tracingData = new TracingData("+923457062164" , "0" , "25" , "25" , "25" , GeneralHelper.todayDate_DATE() , GeneralHelper.todayDate() , "N");
+      //  myDatabase.daoAccess().insertRecord(tracingData);
 
     }
 
