@@ -269,7 +269,7 @@ public class BackgroundService extends Service {
             System.out.println("All keys are: " + s);
             GeneralHelper.showToastLooper(s, this);
 
-            DatabaseHelper.insertInDB(this, Mobile, Affected, Lat, Lng);
+            DatabaseHelper.insertInDB(this, "+92"+(Mobile.replaceFirst("0","")), Affected, Lat, Lng);
 
 
             // show notification to user if mobile no is not added in the list in current scan
