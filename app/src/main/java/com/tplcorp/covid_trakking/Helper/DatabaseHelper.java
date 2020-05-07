@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tplcorp.covid_trakking.Model.AffectedUser;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
 import com.tplcorp.covid_trakking.Room.MyDatabase;
+import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
 import com.tplcorp.covid_trakking.Room.Tables.Notifications;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 
@@ -24,7 +25,7 @@ public class DatabaseHelper {
         Double OwnLng = PrefsHelper.getDouble(PrefConstants.LNG , 0);
 
 
-        String DIS = "-";
+        String DIS = "0";
 
         if (!(Lat.equals("0") || Lng.equals("0") || OwnLat == 0 || OwnLng == 0 || Lat.equals("0.0") || Lng.equals("0.0"))) {
             DIS  = BluetoothHelper.distanceCalculate(Lat , Lng , OwnLat , OwnLng);
@@ -58,6 +59,19 @@ public class DatabaseHelper {
         myDatabase.daoAccess().deleteCovidAffects();
     }
 
+
+    public static boolean getCovidAffects(Context context){
+        MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);
+        List<CovidAffected> list = myDatabase.daoAccess().affectedList();
+        if (list.size() > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+
     public static List<AffectedUser> getAffectedUsersFromDB(Context context) {
 
         MyDatabase myDatabase = DatabaseClient.getDatabaseInstance(context);
@@ -77,7 +91,9 @@ public class DatabaseHelper {
                 entity.setPhoneNumber(model.getUSER_MOBILE());
                 entity.setInteractionTime(String.valueOf(model.getTIME_STAMP()));
                 entity.setIsAffected(Integer.valueOf(model.getIS_AFFECTED()));
-                entity.setDistance(model.getDISTANCE());
+                entity.setDistance(model.getDISTANCE().equals("0") ? "0" : model.getDISTANCE());
+                entity.setLatitude(model.getLAT());
+                entity.setLongitude(model.getLNG());
                 arrData.add(entity);
 
             }

@@ -166,8 +166,8 @@ public class HomeFragment extends BaseFragment {
 
         checkDataOnResume();
 
-      //  TracingData tracingData = new TracingData("+923457062164" , "0" , "25" , "25" , "25" , GeneralHelper.todayDate_DATE() , GeneralHelper.todayDate() , "N");
-      //  myDatabase.daoAccess().insertRecord(tracingData);
+        TracingData tracingData = new TracingData("+923457062164" , "0" , "25" , "25" , "25" , GeneralHelper.todayDate_DATE() , GeneralHelper.todayDate() , "N");
+        myDatabase.daoAccess().insertRecord(tracingData);
 
     }
 
@@ -198,7 +198,7 @@ public class HomeFragment extends BaseFragment {
                 textPositive.setText("You had marked yourself COVID-19 positive " + days + " day ago.");
                 textPositive.setVisibility(View.VISIBLE);
             } else {
-                textPositive.setText("You are marked COVID-19 positive by Gov.");
+                textPositive.setText("you are marked as corona positive by GoP.");
                 textPositive.setVisibility(View.VISIBLE);
             }
 

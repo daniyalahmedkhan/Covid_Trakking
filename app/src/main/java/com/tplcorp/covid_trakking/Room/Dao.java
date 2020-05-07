@@ -50,8 +50,6 @@ public interface Dao {
     void deleteCovidAffects();
 
 
-    @Query("Delete from TracingData")
-    void deleteTracingData();
 
 
     // ******** Notifications *********** //

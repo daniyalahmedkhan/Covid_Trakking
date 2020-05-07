@@ -31,24 +31,27 @@ public class FirebaseMsgService extends FirebaseMessagingService {
                 String content = data.get("content");
                 String title = data.get("title");
                 String is_Silent = data.get("is_Silent");
-                int  Is_Infected = Integer.parseInt(data.get("Is_Infected"));
+                int Is_Infected = Integer.parseInt(data.get("Is_Infected"));
                 GeneralHelper.startService(this);
 
-            //    startService(new Intent(this, BackgroundService.class));
+                //    startService(new Intent(this, BackgroundService.class));
 
-                if (is_Silent.equals("1")){
-                    GeneralHelper.updateHomeFragment(this);
-                    if (Is_Infected == 1){
-                        PrefsHelper.putString(PrefConstants.AFFECTED , "1");
-                        BackgroundServiceHelper.uploadDataToServer(PrefsHelper.getString(PrefConstants.MOBILE) , this);
-                        DatabaseHelper.insertNotificationDB(this, "you are marked positive by GOV data","1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate() , 1);
-                    }else{
+                if (is_Silent.equals("1")) {
+                    if (Is_Infected == 1) {
+                        PrefsHelper.putString(PrefConstants.AFFECTED, "1");
+                        BackgroundServiceHelper.uploadDataToServer(PrefsHelper.getString(PrefConstants.MOBILE), this);
+                        DatabaseHelper.insertNotificationDB(this, content, "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate(), 1);
+                        GeneralHelper.updateHomeFragment(this);
+                    } else {
                         DatabaseHelper.deleteCovidAffects(this);
-                        PrefsHelper.putString(PrefConstants.AFFECTED , "0");
-                        DatabaseHelper.insertNotificationDB(this, "you are marked negative by GOV data","0", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate() , 1);
+                        PrefsHelper.putString(PrefConstants.AFFECTED, "0");
+                        DatabaseHelper.insertNotificationDB(this, content, "0", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate(), 1);
+                        GeneralHelper.updateHomeFragment(this);
                     }
-                }else{
-                    NotificationHelper.sendNotification(this, title , content);
+                    NotificationHelper.sendNotification(this, title, content);
+                } else {
+                    NotificationHelper.sendNotification(this, title, content);
+                    //DatabaseHelper.insertNotificationDB(this, content,"0", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate() , 1);
                 }
 
             } else {
@@ -58,7 +61,7 @@ public class FirebaseMsgService extends FirebaseMessagingService {
                 String msg = remoteMessage.getNotification().getBody();
                 String title = remoteMessage.getNotification().getTitle();
 
-                NotificationHelper.sendNotification(this , title, msg);
+                NotificationHelper.sendNotification(this, title, msg);
             }
 
         } catch (Exception e) {

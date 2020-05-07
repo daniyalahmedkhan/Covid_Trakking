@@ -31,7 +31,11 @@
         android:roundIcon="@drawable/appicon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true">
+
+
+
         <activity android:name=".UI.NotificationActivity"></activity>
         <activity android:name=".UI.MapActivity" />
         <activity android:name=".UI.ConnectionsActivity" />
