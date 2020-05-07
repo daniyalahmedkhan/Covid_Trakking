@@ -40,7 +40,7 @@ public class Application extends android.app.Application {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
                     "CHANNEL_ID",
-                    "Example Service Channel",
+                    "Contact Tracing Service",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
 

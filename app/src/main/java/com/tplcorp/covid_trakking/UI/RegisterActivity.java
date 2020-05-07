@@ -2,11 +2,14 @@ package com.tplcorp.covid_trakking.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.ArrayMap;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -35,7 +38,8 @@ import retrofit2.Response;
 public class RegisterActivity extends AppCompatActivity {
 
     Button submit;
-    TextInputLayout textlayout;
+    TextInputLayout textlayout , cniclayout;
+    TextInputEditText cnic;
     String mVerificationId;
 
     @Override
@@ -49,20 +53,24 @@ public class RegisterActivity extends AppCompatActivity {
             setContentView(R.layout.activity_register);
             submit = findViewById(R.id.submit);
             textlayout = findViewById(R.id.textlayout);
+            cniclayout = findViewById(R.id.cniclayout);
+            cnic = findViewById(R.id.cnic);
 
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (textlayout.getEditText().getText().toString().isEmpty() || textlayout.getEditText().getText().toString().length() != 11) {
+                    if(cniclayout.getEditText().getText().toString().isEmpty() || cniclayout.getEditText().getText().toString().length() != 13){
+                        GeneralHelper.showToast(RegisterActivity.this, "Please fill the CNIC number correctly");
+                    }else if (textlayout.getEditText().getText().toString().isEmpty() || textlayout.getEditText().getText().toString().length() != 11) {
                         GeneralHelper.showToast(RegisterActivity.this, "Please fill the mobile number correctly");
                     } else {
-
+                        PrefsHelper.putString(PrefConstants.CNIC , cniclayout.getEditText().getText().toString().trim());
                         requestPin(textlayout.getEditText().getText().toString());
-
                     }
                 }
             });
         }
+
     }
 
     private void requestPin(final String mobileNumber) {

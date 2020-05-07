@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import id.zelory.compressor.Compressor;
+import kotlin.text.Regex;
 
 public class GeneralHelper {
 
@@ -365,6 +366,17 @@ public class GeneralHelper {
         }
 
         return numberString + "+";
+    }
+
+    public static boolean checkCnicValidation(String inputCNIC){
+
+        Regex check = new Regex("^[0-9]{5}-[0-9]{7}-[0-9]{1}$");
+
+        if (check.matches(inputCNIC)){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

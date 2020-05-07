@@ -111,7 +111,7 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         if (!(PrefsHelper.getBoolean(PrefConstants.REGISTER, false))) {
-            loginUer(PrefsHelper.getString(PrefConstants.MOBILE));
+            loginUer(PrefsHelper.getString(PrefConstants.MOBILE) , PrefsHelper.getString(PrefConstants.CNIC));
         }
     }
 
@@ -198,7 +198,7 @@ public class HomeFragment extends BaseFragment {
                 textPositive.setText("You had marked yourself COVID-19 positive " + days + " day ago.");
                 textPositive.setVisibility(View.VISIBLE);
             } else {
-                textPositive.setText("you are marked as corona positive by GoP.");
+                textPositive.setText("you are marked as COVID-19 positive by GoP.");
                 textPositive.setVisibility(View.VISIBLE);
             }
 
@@ -308,11 +308,12 @@ public class HomeFragment extends BaseFragment {
         }
     };
 
-    private void loginUer(String phoneNumer) {
+    private void loginUer(String phoneNumer , String CNIC) {
 
         String deviceToken = FirebaseInstanceId.getInstance().getToken();
         Map<String, Object> jsonParams = new ArrayMap<>();
         jsonParams.put("PhoneNumber", phoneNumer);
+        jsonParams.put("CNIC", CNIC);
         jsonParams.put("DeviceToken", deviceToken);
 
         Log.d("DeviceToken", deviceToken);
