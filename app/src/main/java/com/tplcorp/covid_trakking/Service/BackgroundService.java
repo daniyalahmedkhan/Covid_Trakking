@@ -111,17 +111,14 @@ public class BackgroundService extends Service {
     }
 
     private void initialize() {
+
         if (mBluetoothLeAdvertiser == null) {
             BluetoothManager mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
             if (mBluetoothManager != null) {
                 BluetoothAdapter mBluetoothAdapter = mBluetoothManager.getAdapter();
                 if (mBluetoothAdapter != null) {
                     mBluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser();
-                } else {
-                    //Toast.makeText(this, getString(R.string.bt_null), Toast.LENGTH_LONG).show();
                 }
-            } else {
-                //Toast.makeText(this, getString(R.string.bt_null), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -137,7 +134,7 @@ public class BackgroundService extends Service {
             }
         };
         mHandler.postDelayed(timeoutRunnable, TIMEOUT);
-// u there ? yes 0,0 lat long p map na khule ye b kradena..wait abhi kr dta hn
+
 
     }
 
@@ -150,14 +147,14 @@ public class BackgroundService extends Service {
             if (mBluetoothLeAdvertiser != null) {
                 if (!(BluetoothHelper.isBluetooth(BackgroundService.this) && GeneralHelper.checkGPS(this))) {
                     // just show toast
-                    Toast.makeText(this, "Please enable your device's Bluetooth / GPS", Toast.LENGTH_LONG).show();
+                    GeneralHelper.showToastLooper("Please enable your device's Bluetooth / GPS" , this);
                 } else {
                     mBluetoothLeAdvertiser.startAdvertising(settings, data, mAdvertiseCallback);
                     BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(scanCallback);
                 }
 
-            }else{
-                Toast.makeText(this, "Please enable your device's Bluetooth / GPS", Toast.LENGTH_LONG).show();
+            } else {
+                GeneralHelper.showToastLooper("Please enable your device's Bluetooth / GPS" , this);
             }
             connectionsList.clear();
 
@@ -172,7 +169,7 @@ public class BackgroundService extends Service {
             mAdvertiseCallback = null;
             // BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().stopScan(scanCallback);
         }
-        GeneralHelper.showToastLooper("Stopping Advertising", this);
+       // GeneralHelper.showToastLooper("Stopping Advertising", this);
 
 
         // ** Again start advertising after 5 mins.
@@ -229,18 +226,13 @@ public class BackgroundService extends Service {
                         break;
                     case ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED:
                         Log.d("##", "Scan failed: app registration failed.\n");
-
-                        //  textView.append("Scan failed: app registration failed.\n");
+                        BluetoothAdapter.getDefaultAdapter().disable();
                         break;
                     case ScanCallback.SCAN_FAILED_FEATURE_UNSUPPORTED:
                         Log.d("##", "Scan failed: feature unsupported.\n");
-
-                        //  textView.append("Scan failed: feature unsupported.\n");
                         break;
                     case ScanCallback.SCAN_FAILED_INTERNAL_ERROR:
                         Log.d("##", "Scan failed: internal error.\n");
-
-                        //   textView.append("Scan failed: internal error.\n");
                         break;
                 }
             }
@@ -267,15 +259,15 @@ public class BackgroundService extends Service {
 
             Log.d("###", s);
             System.out.println("All keys are: " + s);
-            GeneralHelper.showToastLooper(s, this);
+          //  GeneralHelper.showToastLooper(s, this);
 
-            DatabaseHelper.insertInDB(this, "+92"+(Mobile.replaceFirst("0","")), Affected, Lat, Lng);
+            DatabaseHelper.insertInDB(this, "+92" + (Mobile.replaceFirst("0", "")), Affected, Lat, Lng);
 
 
             // show notification to user if mobile no is not added in the list in current scan
-            if (Affected.equals("1") && !isUserExist(Mobile) && PrefsHelper.getBoolean(PrefConstants.Notifications)) {
+            if (Affected.equals("1") && !isUserExist(Mobile) && PrefsHelper.getBoolean(PrefConstants.Notification_New , true)) {
                 NotificationHelper.sendNotification(BackgroundService.this, "TPL Contact Tracing Alert", "Someone found positive nearby");
-                DatabaseHelper.insertNotificationDB(this, "you cross path with covid-19 positive person","1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate() , 1);
+                DatabaseHelper.insertNotificationDB(this, "you cross path with covid-19 positive person", "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate(), 1);
             }
 
 
@@ -291,7 +283,7 @@ public class BackgroundService extends Service {
 
             Log.d("error", "" + e.getMessage());
             e.printStackTrace();
-            GeneralHelper.showToastLooper("error while parsing", this);
+           // GeneralHelper.showToastLooper("error while parsing", this);
         }
 
     }
@@ -312,14 +304,14 @@ public class BackgroundService extends Service {
             Log.d(TAG, "Advertising failed");
             sendFailureIntent(errorCode);
             // stopSelf();
-            GeneralHelper.showToastLooper("Advertising failed", BackgroundService.this);
+           // GeneralHelper.showToastLooper("Advertising failed", BackgroundService.this);
         }
 
         @Override
         public void onStartSuccess(AdvertiseSettings settingsInEffect) {
             super.onStartSuccess(settingsInEffect);
             Log.d(TAG, "Advertising successfully started");
-            GeneralHelper.showToastLooper("Advertising successfully started", BackgroundService.this);
+            //GeneralHelper.showToastLooper("Advertising successfully started", BackgroundService.this);
         }
     }
 

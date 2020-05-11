@@ -32,6 +32,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.tplcorp.covid_trakking.Helper.BackgroundServiceHelper;
 import com.tplcorp.covid_trakking.Helper.DatabaseHelper;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
+import com.tplcorp.covid_trakking.Helper.LocationHelper;
 import com.tplcorp.covid_trakking.Helper.Path_from_Uri;
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
 import com.tplcorp.covid_trakking.Helper.PrefsHelper;
@@ -166,8 +167,8 @@ public class HomeFragment extends BaseFragment {
 
         checkDataOnResume();
 
-        TracingData tracingData = new TracingData("+923457062164" , "0" , "25" , "25" , "25" , GeneralHelper.todayDate_DATE() , GeneralHelper.todayDate() , "N");
-        myDatabase.daoAccess().insertRecord(tracingData);
+       // TracingData tracingData = new TracingData("+923457062164" , "0" , "25" , "25" , "25" , GeneralHelper.todayDate_DATE() , GeneralHelper.todayDate() , "N");
+       // myDatabase.daoAccess().insertRecord(tracingData);
 
     }
 
@@ -303,8 +304,6 @@ public class HomeFragment extends BaseFragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             checkBannerState();
-           // ((MainActivity) context).getActiveNotification();
-
         }
     };
 
@@ -329,7 +328,7 @@ public class HomeFragment extends BaseFragment {
                 if (response.body() != null && response.body().get("RespMsg").equals("Success")) {
                     PrefsHelper.putBoolean(PrefConstants.REGISTER, true);
                 } else {
-                    //Toast.makeText(getActivity(), response.body().get("RespMsg").toString() + "", Toast.LENGTH_SHORT).show();
+                    PrefsHelper.putBoolean(PrefConstants.REGISTER, false);
                 }
 
             }
@@ -417,9 +416,11 @@ public class HomeFragment extends BaseFragment {
         } else {
             mainLinear.setVisibility(View.VISIBLE);
             checkBannerState();
-            getActivity().startService(new Intent(getActivity(), BackgroundService.class));
             if (firstOpen) {
-                //checkUserIsInfected();
+                checkUserIsInfected();
+            }
+            if(!GeneralHelper.isMyServiceRunning(BackgroundService.class , getActivity())){
+                getActivity().startService(new Intent(getActivity(), BackgroundService.class));
             }
 
         }

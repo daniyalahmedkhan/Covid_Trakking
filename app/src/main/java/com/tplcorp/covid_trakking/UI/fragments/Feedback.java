@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.tplcorp.covid_trakking.Helper.PrefConstants;
+import com.tplcorp.covid_trakking.Helper.PrefsHelper;
 import com.tplcorp.covid_trakking.Interface.BottomNavReselect;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.UI.MainActivity;
@@ -38,10 +39,10 @@ public class Feedback extends PreferenceFragmentCompat implements SharedPreferen
             if (pref instanceof SwitchPreferenceCompat) {
                 if (((SwitchPreferenceCompat) pref).isChecked()) {
                     Log.d("##", "notification on");
+                    PrefsHelper.putBoolean(PrefConstants.Notification_New , true);
                 } else {
-
                     Log.d("##", "notification off");
-
+                    PrefsHelper.putBoolean(PrefConstants.Notification_New , false);
                 }
 
             } else if (key.equals(PrefConstants.Feedback)) {

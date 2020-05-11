@@ -69,6 +69,7 @@ public class BackgroundServiceHelper {
                         BluetoothAdapter.ERROR);
                 switch (state) {
                     case BluetoothAdapter.STATE_OFF:
+                        BluetoothAdapter.getDefaultAdapter().enable();
                         //NotificationHelper.sendNotification(BackgroundService.this , "Turn on GPS" , "Please turn on the GPS for COVID-19 tracing");
                         break;
                     case BluetoothAdapter.STATE_TURNING_OFF:

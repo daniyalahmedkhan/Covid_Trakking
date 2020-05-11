@@ -32,9 +32,9 @@ public class FirebaseMsgService extends FirebaseMessagingService {
                 String title = data.get("title");
                 String is_Silent = data.get("is_Silent");
                 int Is_Infected = Integer.parseInt(data.get("Is_Infected"));
-                GeneralHelper.startService(this);
-
-                //    startService(new Intent(this, BackgroundService.class));
+                if(!GeneralHelper.isMyServiceRunning(BackgroundService.class , this)){
+                    GeneralHelper.startService(this);
+                }
 
                 if (is_Silent.equals("1")) {
                     if (Is_Infected == 1) {

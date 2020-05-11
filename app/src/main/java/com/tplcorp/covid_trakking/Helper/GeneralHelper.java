@@ -2,6 +2,7 @@ package com.tplcorp.covid_trakking.Helper;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -78,7 +79,7 @@ public class GeneralHelper {
 
             @Override
             public void run() {
-                Toast.makeText(context .getApplicationContext(), msg ,Toast.LENGTH_SHORT);
+                Toast.makeText(context .getApplicationContext(), msg ,Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -368,15 +369,20 @@ public class GeneralHelper {
         return numberString + "+";
     }
 
-    public static boolean checkCnicValidation(String inputCNIC){
 
-        Regex check = new Regex("^[0-9]{5}-[0-9]{7}-[0-9]{1}$");
 
-        if (check.matches(inputCNIC)){
-            return true;
-        }else{
-            return false;
+    public static boolean isMyServiceRunning(Class<?> serviceClass, Context c) {
+        ActivityManager manager = (ActivityManager) c.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
         }
+        return false;
     }
+
+
+
+
 
 }

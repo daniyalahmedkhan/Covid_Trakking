@@ -12,6 +12,7 @@ public interface PrefConstants {
     public String LNG = "LNG";
     public String TEMP_DISTANCE = "TEMP_DISTANCE";
     public String Notifications = "notifications";
+    public String Notification_New = "notificationsNew";
     public String Visible = "visible";
     public String Language = "language";
     public String English = "1";
