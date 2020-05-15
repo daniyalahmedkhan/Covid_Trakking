@@ -200,7 +200,7 @@ public class HomeFragment extends BaseFragment {
                 textPositive.setText("You had marked yourself COVID-19 positive " + days + " day ago.");
                 textPositive.setVisibility(View.VISIBLE);
             } else {
-                textPositive.setText("you are marked as COVID-19 positive by GoP.");
+                textPositive.setText("You are marked as COVID-19 positive by GoP.");
                 textPositive.setVisibility(View.VISIBLE);
             }
 
@@ -244,8 +244,8 @@ public class HomeFragment extends BaseFragment {
         dialogNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PrefsHelper.putString(PrefConstants.AFFECTED, "0");
-                checkBannerState();
+              //  PrefsHelper.putString(PrefConstants.AFFECTED, "0");
+                // checkBannerState();
                 dialog.dismiss();
             }
         });
