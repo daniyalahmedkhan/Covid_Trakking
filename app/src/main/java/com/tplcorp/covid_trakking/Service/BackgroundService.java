@@ -41,6 +41,7 @@ import com.tplcorp.covid_trakking.retrofit.WebServiceFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
@@ -99,9 +100,12 @@ public class BackgroundService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("onDestroyCalled", "hahhaa");
         unregisterReceiver(BackgroundServiceHelper.mGpsSwitchStateReceiver);
         unregisterReceiver(BackgroundServiceHelper.mBluetoothStateReceiver);
-        startService(new Intent(this, BackgroundService.class));
+//        sendBroadcast(new Intent("YouWillNeverKillMe"));
+        GeneralHelper.startService(this);
+        //startService(new Intent(this, BackgroundService.class));
     }
 
 
@@ -147,14 +151,14 @@ public class BackgroundService extends Service {
             if (mBluetoothLeAdvertiser != null) {
                 if (!(BluetoothHelper.isBluetooth(BackgroundService.this) && GeneralHelper.checkGPS(this))) {
                     // just show toast
-                    GeneralHelper.showToastLooper("Please enable your device's Bluetooth / GPS" , this);
+                    GeneralHelper.showToastLooper("Please enable your device's Bluetooth / GPS", this);
                 } else {
                     mBluetoothLeAdvertiser.startAdvertising(settings, data, mAdvertiseCallback);
                     BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().startScan(scanCallback);
                 }
 
             } else {
-                GeneralHelper.showToastLooper("Please enable your device's Bluetooth / GPS" , this);
+                GeneralHelper.showToastLooper("Please enable your device's Bluetooth / GPS", this);
             }
             connectionsList.clear();
 
@@ -169,7 +173,7 @@ public class BackgroundService extends Service {
             mAdvertiseCallback = null;
             // BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().stopScan(scanCallback);
         }
-       // GeneralHelper.showToastLooper("Stopping Advertising", this);
+        // GeneralHelper.showToastLooper("Stopping Advertising", this);
 
 
         // ** Again start advertising after 5 mins.
@@ -226,7 +230,7 @@ public class BackgroundService extends Service {
                         break;
                     case ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED:
                         Log.d("##", "Scan failed: app registration failed.\n");
-                        BluetoothAdapter.getDefaultAdapter().disable();
+                        // BluetoothAdapter.getDefaultAdapter().disable();
                         break;
                     case ScanCallback.SCAN_FAILED_FEATURE_UNSUPPORTED:
                         Log.d("##", "Scan failed: feature unsupported.\n");
@@ -241,49 +245,49 @@ public class BackgroundService extends Service {
     }
 
     private void printScanResult(ScanResult result) {
-
-        Map<ParcelUuid, byte[]> data = result.getScanRecord().getServiceData();
-
         try {
-            String s = new String(data.entrySet().iterator().next().getValue(), "UTF-8");
+            if (result.getScanRecord().getServiceData(new ParcelUuid(UUID.fromString(PrefConstants.PUUID))) != null) {
 
-            String userData[] = s.split("\\|");
-            String Mobile = userData[0] != null ? userData[0] : "";
-            String Affected = userData[1] != null ? userData[1] : "";
+                Map<ParcelUuid, byte[]> data = result.getScanRecord().getServiceData();
 
-            String LatData = userData[2] != null ? userData[2] : "";
-            String LATLNG[] = LatData.split(",");
+                String s = new String(data.entrySet().iterator().next().getValue(), "UTF-8");
 
-            String Lat = LATLNG[0] != null ? LATLNG[0] : "0";
-            String Lng = LATLNG[1] != null ? LATLNG[1] : "0";
+                String userData[] = s.split("\\|");
+                String Mobile = userData[0] != null ? userData[0] : "";
+                String Affected = userData[1] != null ? userData[1] : "";
 
-            Log.d("###", s);
-            System.out.println("All keys are: " + s);
-          //  GeneralHelper.showToastLooper(s, this);
+                String LatData = userData[2] != null ? userData[2] : "";
+                String LATLNG[] = LatData.split(",");
 
-            DatabaseHelper.insertInDB(this, "+92" + (Mobile.replaceFirst("0", "")), Affected, Lat, Lng);
+                String Lat = LATLNG[0] != null ? LATLNG[0] : "0";
+                String Lng = LATLNG[1] != null ? LATLNG[1] : "0";
+
+                Log.d("###", s);
+                System.out.println("All keys are: " + s);
+                //  GeneralHelper.showToastLooper(s, this);
+
+                DatabaseHelper.insertInDB(this, "+92" + (Mobile.replaceFirst("0", "")), Affected, Lat, Lng);
 
 
-            // show notification to user if mobile no is not added in the list in current scan
-            if (Affected.equals("1") && !isUserExist(Mobile) && PrefsHelper.getBoolean(PrefConstants.Notification_New , true)) {
-                NotificationHelper.sendNotification(BackgroundService.this, "TPL Contact Tracing Alert", "Someone found positive nearby");
-                DatabaseHelper.insertNotificationDB(this, "you cross path with covid-19 positive person", "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate(), 1);
+                // show notification to user if mobile no is not added in the list in current scan
+                if (Affected.equals("1") && !isUserExist(Mobile) && PrefsHelper.getBoolean(PrefConstants.Notification_New, true)) {
+                    NotificationHelper.sendNotification(BackgroundService.this, "TPL Contact Tracing Alert", "Someone found positive nearby");
+                    DatabaseHelper.insertNotificationDB(this, "you cross path with covid-19 positive person", "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate(), 1);
+                }
+
+
+                //  add user in the list if not exist in current scan
+                if (!isUserExist(Mobile)) {
+                    connectionsList.add(new Connections(Mobile, PrefsHelper.getString(PrefConstants.TEMP_DISTANCE, "0"), Affected, Lat, Lng, result.getTimestampNanos()));
+                }
+                GeneralHelper.sendMessageToActivity(this, connectionsList);
+
             }
-
-
-            //  add user in the list if not exist in current scan
-            if (!isUserExist(Mobile)) {
-                connectionsList.add(new Connections(Mobile, PrefsHelper.getString(PrefConstants.TEMP_DISTANCE, "0"), Affected, Lat, Lng, result.getTimestampNanos()));
-            }
-            GeneralHelper.sendMessageToActivity(this, connectionsList);
-
-
         } catch (Exception e) {
-
 
             Log.d("error", "" + e.getMessage());
             e.printStackTrace();
-           // GeneralHelper.showToastLooper("error while parsing", this);
+            // GeneralHelper.showToastLooper("error while parsing", this);
         }
 
     }
@@ -304,7 +308,7 @@ public class BackgroundService extends Service {
             Log.d(TAG, "Advertising failed");
             sendFailureIntent(errorCode);
             // stopSelf();
-           // GeneralHelper.showToastLooper("Advertising failed", BackgroundService.this);
+            // GeneralHelper.showToastLooper("Advertising failed", BackgroundService.this);
         }
 
         @Override

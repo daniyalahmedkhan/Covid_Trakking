@@ -46,6 +46,7 @@ import com.tplcorp.covid_trakking.Room.MyDatabase;
 import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
+import com.tplcorp.covid_trakking.Service.JobService.Util;
 import com.tplcorp.covid_trakking.UI.MainActivity;
 import com.tplcorp.covid_trakking.UI.ValidatePinActivity;
 import com.tplcorp.covid_trakking.retrofit.WebService;
@@ -353,11 +354,23 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
 
-                if (response.body() != null) {
-                    if (response.body().get("RespCode").equals(1) || response.body().get("RespCode").equals(1.0)) {
-                        BackgroundServiceHelper.uploadDataToServer(PrefsHelper.getString(PrefConstants.MOBILE), getActivity());
+                try {
+                    if (response.body() != null) {
+                        JSONObject jObjResponse = new JSONObject(response.body());
+                        JSONObject RespData  = jObjResponse.getJSONObject("RespData");
+                        boolean IsInfected = RespData.getBoolean("IsInfected");
+
+                        if (IsInfected) {
+                            BackgroundServiceHelper.uploadDataToServer(PrefsHelper.getString(PrefConstants.MOBILE), getActivity());
+                            PrefsHelper.putString(PrefConstants.AFFECTED, "1");
+                            checkBannerState();
+                        }else{
+                            PrefsHelper.putString(PrefConstants.AFFECTED, "0");
+                            checkBannerState();
+                        }
                     }
-                }
+
+                }catch (Exception e){}
 
             }
 
@@ -423,6 +436,7 @@ public class HomeFragment extends BaseFragment {
                 getActivity().startService(new Intent(getActivity(), BackgroundService.class));
             }
 
+
         }
 
     }
@@ -438,13 +452,19 @@ public class HomeFragment extends BaseFragment {
                     Uri imageUri = data.getData();
                     file = new File(Path_from_Uri.getPath(getActivity(), imageUri));
                     file = GeneralHelper.CompressPic(file, getActivity());
-                    attachment.setText("Do you want to submit the selected report?");
+                    if (GeneralHelper.getFileSize(file) <= 2){
+                        attachment.setText("Do you want to submit the selected report?");
+                    }else{
+                        file = null;
+                        Toast.makeText(context, "Maximum file size is 2MB", Toast.LENGTH_SHORT).show();
+                    }
+
 
 
                 }
             }
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Please select image from gallery", Toast.LENGTH_LONG).show();
         }
     }
 }

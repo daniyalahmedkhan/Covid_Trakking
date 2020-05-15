@@ -9,6 +9,8 @@ import android.util.Log;
 public class autoStart extends BroadcastReceiver {
 
     public void onReceive(Context context, Intent arg1) {
+
+        Log.d("youwillnevekill" , "ahahha");
         Intent startServiceIntent = new Intent(context, BackgroundService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(startServiceIntent);

@@ -4,7 +4,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +19,10 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.tplcorp.covid_trakking.Helper.BackgroundServiceHelper;
 import com.tplcorp.covid_trakking.Helper.BluetoothHelper;
 import com.tplcorp.covid_trakking.Helper.GeneralHelper;
+import com.tplcorp.covid_trakking.Helper.NotificationHelper;
 import com.tplcorp.covid_trakking.Interface.LocationPermission;
 import com.tplcorp.covid_trakking.R;
 
@@ -31,6 +37,8 @@ public class SetupActivity extends AppCompatActivity implements LocationPermissi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
         grant_location_access_button = findViewById(R.id.grant_location_access_button);
+
+        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
 
         grant_location_access_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,5 +84,21 @@ public class SetupActivity extends AppCompatActivity implements LocationPermissi
             locationPermissionAndGps();
         }
     }
+
+    public BroadcastReceiver mGpsSwitchStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
+                if (!GeneralHelper.checkGPS(context)) {
+                    GeneralHelper.turnGPSOn(SetupActivity.this, SetupActivity.this);
+                }else{
+                    Intent i = new Intent(SetupActivity.this, RegisterActivity.class);
+                    startActivity(i);
+                    finish();
+                }
+            }
+        }
+    };
 }
 

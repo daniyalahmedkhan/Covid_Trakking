@@ -9,10 +9,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature android:name="android.hardware.location.gps" />
     <uses-feature
@@ -28,12 +28,11 @@
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/appicon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true">
-
+        android:usesCleartextTraffic="true">
 
 
         <activity android:name=".UI.NotificationActivity"></activity>
@@ -98,11 +97,32 @@
 
         <receiver android:name=".Service.autoStart">
             <intent-filter>
+                <action android:name="YouWillNeverKillMe" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 
+
+<!--        <service-->
+<!--            android:name=".Service.JobService.JobServiceMain"-->
+<!--            android:label="Word service"-->
+<!--            android:permission="android.permission.BIND_JOB_SERVICE"-->
+<!--            android:exported="false"-->
+<!--            android:stopWithTask="false"-->
+<!--            android:enabled="true"-->
+<!--            />-->
+
+<!--        <receiver android:name=".Service.JobService.ServiceReceiver">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.BOOT_COMPLETED"/>-->
+<!--                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>-->
+<!--                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>-->
+<!--                <action android:name="android.intent.action.SCREEN_OFF"/>-->
+<!--                <action android:name="android.intent.action.SCREEN_ON"/>-->
+<!--                <category android:name="android.intent.category.DEFAULT"/>-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
 
     </application>
 

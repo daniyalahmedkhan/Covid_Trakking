@@ -19,5 +19,6 @@ public interface PrefConstants {
     public String Urdu = "2";
     public String Feedback = "feedback";
     public String isAffectedUser = "isAffectedUser";
+    public String PUUID = "00001234-0000-1000-8000-00805F9B34FB";
 
 }

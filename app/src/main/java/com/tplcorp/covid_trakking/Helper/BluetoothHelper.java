@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +16,8 @@ import android.os.ParcelUuid;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class BluetoothHelper {
@@ -116,11 +120,7 @@ public class BluetoothHelper {
 
         String mServiceData = userPhone + "|" + isAffected+"|"+lat+","+lng;
 
-        //03452081685|0|24.322,64.555
-
-        // ParcelUuid pUuid = new ParcelUuid(UUID.fromString("CDB7950D-73F1-4D4D-8E47-C090502DBD63"));
-
-        ParcelUuid pUuid = new ParcelUuid(UUID.fromString("00001234-0000-1000-8000-00805F9B34FB"));
+        ParcelUuid pUuid = new ParcelUuid(UUID.fromString(PrefConstants.PUUID));
 
 
         AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder();
@@ -158,5 +158,26 @@ public class BluetoothHelper {
 
     private static double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
+    }
+
+    public static List<ScanFilter> getScanFilter(){
+
+        List<ScanFilter> filters = new ArrayList<>();
+        ScanFilter filter = new ScanFilter.Builder()
+                .setServiceUuid( new ParcelUuid(UUID.fromString(PrefConstants.PUUID))).build();
+
+        filters.add( filter );
+
+        return filters;
+
+    }
+
+    public static ScanSettings getScanSetting(){
+
+        ScanSettings settings = new ScanSettings.Builder()
+                .setScanMode( ScanSettings.SCAN_MODE_LOW_LATENCY )
+                .build();
+
+        return settings;
     }
 }

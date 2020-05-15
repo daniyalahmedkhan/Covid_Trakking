@@ -66,25 +66,25 @@ import kotlin.text.Regex;
 
 public class GeneralHelper {
 
-   public static boolean isPermissionGranted = false;
+    public static boolean isPermissionGranted = false;
 
 
-    public static void showToast(Context context , String msg){
-        Toast.makeText(context, ""+msg, Toast.LENGTH_SHORT).show();
+    public static void showToast(Context context, String msg) {
+        Toast.makeText(context, "" + msg, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showToastLooper(final String msg , final Context context){
+    public static void showToastLooper(final String msg, final Context context) {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
 
             @Override
             public void run() {
-                Toast.makeText(context .getApplicationContext(), msg ,Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public static void locationPermission(final Context context , LocationPermission lp){
+    public static void locationPermission(final Context context, LocationPermission lp) {
 
         final LocationPermission locationPermission = lp;
 
@@ -93,16 +93,16 @@ public class GeneralHelper {
             @Override
             public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
 
-                if (multiplePermissionsReport.areAllPermissionsGranted()){
+                if (multiplePermissionsReport.areAllPermissionsGranted()) {
                     locationPermission.locationPermission(true);
-                }else {
+                } else {
                     locationPermission.locationPermission(false);
                 }
             }
 
             @Override
             public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
-                    permissionToken.continuePermissionRequest();
+                permissionToken.continuePermissionRequest();
             }
         }).check();
 
@@ -115,18 +115,17 @@ public class GeneralHelper {
 
         if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             return true;
-        }else{
+        } else {
             return false;
         }
 
     }
 
-    public static  void turnGPSOn(final Context context , final Activity activity)
-    {
-         SettingsClient mSettingsClient;
-         LocationSettingsRequest mLocationSettingsRequest;
-         final int REQUEST_CHECK_SETTINGS = 214;
-         final int REQUEST_ENABLE_GPS = 516;
+    public static void turnGPSOn(final Context context, final Activity activity) {
+        SettingsClient mSettingsClient;
+        LocationSettingsRequest mLocationSettingsRequest;
+        final int REQUEST_CHECK_SETTINGS = 214;
+        final int REQUEST_ENABLE_GPS = 516;
 
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
@@ -154,23 +153,23 @@ public class GeneralHelper {
                                     ResolvableApiException rae = (ResolvableApiException) e;
                                     rae.startResolutionForResult(activity, REQUEST_CHECK_SETTINGS);
                                 } catch (IntentSender.SendIntentException sie) {
-                                    Log.e("GPS","Unable to execute request.");
+                                    Log.e("GPS", "Unable to execute request.");
                                 }
                                 break;
                             case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                                Log.e("GPS","Location settings are inadequate, and cannot be fixed here. Fix in Settings.");
+                                Log.e("GPS", "Location settings are inadequate, and cannot be fixed here. Fix in Settings.");
                         }
                     }
                 })
                 .addOnCanceledListener(new OnCanceledListener() {
                     @Override
                     public void onCanceled() {
-                        Log.e("GPS","checkLocationSettings -> onCanceled");
+                        Log.e("GPS", "checkLocationSettings -> onCanceled");
                     }
                 });
     }
 
-    public static String todayDate(){
+    public static String todayDate() {
 
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
@@ -178,20 +177,20 @@ public class GeneralHelper {
         return formattedDate;
     }
 
-    public static Date todayDate_DATE(){
+    public static Date todayDate_DATE() {
 
         Date c = Calendar.getInstance().getTime();
         return c;
     }
 
-    public static long todayDate_Long(){
+    public static long todayDate_Long() {
 
         Calendar calendar = Calendar.getInstance();
 
-        return  calendar.getTimeInMillis();
+        return calendar.getTimeInMillis();
     }
 
-    public static long dateToDelete(int days){
+    public static long dateToDelete(int days) {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(calendar.getTime());
@@ -203,7 +202,7 @@ public class GeneralHelper {
         return timeInMilliseconds;
     }
 
-    public static Date test(int days){
+    public static Date test(int days) {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(calendar.getTime());
@@ -215,7 +214,7 @@ public class GeneralHelper {
     }
 
 
-    public static void sendMessageToActivity(Context context , List<Connections> connectionsList) {
+    public static void sendMessageToActivity(Context context, List<Connections> connectionsList) {
 
 
         Intent intent = new Intent("Connections");
@@ -268,7 +267,7 @@ public class GeneralHelper {
         }
     }
 
-    public static String getTime(long time){
+    public static String getTime(long time) {
 
         long rxTimestampMillis = System.currentTimeMillis() -
                 SystemClock.elapsedRealtime() +
@@ -277,15 +276,14 @@ public class GeneralHelper {
         Date rxDate = new Date(rxTimestampMillis);
 
 
-
         String sDate = new SimpleDateFormat("HH:mm:ss").format(rxDate);
 
-        return GeneralHelper.todayDate()+" "+sDate;
+        return GeneralHelper.todayDate() + " " + sDate;
 
     }
 
     public static boolean isNetworkAvailable(Context context) {
-        if(context == null)  return false;
+        if (context == null) return false;
 
 
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -300,13 +298,11 @@ public class GeneralHelper {
                         return true;
                     } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                         return true;
-                    }  else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)){
+                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
                         return true;
                     }
                 }
-            }
-
-            else {
+            } else {
 
                 try {
                     NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -319,11 +315,11 @@ public class GeneralHelper {
                 }
             }
         }
-        Log.i("update_statut","Network is available : FALSE ");
+        Log.i("update_statut", "Network is available : FALSE ");
         return false;
     }
 
-    public static void startService(Context context){
+    public static void startService(Context context) {
 
         Intent startServiceIntent = new Intent(context, BackgroundService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -335,17 +331,17 @@ public class GeneralHelper {
 
     }
 
-    public static File CompressPic(File img , Context context) throws IOException {
+    public static File CompressPic(File img, Context context) throws IOException {
 
         try {
             File compressedImageFile = new Compressor(context).compressToFile(img);
-            return  compressedImageFile;
-        }catch (Exception e){
-            return  null;
+            return compressedImageFile;
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    public static String NumberStandard(int num){
+    public static String NumberStandard(int num) {
 
         DecimalFormat formatter = new DecimalFormat("#,###,###");
         String yourFormattedString = formatter.format(num);
@@ -353,7 +349,7 @@ public class GeneralHelper {
         return yourFormattedString;
     }
 
-    public static String LargeNumberStandard(int number){
+    public static String LargeNumberStandard(int number) {
         String numberString = "";
         if (Math.abs(number / 1000000) > 1) {
             numberString = String.valueOf((number / 1000000)) + "m";
@@ -370,7 +366,6 @@ public class GeneralHelper {
     }
 
 
-
     public static boolean isMyServiceRunning(Class<?> serviceClass, Context c) {
         ActivityManager manager = (ActivityManager) c.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -382,7 +377,16 @@ public class GeneralHelper {
     }
 
 
+    public static long getFileSize(File file) {
+        // Get length of file in bytes
+        long fileSizeInBytes = file.length();
+        // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+        long fileSizeInKB = fileSizeInBytes / 1024;
+        // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+        long fileSizeInMB = fileSizeInKB / 1024;
 
+        return fileSizeInMB;
+    }
 
 
 }
