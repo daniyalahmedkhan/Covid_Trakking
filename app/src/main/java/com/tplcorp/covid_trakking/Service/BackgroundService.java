@@ -171,10 +171,13 @@ public class BackgroundService extends Service {
         if (mBluetoothLeAdvertiser != null) {
             mBluetoothLeAdvertiser.stopAdvertising(mAdvertiseCallback);
             mAdvertiseCallback = null;
+
+
             // BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner().stopScan(scanCallback);
         }
-        // GeneralHelper.showToastLooper("Stopping Advertising", this);
 
+
+        // GeneralHelper.showToastLooper("Stopping Advertising", this);
 
         // ** Again start advertising after 5 mins.
         new Handler().postDelayed(new Runnable() {
@@ -182,18 +185,15 @@ public class BackgroundService extends Service {
             @Override
             public void run() {
 
+                GeneralHelper.sendMessageToActivity(BackgroundService.this, connectionsList);
                 running = true;
                 initialize();
                 scanningResult();
                 startAdvertising();
                 setTimeout();
 
-                //uploadDataToServer("+923432929045");
-
             }
         }, 10000);
-
-//300000
     }
 
     private void sendFailureIntent(int errorCode) {
@@ -230,6 +230,8 @@ public class BackgroundService extends Service {
                         break;
                     case ScanCallback.SCAN_FAILED_APPLICATION_REGISTRATION_FAILED:
                         Log.d("##", "Scan failed: app registration failed.\n");
+                        //BluetoothAdapter.getDefaultAdapter().disable();
+                       // BluetoothAdapter.getDefaultAdapter().enable();
                         // BluetoothAdapter.getDefaultAdapter().disable();
                         break;
                     case ScanCallback.SCAN_FAILED_FEATURE_UNSUPPORTED:
@@ -272,7 +274,7 @@ public class BackgroundService extends Service {
                 // show notification to user if mobile no is not added in the list in current scan
                 if (Affected.equals("1") && !isUserExist(Mobile) && PrefsHelper.getBoolean(PrefConstants.Notification_New, true)) {
                     NotificationHelper.sendNotification(BackgroundService.this, "TPL Contact Tracing Alert", "Someone found positive nearby");
-                    DatabaseHelper.insertNotificationDB(this, "you cross path with covid-19 positive person", "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate(), 1);
+                    DatabaseHelper.insertNotificationDB(this, "You cross path with covid-19 positive person", "1", GeneralHelper.todayDate_DATE(), GeneralHelper.todayDate(), 1);
                 }
 
 
@@ -280,6 +282,7 @@ public class BackgroundService extends Service {
                 if (!isUserExist(Mobile)) {
                     connectionsList.add(new Connections(Mobile, PrefsHelper.getString(PrefConstants.TEMP_DISTANCE, "0"), Affected, Lat, Lng, result.getTimestampNanos()));
                 }
+
                 GeneralHelper.sendMessageToActivity(this, connectionsList);
 
             }

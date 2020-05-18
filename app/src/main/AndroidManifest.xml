@@ -124,6 +124,11 @@
 <!--            </intent-filter>-->
 <!--        </receiver>-->
 
+        <receiver
+            android:name=".Service.NotificationDismissedReceiver"
+            android:exported="false" >
+        </receiver>
+
     </application>
 
 </manifest>

@@ -46,10 +46,7 @@ import com.tplcorp.covid_trakking.Room.MyDatabase;
 import com.tplcorp.covid_trakking.Room.Tables.CovidAffected;
 import com.tplcorp.covid_trakking.Room.Tables.TracingData;
 import com.tplcorp.covid_trakking.Service.BackgroundService;
-import com.tplcorp.covid_trakking.Service.JobService.Util;
 import com.tplcorp.covid_trakking.UI.MainActivity;
-import com.tplcorp.covid_trakking.UI.ValidatePinActivity;
-import com.tplcorp.covid_trakking.retrofit.WebService;
 import com.tplcorp.covid_trakking.retrofit.WebServiceFactory;
 
 import java.io.File;

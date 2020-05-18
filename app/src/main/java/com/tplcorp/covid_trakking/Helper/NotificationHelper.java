@@ -15,19 +15,25 @@ import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Vibrator;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.tplcorp.covid_trakking.Model.Connections;
 import com.tplcorp.covid_trakking.R;
+import com.tplcorp.covid_trakking.Service.NotificationDismissedReceiver;
 import com.tplcorp.covid_trakking.UI.MainActivity;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 
 public class NotificationHelper {
 
-    public static void sendNotification(Context context , String title , String message) {
+
+    public static int notifyID = 1;
+
+    public static void sendNotification(Context context, String title, String message) {
         String GROUP_KEY_ALERTS = "com.tplcorp.covid_trakking";
         Intent intent;
 
@@ -36,9 +42,10 @@ public class NotificationHelper {
 
         NotificationClass nc = new NotificationClass();
 
-        int notifyID = 3;
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-      //  ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, ToneGenerator.MAX_VOLUME);
+
+
+        //  ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, ToneGenerator.MAX_VOLUME);
 
 
         //  intent = new Intent(getApplicationContext(), com.tpltrakker.main.Activities.MainMenuActivities.TrackMe.Notification.class);
@@ -46,95 +53,204 @@ public class NotificationHelper {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //Creating Channel
-            nc.createMainNotificationChannel(context.getApplicationContext());
-            //building Notification.
+        //getting notification object from notification builder.
+        Notification n;
 
-            Notification.Builder notifi =
-                    new Notification.Builder(context.getApplicationContext(), nc.getMainNotificationId());
-
-            notifi.setSmallIcon(R.drawable.shield);
-            notifi.setContentTitle(title);
-            notifi.setContentText(message);
-            notifi.setAutoCancel(true);
-            notifi.setContentIntent(pendingIntent);
-            notifi.setGroup(GROUP_KEY_ALERTS);
-            notifi.setStyle(new Notification.BigTextStyle()
-                    .bigText(message));
-            notifi.setSound(alarmSound, AudioAttributes.USAGE_NOTIFICATION);
+        NotificationManager mNotificationManager;
 
 
-            //getting notification object from notification builder.
-            Notification n = notifi.build();
+        notifyID++;
+        Log.d("FIRSTIME", String.valueOf(notifyID));
 
-            NotificationManager mNotificationManager =
-                    (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notifyID == 2) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                //Creating Channel
+                nc.createMainNotificationChannel(context.getApplicationContext());
+                //building Notification.
+
+                Notification.Builder notifi = new Notification.Builder(context.getApplicationContext(), nc.getMainNotificationId());
+
+                notifi.setSmallIcon(R.drawable.shield);
+                notifi.setContentTitle(title);
+                notifi.setContentText(message);
+                notifi.setAutoCancel(true);
+                notifi.setContentIntent(pendingIntent);
+                notifi.setGroupSummary(true);
+                notifi.setGroup(GROUP_KEY_ALERTS);
+                notifi.setStyle(new Notification.BigTextStyle().bigText(message));
+                notifi.setDeleteIntent(createOnDismissedIntent(context, notifyID));
+                notifi.setNumber(notifyID);
+                notifi.setSound(alarmSound, AudioAttributes.USAGE_NOTIFICATION);
 
 
-            mNotificationManager.notify(notifyID, n);
-         // toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
-        //    ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
+                //getting notification object from notification builder.
+                n = notifi.build();
 
-        } else {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                //String GROUP_KEY_ALERTS = "com.tpltrakker.main.ALERTS";
-
-                //for devices less than API Level 26
-                Notification notification = new Notification.Builder(context.getApplicationContext())
-
-                        .setContentTitle(title)
-                        .setContentText(message)
-                        .setSmallIcon(R.drawable.shield)
-                        .setAutoCancel(true)
-                        .setSound(alarmSound)
-
-                        .setStyle(new Notification.BigTextStyle()
-                                .bigText(message))
-                        .setContentIntent(pendingIntent).setPriority(Notification.PRIORITY_DEFAULT)
-                        .setGroup(GROUP_KEY_ALERTS)
-                        .build();
-
-                NotificationManager mNotificationManager =
+                mNotificationManager =
                         (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-// Issue the notification.
-                mNotificationManager.notify(notifyID, notification);
-               /// toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
-              //  ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
+
+                mNotificationManager.notify(notifyID, n);
+                // toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
+                //    ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
 
             } else {
-                // String GROUP_KEY_ALERTS = "com.tpltrakker.main.ALERTS";
 
-                //for devices less than API Level 26
-                Notification notification = new Notification.Builder(context.getApplicationContext())
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    //String GROUP_KEY_ALERTS = "com.tpltrakker.main.ALERTS";
 
+                    //for devices less than API Level 26
+                    Notification notification = new Notification.Builder(context.getApplicationContext())
 
-                        .setContentTitle(title)
-                        .setContentText(message)
-                        .setSmallIcon(R.drawable.shield)
-                        .setAutoCancel(true)
-                        .setSound(alarmSound)
+                            .setContentTitle(title)
+                            .setContentText(message)
+                            .setSmallIcon(R.drawable.shield)
+                            .setAutoCancel(true)
+                            .setSound(alarmSound)
 
-                        .setStyle(new Notification.BigTextStyle()
-                                .bigText(message))
-                        .setContentIntent(pendingIntent).setPriority(Notification.PRIORITY_DEFAULT)
-                        //.setGroup(GROUP_KEY_ALERTS)
-                        .build();
+                            .setStyle(new Notification.BigTextStyle()
+                                    .bigText(message))
+                            .setContentIntent(pendingIntent).setPriority(Notification.PRIORITY_DEFAULT)
+                            .setGroupSummary(true)
+                            .setGroup(GROUP_KEY_ALERTS)
+                            .build();
 
-                NotificationManager mNotificationManager =
-                        (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotificationManager =
+                            (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
 // Issue the notification.
-                mNotificationManager.notify(notifyID, notification);
-               // toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
-              //  ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
+                    mNotificationManager.notify(notifyID, notification);
+                    /// toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
+                    //  ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
+
+                } else {
+                    // String GROUP_KEY_ALERTS = "com.tpltrakker.main.ALERTS";
+
+                    //for devices less than API Level 26
+                    Notification notification = new Notification.Builder(context.getApplicationContext())
+
+
+                            .setContentTitle(title)
+                            .setContentText(message)
+                            .setSmallIcon(R.drawable.shield)
+                            .setAutoCancel(true)
+                            .setSound(alarmSound)
+
+                            .setStyle(new Notification.BigTextStyle()
+                                    .bigText(message))
+                            .setContentIntent(pendingIntent).setPriority(Notification.PRIORITY_DEFAULT)
+                            .setGroupSummary(true)
+                            .setGroup(GROUP_KEY_ALERTS)
+                            .build();
+
+                    mNotificationManager =
+                            (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+// Issue the notification.
+                    mNotificationManager.notify(notifyID, notification);
+                    // toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
+                    //  ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
+                }
+
+
             }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                //Creating Channel
+                //nc.createMainNotificationChannel(context.getApplicationContext());
+                //building Notification.
+
+                Notification.Builder notifi = new Notification.Builder(context.getApplicationContext(), nc.getMainNotificationId());
+
+                notifi.setSmallIcon(R.drawable.shield);
+                notifi.setContentTitle(title);
+                notifi.setContentText(message);
+                notifi.setContentIntent(pendingIntent);
+                notifi.setGroup(GROUP_KEY_ALERTS);
+                notifi.setSound(alarmSound, AudioAttributes.USAGE_NOTIFICATION);
 
 
+                n = notifi.build();
+
+                mNotificationManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+                mNotificationManager.notify(notifyID, n);
+
+                //   NotificationManagerCompat.from(context).notify(notifyID,notifi);
+
+
+            } else {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    //String GROUP_KEY_ALERTS = "com.tpltrakker.main.ALERTS";
+
+                    //for devices less than API Level 26
+                    Notification notification = new Notification.Builder(context.getApplicationContext())
+
+                            .setContentTitle(title)
+                            .setContentText(message)
+                            .setSmallIcon(R.drawable.shield)
+                            .setAutoCancel(true)
+                            .setSound(alarmSound)
+
+                            .setStyle(new Notification.BigTextStyle()
+                                    .bigText(message))
+                            .setContentIntent(pendingIntent).setPriority(Notification.PRIORITY_DEFAULT)
+                            .setGroup(GROUP_KEY_ALERTS)
+                            .build();
+
+                    mNotificationManager =
+                            (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+// Issue the notification.
+                    mNotificationManager.notify(notifyID, notification);
+                    /// toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
+                    //  ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
+
+                } else {
+                    // String GROUP_KEY_ALERTS = "com.tpltrakker.main.ALERTS";
+
+                    //for devices less than API Level 26
+                    Notification notification = new Notification.Builder(context.getApplicationContext())
+
+
+                            .setContentTitle(title)
+                            .setContentText(message)
+                            .setSmallIcon(R.drawable.shield)
+                            .setAutoCancel(true)
+                            .setSound(alarmSound)
+
+                            .setStyle(new Notification.BigTextStyle()
+                                    .bigText(message))
+                            .setContentIntent(pendingIntent).setPriority(Notification.PRIORITY_DEFAULT)
+                            .setGroup(GROUP_KEY_ALERTS)
+                            .build();
+
+                    mNotificationManager =
+                            (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+// Issue the notification.
+                    mNotificationManager.notify(notifyID, notification);
+                    // toneG.startTone(ToneGenerator.TONE_PROP_BEEP, 3000);
+                    //  ((Vibrator)context.getSystemService(VIBRATOR_SERVICE)).vibrate(2000);
+                }
+
+
+            }
         }
 
+
+    }
+
+
+    private static PendingIntent createOnDismissedIntent(Context context, int notificationId) {
+        Intent intent = new Intent(context, NotificationDismissedReceiver.class);
+        intent.putExtra("com.my.app.notificationId", notificationId);
+
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(context.getApplicationContext(),
+                        notificationId, intent, 0);
+        return pendingIntent;
     }
 
 

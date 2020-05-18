@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.tplcorp.covid_trakking.Helper.NotificationHelper;
 import com.tplcorp.covid_trakking.Interface.BottomNavReselect;
 import com.tplcorp.covid_trakking.R;
 import com.tplcorp.covid_trakking.Room.DatabaseClient;
@@ -70,9 +71,8 @@ public class MainActivity extends BaseActivity implements BottomNavReselect {
 
 
         configBottomNavigation();
-
-
         initFragment();
+        NotificationHelper.notifyID = 1;
 
     }
 
@@ -207,5 +207,11 @@ public class MainActivity extends BaseActivity implements BottomNavReselect {
     @Override
     public void SetNavState(int id) {
         bottomNavigation.getMenu().findItem(id).setChecked(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NotificationHelper.notifyID = 1;
     }
 }

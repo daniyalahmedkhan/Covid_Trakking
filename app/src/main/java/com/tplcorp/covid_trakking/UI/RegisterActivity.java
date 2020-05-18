@@ -111,6 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
                         i.putExtra("mobileNumber", "+92"+updated_mobilenumber);
                         i.putExtra("token", token);
                         startActivity(i);
+                        finish();
 
                     }
                 });
