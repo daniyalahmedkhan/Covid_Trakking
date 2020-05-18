@@ -12,10 +12,14 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+
+import java.util.List;
+
 public class LocationHelper implements LocationListener {
 
     private static LocationManager locationManager;
-    private static String provider;
+    private static List<String> provider;
 
 
     public void LocationInitialize(Context context) {
@@ -23,47 +27,58 @@ public class LocationHelper implements LocationListener {
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
 
-        provider = locationManager.getBestProvider(criteria, false);
+        provider = locationManager.getProviders(true);
+
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
 
 
-        Location location = locationManager.getLastKnownLocation(provider);
+        Location bestLocation = null;
+        for (String provider : provider) {
+            Location l = locationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = l;
 
-        // Initialize the location fields
-        if (location != null) {
-            System.out.println("Provider " + provider + " has been selected.");
-            onLocationChanged(location);
-        } else {
-            //latituteField.setText("Location not available");
-            //longitudeField.setText("Location not available");
+                double lat =  (bestLocation.getLatitude());
+                double lng =  (bestLocation.getLongitude());
+
+
+                lat = Double.parseDouble((String.format("%.3f",lat)));
+                lng = Double.parseDouble((String.format("%.3f",lng)));
+
+
+                Log.d("LATLNG" , String.valueOf(lat +" "+lng));
+
+                PrefsHelper.putDouble(PrefConstants.LAT , lat);
+                PrefsHelper.putDouble(PrefConstants.LNG , lng);
+
+                return;
+
+            }
         }
     }
 
 
     @Override
     public void onLocationChanged(Location location) {
-        double lat =  (location.getLatitude());
-        double lng =  (location.getLongitude());
-       // latituteField.setText(String.valueOf(lat));
-       // longitudeField.setText(String.valueOf(lng));
-
-        lat = Double.parseDouble((String.format("%.3f",lat)));
-        lng = Double.parseDouble((String.format("%.3f",lng)));
-
-
-        Log.d("LATLNG" , String.valueOf(lat +" "+lng));
-
-        PrefsHelper.putDouble(PrefConstants.LAT , lat);
-        PrefsHelper.putDouble(PrefConstants.LNG , lng);
+//        double lat =  (location.getLatitude());
+//        double lng =  (location.getLongitude());
+//
+//
+//        lat = Double.parseDouble((String.format("%.3f",lat)));
+//        lng = Double.parseDouble((String.format("%.3f",lng)));
+//
+//
+//        Log.d("LATLNG" , String.valueOf(lat +" "+lng));
+//
+//        PrefsHelper.putDouble(PrefConstants.LAT , lat);
+//        PrefsHelper.putDouble(PrefConstants.LNG , lng);
     }
 
     @Override
